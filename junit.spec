@@ -6,7 +6,7 @@
 Summary: Regression testing framework for Java
 Name: junit
 Version: 3.8.1
-Release: 2.1
+Release: 4
 URL: http://www.junit.org/
 Source: rhug-%{name}-%{rhugversion}.tar.bz2
 Source1: %{name}%{version}.zip
@@ -18,9 +18,9 @@ License: IBM Common Public License
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildPrereq: gcc34-c++
-BuildPrereq: gcc34-java 
+BuildPrereq: gcc34-java >= 3.4.0-1
 Prereq: redhat-java-rpm-scripts >= 1.0.2-2
-Requires: libgcj34 
+Requires: libgcj34 >= 3.4.0-1
 
 %description
 JUnit is a regression testing framework used to implement unit tests
@@ -83,8 +83,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/junit
 
 %changelog
-* Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
-- rebuilt
+* Tue May  4 2004 Gary Benson <gbenson@redhat.com> 3.8.1-4
+- Rebuild with new compiler.
+
+* Thu Apr 15 2004 Gary Benson <gbenson@redhat.com> 3.8.1-3
+- Rebuild with new compiler (#120844).
+
+* Tue Mar  2 2004 Elliot Lee <sopwith@redhat.com>
+- Rebuilt.
 
 * Fri Feb 13 2004 Gary Benson <gbenson@redhat.com> 3.8.1-2
 - Rebuild for Fedora.
