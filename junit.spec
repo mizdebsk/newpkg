@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define	release		3jpp_3fc
+%define	release		3jpp_4fc
 %define	section		free
 
 Name:		%{name}
@@ -16,6 +16,7 @@ Group:		Development/Testing
 Source:		http://osdn.dl.sourceforge.net/junit/junit3.8.1.zip
 BuildRequires:	ant
 BuildRequires:	jpackage-utils >= 0:1.5
+BuildRequires:  coreutils
 Buildarch:	noarch
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
 
@@ -52,16 +53,6 @@ rm -rf $RPM_BUILD_ROOT
 %setup -n %{name}%{version}
 # extract sources
 jar xvf src.jar
-# delete stuff that doesn't work with libgcj (#130006).
-if java -version 2>&1 | grep -q "gcj"; then
-    rm -f junit/swingui/AboutDialog.java
-    rm -f junit/swingui/CounterPanel.java
-    rm -f junit/swingui/FailureRunView.java
-    rm -f junit/swingui/TestHierarchyRunView.java
-    rm -f junit/swingui/TestRunner.java
-    rm -f junit/swingui/TestSelector.java
-    rm -f junit/swingui/TestSuitePanel.java
-fi
 
 %build
 ant dist
@@ -112,8 +103,15 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Tue Jan 11 2005 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_4fc
+- Reenable building of classes that require javax.swing (#130006).
+- Sync with RHAPS.
+
 * Thu Nov  4 2004 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_3fc
 - Build into Fedora.
+
+* Fri Oct 1 2004 Andrew Overholt <overholt@redhat.com> 0:3.8.1-3jpp_3rh
+- add coreutils BuildRequires
 
 * Fri Mar 26 2004 Frank Ch. Eigler <fche@redhat.com> 0:3.8.1-3jpp_2rh
 - add RHUG upgrade cleanup
