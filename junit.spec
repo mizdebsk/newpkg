@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define	release		3jpp_2fc
+%define	release		3jpp_3fc
 %define	section		free
 
 Name:		%{name}
@@ -112,7 +112,7 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
-* Mon Oct 11 2004 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_2fc
+* Mon Nov  1 2004 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_3fc
 - Build into Fedora.
 
 * Fri Mar 26 2004 Frank Ch. Eigler <fche@redhat.com> 0:3.8.1-3jpp_2rh
