@@ -1,4 +1,4 @@
-%define rhugversion 20030606
+%define rhugversion 20031215
 %define rhugsource1 %{name}%{version} upstream
 %define rhugprep1 sh %{SOURCE2} %{name}%{version}
 %define rhugpatches 2 3
@@ -6,22 +6,21 @@
 Summary: Regression testing framework for Java
 Name: junit
 Version: 3.8.1
-Release: 1
+Release: 2.1
 URL: http://www.junit.org/
 Source: rhug-%{name}-%{rhugversion}.tar.bz2
 Source1: %{name}%{version}.zip
 Source2: build-srcdir.sh
-Patch1: %{name}-3.8.1-release.patch
-Patch2: %{name}-3.8.1-exitstatus.patch
-Patch3: %{name}-3.8.1-classloader.patch
+Patch1: %{name}-rhjpp.patch
+Patch2: %{name}-exitstatus.patch
+Patch3: %{name}-classloader.patch
 License: IBM Common Public License
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildPrereq: gcc-c++-ssa
-BuildPrereq: gcc-java-ssa >= 3.5ssa-0.20030801.34
+BuildPrereq: gcc34-c++
+BuildPrereq: gcc34-java 
 Prereq: redhat-java-rpm-scripts >= 1.0.2-2
-Requires: libgcj-ssa >= 3.5ssa-0.20030801.34
-ExclusiveArch: i386 x86_64 ppc ia64
+Requires: libgcj34 
 
 %description
 JUnit is a regression testing framework used to implement unit tests
@@ -39,17 +38,20 @@ Cygnus Native Interface (CNI) extensions that use JUnit.
 %prep
 %setup -q -a 1
 mv %{rhugsource1} && %{rhugprep1}
-%patch1 -p0 -b .release
+%patch1 -p0 -b .rhjpp
 %patch2 -p1 -b .exitstatus
 %patch3 -p1 -b .classloader
 mv ChangeLog ChangeLog.rhug
 mv TODO TODO.rhug
 
 %build
-CC=gcc-ssa CXX=g++-ssa GCJ=gcj-ssa GCJH=gcjh-ssa \
-./configure --disable-static --prefix=%{_prefix}
+CC=gcc34 CXX=g++34 GCJ=gcj34 GCJH=gcjh34 \
+./configure \
+    --disable-static \
+    --prefix=%{_prefix} \
+    --libdir=%{_libdir}
 make
-make test
+make check
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
@@ -81,6 +83,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/junit
 
 %changelog
+* Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Fri Feb 13 2004 Gary Benson <gbenson@redhat.com> 3.8.1-2
+- Rebuild for Fedora.
+
+* Mon Dec 15 2003 Gary Benson <gbenson@redhat.com>
+- Apply hammer multilib fix to all multilib archs.
+- Correctly link local libraries on hammer.
+
+* Mon Dec  8 2003 Gary Benson <gbenson@redhat.com>
+- Upgraded to fluorinated RHUG tarball.
+- Picked up an accidentally omitted resource.
+
 * Fri Sep 12 2003 Gary Benson <gbenson@redhat.com> 3.8.1-1
 - Clarify the -devel subpackage's summary and description.
 - Remove unnecessary -devel dependencies (#99077).
