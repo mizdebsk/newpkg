@@ -15,8 +15,6 @@ Group:		Development/Testing
 #Distribution:	JPackage
 Source:		http://osdn.dl.sourceforge.net/junit/junit3.8.1.zip
 BuildRequires:	ant
-# XXX the next line forces beehive to play nice
-BuildRequires:  xerces-j2, xml-commons-apis
 BuildRequires:	jpackage-utils >= 0:1.5
 Buildarch:	noarch
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
