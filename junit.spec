@@ -15,6 +15,8 @@ Group:		Development/Testing
 #Distribution:	JPackage
 Source:		http://osdn.dl.sourceforge.net/junit/junit3.8.1.zip
 BuildRequires:	ant
+# XXX the next line forces beehive to play nice
+BuildRequires:  xerces-j2, xml-commons-apis
 BuildRequires:	jpackage-utils >= 0:1.5
 Buildarch:	noarch
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
@@ -112,7 +114,7 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
-* Mon Nov  1 2004 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_3fc
+* Thu Nov  4 2004 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_3fc
 - Build into Fedora.
 
 * Fri Mar 26 2004 Frank Ch. Eigler <fche@redhat.com> 0:3.8.1-3jpp_2rh
