@@ -52,6 +52,16 @@ rm -rf $RPM_BUILD_ROOT
 %setup -n %{name}%{version}
 # extract sources
 jar xvf src.jar
+# delete stuff that doesn't work with libgcj (#130006).
+if java -version 2>&1 | grep -q "gcj"; then
+    rm -f junit/swingui/AboutDialog.java
+    rm -f junit/swingui/CounterPanel.java
+    rm -f junit/swingui/FailureRunView.java
+    rm -f junit/swingui/TestHierarchyRunView.java
+    rm -f junit/swingui/TestRunner.java
+    rm -f junit/swingui/TestSelector.java
+    rm -f junit/swingui/TestSuitePanel.java
+fi
 
 %build
 ant dist
