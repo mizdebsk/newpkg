@@ -1,26 +1,20 @@
-%define rhugversion 20031215
-%define rhugsource1 %{name}%{version} upstream
-%define rhugprep1 sh %{SOURCE2} %{name}%{version}
-%define rhugpatches 2 3
-
 Summary: Regression testing framework for Java
 Name: junit
 Version: 3.8.1
-Release: 4
+Release: 5
 URL: http://www.junit.org/
-Source: rhug-%{name}-%{rhugversion}.tar.bz2
-Source1: %{name}%{version}.zip
-Source2: build-srcdir.sh
-Patch1: %{name}-rhjpp.patch
-Patch2: %{name}-exitstatus.patch
+Source: %{name}%{version}.zip
+Source1: katana.omissions
 Patch3: %{name}-classloader.patch
+Patch4: %{name}-build.patch
 License: IBM Common Public License
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildPrereq: gcc34-c++
-BuildPrereq: gcc34-java >= 3.4.0-1
-Prereq: redhat-java-rpm-scripts >= 1.0.2-2
-Requires: libgcj34 >= 3.4.0-1
+BuildPrereq: katana-build
+BuildPrereq: bootstrap-ant
+Prereq: katana
+Requires: libgcj >= 3.4.0
+ExcludeArch: ppc64 ia64
 
 %description
 JUnit is a regression testing framework used to implement unit tests
@@ -36,28 +30,24 @@ The junit-devel package contains the headers required to develop
 Cygnus Native Interface (CNI) extensions that use JUnit.
 
 %prep
-%setup -q -a 1
-mv %{rhugsource1} && %{rhugprep1}
-%patch1 -p0 -b .rhjpp
-%patch2 -p1 -b .exitstatus
+%setup -q -n %{name}%{version}
+jar xf src.jar && rm -Rf META-INF
 %patch3 -p1 -b .classloader
-mv ChangeLog ChangeLog.rhug
-mv TODO TODO.rhug
+%patch4 -p0 -b .build
+katana prep
 
 %build
-CC=gcc34 CXX=g++34 GCJ=gcj34 GCJH=gcjh34 \
-./configure \
-    --disable-static \
-    --prefix=%{_prefix} \
-    --libdir=%{_libdir}
-make
-make check
+bootstrap-ant
+
+mv %{name}%{version}/%{name}.jar katana/%{name}-%{version}.jar
+ln -s %{name}-%{version}.jar \
+    katana/lib-%{name}.so_%{name}-%{version}.jar
+katana build
+
+mv junit katana
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
-%makeinstall
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/*.la
-find ${RPM_BUILD_ROOT}%{_libdir} -type l | xargs rm -f
+katana install
 
 %post
 %{_sbindir}/javaconfig \
@@ -70,19 +60,24 @@ find ${RPM_BUILD_ROOT}%{_libdir} -type l | xargs rm -f
     %{_datadir}/java/junit.jar
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+katana clean
 
 %files
 %defattr(-,root,root)
-%doc *.rhug upstream/*.html
+%doc *.html doc javadoc
 %{_libdir}/*.so
 %{_datadir}/java/*.jar
+%{_datadir}/katana/*.cp
 
 %files devel
 %defattr(-,root,root)
 %{_includedir}/junit
 
 %changelog
+* Tue Jun  1 2004 Gary Benson <gbenson@redhat.com> 3.8.1-5
+- Build with katana.
+- Include the AWT runner and some more documentation.
+
 * Tue May  4 2004 Gary Benson <gbenson@redhat.com> 3.8.1-4
 - Rebuild with new compiler.
 
