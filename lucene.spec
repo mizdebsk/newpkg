@@ -1,6 +1,8 @@
 %define section         devel
 %define gcj_support 	1
+%if %{gcj_support}
 ExclusiveArch: i386 x86_64 ppc
+%endif
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
@@ -14,6 +16,10 @@ Vendor:         JPackage Project
 Distribution:   JPackage
 Source0:        http://cvs.apache.org/dist/jakarta/lucene/lucene-1.4.3-src.tar.gz
 Patch0: 	%{name}-bz133180.patch
+%if %{gcj_support}
+%else
+BuildArch:	noarch
+%endif
 BuildRequires:  jpackage-utils >= 0:1.5
 BuildRequires:  ant >= 0:1.6.2
 BuildRequires:  ant-junit >= 0:1.6.2
@@ -169,6 +175,7 @@ rm -rf $RPM_BUILD_ROOT
 - Don't run tests until we get a patched grmic (all pass except those needing
   stubs).
 - Natively-compile.
+- Add architectures to gcj_support block and build noarch otherwise.
 
 * Mon Jan 10 2005 Kaj J. Niemi <kajtzu@fi.basen.net> 0:1.4.3
 - 1.4.3
