@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define	release		3jpp_4fc
+%define	release		3jpp_5fc
 %define	section		free
 
 Name:		%{name}
@@ -11,9 +11,7 @@ Summary:	Java regression test package
 License:	IBM Public License
 Url:		http://www.junit.org/
 Group:		Development/Testing
-#Vendor:		JPackage Project
-#Distribution:	JPackage
-Source:		http://osdn.dl.sourceforge.net/junit/junit3.8.1.zip
+Source:		junit3.8.1-RHCLEAN.zip
 BuildRequires:	ant
 BuildRequires:	jpackage-utils >= 0:1.5
 BuildRequires:  coreutils
@@ -50,9 +48,12 @@ Demonstrations and samples for %{name}.
 
 %prep
 rm -rf $RPM_BUILD_ROOT
-%setup -n %{name}%{version}
+%setup -q -n %{name}%{version}
 # extract sources
-jar xvf src.jar
+jar xf src.jar
+# clean binary files
+find . -name "*.jar" -exec rm -f {} \;
+find . -name "*.class" -exec rm -f {} \;
 
 %build
 ant dist
@@ -103,6 +104,9 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Wed Jun 22 2005 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_5fc
+- Remove classes and jarfiles from the tarball.
+
 * Tue Jan 11 2005 Gary Benson <gbenson@redhat.com> 0:3.8.1-3jpp_4fc
 - Reenable building of classes that require javax.swing (#130006).
 - Sync with RHAPS.
