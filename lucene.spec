@@ -14,6 +14,7 @@ URL:            http://jakarta.apache.org/lucene/
 Group:          Internet/WWW/Indexing/Search
 Source0:        http://cvs.apache.org/dist/jakarta/lucene/lucene-1.4.3-src.tar.gz
 Patch0: 	%{name}-bz133180.patch
+Patch1: 	%{name}-nojavadoclink.patch
 %if %{gcj_support}
 %else
 BuildArch:	noarch
@@ -58,6 +59,7 @@ Lucene demonstrations and samples.
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 %patch0 -p0
+%patch1 -p0
 
 # -----------------------------------------------------------------------------
 
@@ -175,6 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 - Natively-compile.
 - Add architectures to gcj_support block and build noarch otherwise.
 - Remove Vendor and Distribution tags.
+- Add patch to not link to external javadocs.
 
 * Mon Jan 10 2005 Kaj J. Niemi <kajtzu@fi.basen.net> 0:1.4.3
 - 1.4.3
