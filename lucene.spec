@@ -7,7 +7,7 @@ ExclusiveArch: i386 x86_64 ppc
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_1fc
+Release:        1jpp_2fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -168,6 +168,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Tue Jul 05 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_2fc
+- Bump release for FC4 update.
+
 * Thu Jun 09 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_1fc
 - Build for Fedora.
 - Add patch for rmic (rh#133180 -- gbenson).  Should be fixed by forthcoming
