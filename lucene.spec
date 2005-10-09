@@ -7,7 +7,7 @@ ExclusiveArch: i386 x86_64 ppc
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_2fc
+Release:        1jpp_3fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -26,7 +26,8 @@ BuildRequires:  junit >= 0:3.7
 BuildRequires:  javacc
 %if %{gcj_support}
 BuildRequires:	java-1.4.2-gcj-compat-devel >= 1.4.2.0-40jpp_30rh
-Requires(post,postun): java-1.4.2-gcj-compat
+Requires(post): java-1.4.2-gcj-compat
+Requires(postun): java-1.4.2-gcj-compat
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -132,10 +133,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{gcj_support}
 %post
-/usr/bin/rebuild-gcj-db %{_libdir}
+/usr/bin/rebuild-gcj-db %{_libdir} || :
 
 %postun
-/usr/bin/rebuild-gcj-db %{_libdir}
+/usr/bin/rebuild-gcj-db %{_libdir} || :
 %endif
 
 # -----------------------------------------------------------------------------
@@ -168,6 +169,10 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Sun Oct 09 2005 Florian La Roche <laroche@redhat.com>
+- always "exit 0" the scripts
+- fix the requires for post/postun for java
+
 * Tue Jul 05 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_2fc
 - Bump release for FC4 update.
 
