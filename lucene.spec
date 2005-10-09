@@ -7,7 +7,7 @@ ExclusiveArch: i386 x86_64 ppc
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_3fc
+Release:        1jpp_4fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
