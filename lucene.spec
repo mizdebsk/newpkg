@@ -1,20 +1,15 @@
 %define section         devel
 %define gcj_support 	1
-%if %{gcj_support}
-ExclusiveArch: i386 x86_64 ppc
-%endif
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_4fc
+Release:        1jpp_5fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
 Group:          Internet/WWW/Indexing/Search
 Source0:        http://cvs.apache.org/dist/jakarta/lucene/lucene-1.4.3-src.tar.gz
-Patch0: 	%{name}-bz133180.patch
-Patch1: 	%{name}-nojavadoclink.patch
 %if %{gcj_support}
 %else
 BuildArch:	noarch
@@ -25,7 +20,7 @@ BuildRequires:  ant-junit >= 0:1.6.2
 BuildRequires:  junit >= 0:3.7
 BuildRequires:  javacc
 %if %{gcj_support}
-BuildRequires:	java-1.4.2-gcj-compat-devel >= 1.4.2.0-40jpp_30rh
+BuildRequires:	java-gcj-compat-devel >= 1.0.43
 Requires(post): java-1.4.2-gcj-compat
 Requires(postun): java-1.4.2-gcj-compat
 %endif
@@ -59,8 +54,6 @@ Lucene demonstrations and samples.
 %setup -q -n %{name}-%{version}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
-%patch0 -p0
-%patch1 -p0
 
 # -----------------------------------------------------------------------------
 
@@ -74,10 +67,6 @@ ant \
   -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=http://java.sun.com/j2se/1.4.2/docs/api/ \
   package
-
-%if %{gcj_support}
-  find-and-aot-compile . "-fPIC"
-%endif
 
 # -----------------------------------------------------------------------------
 
@@ -101,27 +90,7 @@ cp -p build/%{name}-demos-1.5-rc1-dev.jar \
   $RPM_BUILD_ROOT%{_datadir}/%{name}//%{name}-demos-%{version}.jar
 
 %if %{gcj_support}
-  install -dm 755 $RPM_BUILD_ROOT%{_libdir}
-  install -pm 755 build/lib%{name}-1.5-rc1-dev.jar.so \
-    $RPM_BUILD_ROOT%{_libdir}/lib%{name}-%{version}.jar.so
-  ln -s lib%{name}-%{version}.jar.so $RPM_BUILD_ROOT%{_libdir}/lib%{name}.jar.so
-
-  install -pm 755 build/lib%{name}-demos-1.5-rc1-dev.jar.so \
-    $RPM_BUILD_ROOT%{_libdir}/lib%{name}-demos-%{version}.jar.so
-  ln -s lib%{name}-%{version}.jar.so $RPM_BUILD_ROOT%{_libdir}/lib%{name}-demos.jar.so
-
-  gcjdbdir=$RPM_BUILD_ROOT`gcj-dbtool -p %{_libdir}`.d
-  mkdir -p $gcjdbdir
-
-  # main db
-  gcj-dbtool -n $gcjdbdir/%{name}.db 100
-  gcj-dbtool -f $gcjdbdir/%{name}.db $RPM_BUILD_ROOT%{_javadir}/%{name}.jar \
-    %{_libdir}/lib%{name}.jar.so
-
-  # demo db
-  gcj-dbtool -n $gcjdbdir/%{name}-demo.db 100
-  gcj-dbtool -f $gcjdbdir/%{name}-demo.db $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-demos-%{version}.jar \
-    %{_libdir}/lib%{name}-demos.jar.so
+aot-compile-rpm
 %endif
 
 # TODO: webapp: luceneweb.war / where do we install 'em?
@@ -133,10 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{gcj_support}
 %post
-/usr/bin/rebuild-gcj-db %{_libdir} || :
+/usr/bin/rebuild-gcj-db
 
 %postun
-/usr/bin/rebuild-gcj-db %{_libdir} || :
+/usr/bin/rebuild-gcj-db
 %endif
 
 # -----------------------------------------------------------------------------
@@ -146,9 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.txt LICENSE.txt README.txt
 %{_javadir}/*
 %if %{gcj_support}
-%{_libdir}/gcj-4.0.0/classmap.db.d/%{name}.db
-%{_libdir}/lib%{name}-%{version}.jar.so
-%{_libdir}/lib%{name}.jar.so
+%dir %{_libdir}/gcj/%{name}
+%{_libdir}/gcj/%{name}/%{name}-%{version}.jar.so
+%{_libdir}/gcj/%{name}/%{name}-%{version}.jar.db
 %endif
 
 %files javadoc
@@ -159,9 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(0644,root,root,0755)
 %{_datadir}/%{name}
 %if %{gcj_support}
-%{_libdir}/gcj-4.0.0/classmap.db.d/%{name}-demo.db
-%{_libdir}/lib%{name}-demos-%{version}.jar.so
-%{_libdir}/lib%{name}-demos.jar.so
+%dir %{_libdir}/gcj/%{name}
+%{_libdir}/gcj/%{name}/%{name}-demos-%{version}.jar.so
+%{_libdir}/gcj/%{name}/%{name}-demos-%{version}.jar.db
 %endif
 
 # TODO: webapp
@@ -169,6 +138,11 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Thu Oct 27 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_5fc
+- Remove ExclusiveArch.
+- Use aot-compile-rpm.
+- Remove now-unnecessary patches.
+
 * Sun Oct 09 2005 Florian La Roche <laroche@redhat.com>
 - always "exit 0" the scripts
 - fix the requires for post/postun for java
