@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_5fc
+Release:        1jpp_6fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -138,6 +138,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Mon Oct 31 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_6fc
+- Bump release.
+
 * Thu Oct 27 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_5fc
 - Remove ExclusiveArch.
 - Use aot-compile-rpm.
