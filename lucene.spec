@@ -138,6 +138,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Tue Nov  8 2005 Vadim Nasardinov <vadimn@redhat.com> - 0:1.4.3-1jpp_6fc
+- Converted the spec file from ISO-8859-1 to UTF-8
+
 * Mon Oct 31 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_6fc
 - Bump release.
 
@@ -176,8 +179,8 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Jan 21 2004 David Walluck <david@anti-microsoft.org> 0:1.3-1jpp
 - 1.3
 
-* Wed Mar 26 2003 Ville Skytt‰ <ville.skytta at iki.fi> - 0:1.2-2jpp
+* Wed Mar 26 2003 Ville Skytt√§ <ville.skytta at iki.fi> - 0:1.2-2jpp
 - Rebuilt for JPackage 1.5.
 
-* Thu Mar  6 2003 Ville Skytt‰ <ville.skytta at iki.fi> - 1.2-1jpp
+* Thu Mar  6 2003 Ville Skytt√§ <ville.skytta at iki.fi> - 1.2-1jpp
 - First JPackage release.
