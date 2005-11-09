@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_6fc
+Release:        1jpp_7fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -138,6 +138,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Wed Nov  9 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_7fc
+- Bump release.
+
 * Tue Nov  8 2005 Vadim Nasardinov <vadimn@redhat.com> - 0:1.4.3-1jpp_6fc
 - Converted the spec file from ISO-8859-1 to UTF-8
 
