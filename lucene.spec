@@ -10,6 +10,7 @@ License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
 Group:          Internet/WWW/Indexing/Search
 Source0:        http://cvs.apache.org/dist/jakarta/lucene/lucene-1.4.3-src.tar.gz
+Patch1: 	%{name}-nojavadoclink.patch
 %if %{gcj_support}
 %else
 BuildArch:	noarch
@@ -54,6 +55,7 @@ Lucene demonstrations and samples.
 %setup -q -n %{name}-%{version}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
+%patch1 -p0
 
 # -----------------------------------------------------------------------------
 
@@ -140,6 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Nov  9 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_7fc
 - Bump release.
+- Re-add patch to not link to external javadocs.
 
 * Tue Nov  8 2005 Vadim Nasardinov <vadimn@redhat.com> - 0:1.4.3-1jpp_6fc
 - Converted the spec file from ISO-8859-1 to UTF-8
