@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_7fc
+Release:        1jpp_8fc
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -46,6 +46,15 @@ Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description demo
 Lucene demonstrations and samples.
+
+# https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=170343
+%package devel
+Summary:        Lucene source code
+Group:          Internet/WWW/Indexing/Search
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+
+%description devel
+Source code for use by Java debuggers, such as Eclipse.
 
 # TODO: webapp
 
@@ -89,11 +98,26 @@ cp -pr build/docs/api/* \
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 cp -p build/%{name}-demos-1.5-rc1-dev.jar \
-  $RPM_BUILD_ROOT%{_datadir}/%{name}//%{name}-demos-%{version}.jar
+  $RPM_BUILD_ROOT%{_datadir}/%{name}/%{name}-demos-%{version}.jar
 
 %if %{gcj_support}
 aot-compile-rpm
 %endif
+
+%define sourcedir  %{_usrsrc}/%{name}
+%define sourcefile %{name}-%{version}
+currdir=${PWD##*/}
+pushd ..
+  find $currdir -type f -name \*.java -o -name \*.jj | xargs tar uf $currdir/temp-sources.tar
+popd
+mkdir temp-sources
+pushd temp-sources
+  tar xf ../temp-sources.tar
+  jar cf %{sourcefile}.jar $currdir
+  mkdir -p $RPM_BUILD_ROOT%{sourcedir}
+  mv %{sourcefile}.jar $RPM_BUILD_ROOT%{sourcedir}/
+popd
+rm -r temp-sources temp-sources.tar
 
 # TODO: webapp: luceneweb.war / where do we install 'em?
 
@@ -135,11 +159,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gcj/%{name}/%{name}-demos-%{version}.jar.db
 %endif
 
+%files devel
+%defattr(0644,root,root,0755)
+%{sourcedir}/%{sourcefile}.jar
+
 # TODO: webapp
 
 # -----------------------------------------------------------------------------
 
 %changelog
+* Fri Nov 11 2005 Vadim Nasardinov <vadimn@redhat.com> - 0:1.4.3-1jpp_8fc
+- BZ 170343 -- add the lucene-devel subpackage
+
 * Wed Nov  9 2005 Andrew Overholt <overholt@redhat.com> 1.4.3-1jpp_7fc
 - Bump release.
 - Re-add patch to not link to external javadocs.
