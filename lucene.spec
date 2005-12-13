@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:        1jpp_8fc
+Release: 1jpp_8fc.1
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -168,6 +168,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Tue Dec 13 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt for new gcj
+
 * Fri Nov 11 2005 Vadim Nasardinov <vadimn@redhat.com> - 0:1.4.3-1jpp_8fc
 - BZ 170343 -- add the lucene-devel subpackage
 
