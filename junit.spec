@@ -1,11 +1,11 @@
 %define	name		junit
 %define	version		3.8.1
-%define release 3jpp_5fc.1
+%define release 3jpp_5fc.1.1
 %define	section		free
 
 Name:		%{name}
 Version:	%{version}
-Release: %{release}.1
+Release: %{release}.1.1
 Epoch:		0
 Summary:	Java regression test package
 License:	IBM Public License
@@ -104,6 +104,9 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Tue Dec 13 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt for new gcj
+
 * Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
 - rebuilt
 
