@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define release 	3jpp_6fc
+%define release 	3jpp_7fc
 %define	section		free
 
 Name:		%{name}
@@ -15,6 +15,7 @@ Source:		junit3.8.1-RHCLEAN.zip
 BuildRequires:	ant
 BuildRequires:	jpackage-utils >= 0:1.5
 BuildRequires:  coreutils
+Requires(pre): coreutils
 Buildarch:	noarch
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
 
@@ -34,6 +35,7 @@ Documentation for %{name}.
 %package javadoc
 Group:		Development/Documentation
 Summary:	Javadoc for %{name}
+Requires(post,postun): coreutils
 
 %description javadoc
 Javadoc for %{name}.
@@ -104,6 +106,9 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Thu Feb  2 2006 Archit Shah <ashah@redhat.com> 0:3.8.1-3jpp_7fc
+- added dependencies on coreutils
+
 * Wed Dec 21 2005 Jesse Keating <jkeating@redhat.com> 0:3.8.1-3jpp_6fc
 - rebuilt again
 
