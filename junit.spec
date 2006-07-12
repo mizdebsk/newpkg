@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define release 	3jpp_7fc
+%define release 	3jpp_8fc
 %define	section		free
 
 Name:		%{name}
@@ -106,6 +106,9 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 0:3.8.1-3jpp_8fc
+- rebuild
+
 * Thu Feb  2 2006 Archit Shah <ashah@redhat.com> 0:3.8.1-3jpp_7fc
 - added dependencies on coreutils
 
