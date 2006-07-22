@@ -1,6 +1,6 @@
 %define	name		junit
 %define	version		3.8.1
-%define release 	3jpp_8fc
+%define release 	3jpp_9fc
 %define	section		free
 
 Name:		%{name}
@@ -106,6 +106,9 @@ fi
 %{_datadir}/%{name}/*
 
 %changelog
+* Sat Jul 22 2006 Jakub Jelinek <jakub@redhat.com> - 0:3.8.1-3jpp_9fc
+- Rebuilt
+
 * Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 0:3.8.1-3jpp_8fc
 - rebuild
 
