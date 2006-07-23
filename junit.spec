@@ -193,6 +193,7 @@ fi
 
 %changelog
 * Sat Jun 22 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_1fc
+- Upgrade to 3.8.2
 - Added conditional native compilation.
 - Fix path where demo is located.
 
