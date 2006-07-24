@@ -36,7 +36,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	2jpp_1fc
+Release:	2jpp_2fc
 Epoch:		0
 Summary:	Java regression test package
 License:	Common Public License
@@ -192,6 +192,9 @@ fi
 %endif
 
 %changelog
+* Sun Jun 23 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_2fc
+- Rebuilt.
+
 * Sat Jun 22 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_1fc
 - Upgrade to 3.8.2
 - Added conditional native compilation.
