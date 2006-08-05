@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:	1jpp_13fc
+Release:	1jpp.14
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -35,6 +35,8 @@ application that requires full-text search, especially cross-platform.
 %package javadoc
 Summary:        Javadoc for Lucene
 Group:          Development/Documentation
+Requires(post):   /bin/rm,/bin/ln
+Requires(postun): /bin/rm
 
 %description javadoc
 Javadoc for Lucene.
@@ -123,6 +125,15 @@ rm -r temp-sources temp-sources.tar
 
 # -----------------------------------------------------------------------------
 
+%post javadoc
+rm -f %{_javadocdir}/%{name}
+ln -s %{name}-%{version} %{_javadocdir}/%{name}
+
+%postun javadoc
+if [ "$1" = "0" ]; then
+    rm -f %{_javadocdir}/%{name}
+fi
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -168,6 +179,10 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Fri Aug 04 2006 Deepak Bhole <dbhole@redhat.com> 0:1.4.3-1jpp.14
+- Added missing requirements
+- Added proper post/postun's for javadoc
+
 * Sat Jul 22 2006 Jakub Jelinek <jakub@redhat.com> - 0:1.4.3-1jpp_13fc
 - Rebuilt
 
