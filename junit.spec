@@ -36,7 +36,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	2jpp_2fc
+Release:	2jpp_3fc
 Epoch:		0
 Summary:	Java regression test package
 License:	Common Public License
@@ -74,6 +74,8 @@ Documentation for %{name}.
 %package javadoc
 Group:		Development/Documentation
 Summary:	Javadoc for %{name}
+Requires(post):   coreutils
+Requires(postun): coreutils
 
 %description javadoc
 Javadoc for %{name}.
@@ -192,6 +194,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 10 2006 Karsten Hopp <karsten@redhat.de> 0:3.8.2-2jpp_3fc
+- Require(post/postun): coreutils
+
 * Sun Jun 23 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_2fc
 - Rebuilt.
 
