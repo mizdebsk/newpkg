@@ -165,7 +165,8 @@ fi
 %changelog
 * Mon Feb 12 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 3.8.2-3jpp.1
 - Committed on behalf of Tania Bento <tbento@redhat.com>
-- Update per Fedora review process.
+- Update per Fedora review process
+- Resolves rhbz#225954
 
 * Thu Aug 10 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-3jpp.1
 - Added missing requirements.
