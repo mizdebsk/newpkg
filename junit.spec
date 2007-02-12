@@ -34,7 +34,7 @@
 
 Name:           junit
 Version:        3.8.2
-Release:        3jpp.1
+Release:        3jpp.1%{?dist}
 Summary:        Java regression test package
 License:        CPL
 Url:            http://www.junit.org/
@@ -163,6 +163,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Feb 12 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 3.8.2-3jpp.1.fc7
+- Add dist tag
+
 * Mon Feb 12 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 3.8.2-3jpp.1
 - Committed on behalf of Tania Bento <tbento@redhat.com>
 - Update per Fedora review process
