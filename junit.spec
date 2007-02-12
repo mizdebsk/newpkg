@@ -32,30 +32,27 @@
 
 %define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
 
-%define	section		free
-
-Name:		junit
-Version:	3.8.2
-Release:	3jpp.1
-Epoch:		0
-Summary:	Java regression test package
-License:	Common Public License
-Url:		http://www.junit.org/
-Group:		Development/Testing
-#http://osdn.dl.sourceforge.net/junit/junit3.8.2.zip
-Source0:	junit3.8.2-RHCLEAN.zip
-Source1:	junit3.8.2-build.xml
-BuildRequires:	ant
-BuildRequires:	jpackage-utils >= 0:1.6
+Name:           junit
+Version:        3.8.2
+Release:        3jpp.1
+Summary:        Java regression test package
+License:        CPL
+Url:            http://www.junit.org/
+Group:          Development/Tools
+# http://osdn.dl.sourceforge.net/junit/junit3.8.2.zip
+Source0:        junit3.8.2.zip
+Source1:        junit3.8.2-build.xml
+BuildRequires:  ant
+BuildRequires:  jpackage-utils >= 0:1.6
 %if ! %{gcj_support}
-Buildarch:	noarch
+Buildarch:     noarch
 %endif
-Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
+Buildroot:      %{_tmppath}/%{name}-%{version}-buildroot
 
 %if %{gcj_support}
-BuildRequires:		java-gcj-compat-devel
-Requires(post):		java-gcj-compat
-Requires(postun):	java-gcj-compat
+BuildRequires:          java-gcj-compat-devel
+Requires(post):         java-gcj-compat
+Requires(postun):       java-gcj-compat
 %endif
 
 %description
@@ -65,37 +62,34 @@ JUnit is Open Source Software, released under the IBM Public License and
 hosted on SourceForge.
 
 %package manual
-Group:		Development/Testing
-Summary:	Manual for %{name}
+Group:          Documentation
+Summary:        Manual for %{name}
 
 %description manual
 Documentation for %{name}.
 
 %package javadoc
-Group:		Development/Documentation
-Summary:	Javadoc for %{name}
-Requires(post):   /bin/rm,/bin/ln
-Requires(postun): /bin/rm
+Group:          Documentation
+Summary:        Javadoc for %{name}
 
 %description javadoc
 Javadoc for %{name}.
 
 %package demo
-Group:		Development/Testing
-Summary:	Demos for %{name}
-Requires:	%{name} = %{version}-%{release}
+Group:          Development/Libraries
+Summary:        Demos for %{name}
+Requires:       %{name} = %{version}-%{release}
 
 %if %{gcj_support}
-BuildRequires:		java-gcj-compat-devel
-Requires(post):		java-gcj-compat
-Requires(postun):	java-gcj-compat
+BuildRequires:          java-gcj-compat-devel
+Requires(post):         java-gcj-compat
+Requires(postun):       java-gcj-compat
 %endif
 
 %description demo
 Demonstrations and samples for %{name}.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
 %setup -q -n %{name}%{version}
 # extract sources
 jar xf src.jar
@@ -106,6 +100,7 @@ cp %{SOURCE1} build.xml
 ant dist
 
 %install
+rm -rf $RPM_BUILD_ROOT
 # jars
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
 install -m 644 %{name}%{version}/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
@@ -119,20 +114,14 @@ install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit # Not using %nam
 cp -pr %{name}%{version}/%{name}/* $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit
 
 %if %{gcj_support}
-%{_bindir}/aot-compile-rpm
+# these --exclude options work around an aot-compile-rpm problem with test.jar
+%{_bindir}/aot-compile-rpm --exclude usr/share/junit/demo --exclude usr/share/junit/demo/junit/tests/runner/test.jar
 %endif
+
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-    rm -f %{_javadocdir}/%{name}
-fi
 
 %post
 %if %{gcj_support}
@@ -143,22 +132,6 @@ fi
 %endif
 
 %postun
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
-%post demo
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
-%postun demo
 %if %{gcj_support}
 if [ -x %{_bindir}/rebuild-gcj-db ]
 then
@@ -182,18 +155,18 @@ fi
 
 %files javadoc
 %defattr(0644,root,root,0755)
-%{_javadocdir}/%{name}-%{version}
+%doc %{_javadocdir}/%{name}-%{version}
+%doc %{_javadocdir}/%{name}
 
 %files demo
 %defattr(0644,root,root,0755)
 %{_datadir}/%{name}
 
-%if %{gcj_support}
-%dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/demo.*
-%endif
-
 %changelog
+* Mon Feb 12 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 3.8.2-3jpp.1
+- Committed on behalf of Tania Bento <tbento@redhat.com>
+- Update per Fedora review process.
+
 * Thu Aug 10 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-3jpp.1
 - Added missing requirements.
 
@@ -258,7 +231,7 @@ fi
 - truncated description to 72 columns in spec
 - spec cleanup
 - used versioned jar
-- moved demo files to %{_datadir}/%{name}
+- moved demo files to %%{_datadir}/%%{name}
 
 * Sat Feb 17 2001 Guillaume Rousse <g.rousse@linux-mandrake.com> 3.5-1mdk
 - first Mandrake release
