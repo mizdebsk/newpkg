@@ -1,0 +1,11 @@
+--- wagon-provider-api/xdocs/index.xml.sav	2005-11-02 09:33:29.000000000 +0100
++++ wagon-provider-api/xdocs/index.xml	2005-11-02 09:34:06.000000000 +0100
+@@ -14,7 +14,7 @@
+                The "Wagon API" project defines a simple API for transfering resources
+                (artifacts) to and from repositories. The word repository is used in this contextx as
+                it is commonly used in
+-        <a href" http:// maven.apache.org/ misc/ glossary.html">Maven</a>
++        <a href="http://maven.apache.org/misc/glossary.html">Maven</a>
+                And means a storage of artfacts.
+                Wagon is a helper project for Maven and it is planned that Wagon will be used in feature
+                versions of Maven.

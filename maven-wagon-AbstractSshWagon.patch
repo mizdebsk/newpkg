@@ -1,0 +1,11 @@
+--- wagon-providers/wagon-ssh/src/main/java/org/apache/maven/wagon/providers/ssh/AbstractSshWagon.java.sav	2006-04-05 15:01:16.000000000 +0200
++++ wagon-providers/wagon-ssh/src/main/java/org/apache/maven/wagon/providers/ssh/AbstractSshWagon.java	2006-04-05 15:10:41.000000000 +0200
+@@ -173,7 +173,7 @@
+ 
+             try
+             {
+-                proxy.connect( session, host, port );
++                proxy.connect( null, host, port, 15 );
+             }
+             catch ( Exception e )
+             {

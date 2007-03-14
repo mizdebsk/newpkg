@@ -1,0 +1,11 @@
+--- wagon-providers/wagon-ftp/src/main/java/org/apache/maven/wagon/providers/ftp/FtpWagon.java.sav	2005-11-02 17:41:03.000000000 +0100
++++ wagon-providers/wagon-ftp/src/main/java/org/apache/maven/wagon/providers/ftp/FtpWagon.java	2005-11-02 17:42:02.000000000 +0100
+@@ -326,7 +326,7 @@
+             String filename = PathUtils.filename( resource.getName() );
+             FTPFile[] ftpFiles = ftp.listFiles( filename );
+ 
+-            if ( ftpFiles == null )
++            if ( ftpFiles == null  || ftpFiles.length == 0 )
+             {
+                 throw new ResourceDoesNotExistException( "Could not find file: '" + resource + "'" );
+             }
