@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:	1jpp.14
+Release:	    1jpp.15
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -172,13 +172,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(0644,root,root,0755)
-%{sourcedir}/%{sourcefile}.jar
+%{sourcedir}
 
 # TODO: webapp
 
 # -----------------------------------------------------------------------------
 
 %changelog
+* Tue Mar 27 2007 Deepak Bhole <dbhole@redhat.com> 1.4.3-1jpp.15
+- Added unowned directory to files list. bz# 233878.
+
 * Fri Aug 04 2006 Deepak Bhole <dbhole@redhat.com> 0:1.4.3-1jpp.14
 - Added missing requirements
 - Added proper post/postun's for javadoc
