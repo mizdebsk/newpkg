@@ -4,7 +4,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:	    1jpp.17
+Release:	    1jpp.18
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
@@ -22,8 +22,8 @@ BuildRequires:  junit >= 0:3.7
 BuildRequires:  javacc
 %if %{gcj_support}
 BuildRequires:	java-gcj-compat-devel >= 1.0.43
-Requires(post): java-1.4.2-gcj-compat
-Requires(postun): java-1.4.2-gcj-compat
+Requires(post): java-1.5.0-gcj
+Requires(postun): java-1.5.0-gcj
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -179,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Sat Mar 31 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 0:1.4.3-1jpp.18
+- Require java-1.5.0-gcj for post and postun.
+
 * Tue Mar 27 2007 Deepak Bhole <dbhole@redhat.com> 1.4.3-1jpp.17
 - Added unowned directory to files list. bz# 233878.
 
