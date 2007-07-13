@@ -4,12 +4,13 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.4.3
-Release:	    1jpp.18
+Release:        1jpp.19
 Epoch:          0
 License:        Apache Software License
 URL:            http://jakarta.apache.org/lucene/
 Group:          Internet/WWW/Indexing/Search
 Source0:        http://cvs.apache.org/dist/jakarta/lucene/lucene-1.4.3-src.tar.gz
+Source1:	OSGI-MANIFEST.MF
 Patch1: 	%{name}-nojavadoclink.patch
 %if %{gcj_support}
 %else
@@ -80,6 +81,10 @@ ant \
   -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=http://java.sun.com/j2se/1.4.2/docs/api/ \
   package
+
+mkdir META-INF
+cp %{SOURCE1} META-INF/MANIFEST.MF
+zip -u build/lucene-1.5-rc1-dev.jar META-INF/MANIFEST.MF
 
 # -----------------------------------------------------------------------------
 
@@ -179,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Fri Jul 13 2007 Ben Konrath <bkonrath@redhat.com> - 0:1.4.3-1jpp.19
+- Add osgi manifest.
+
 * Sat Mar 31 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - 0:1.4.3-1jpp.18
 - Require java-1.5.0-gcj for post and postun.
 
