@@ -1,0 +1,15 @@
+--- contrib/db/bdb/build.xml.sav	2006-02-20 19:18:00.000000000 +0100
++++ contrib/db/bdb/build.xml	2006-03-29 18:00:25.000000000 +0200
+@@ -5,10 +5,10 @@
+     Lucene Berkeley DB integration
+   </description>
+ 
+-  <property name="db.version" value="4.3.29" />
++  <property name="db.version" value="native" />
+ 
+   <path id="db.jar">
+-    <pathelement location="lib/db-${db.version}.jar" />
++    <pathelement location="lib/berkeleydb-${db.version}.jar" />
+   </path>
+ 
+   <available classname="com.sleepycat.db.internal.Db" property="db.jar.exists">
