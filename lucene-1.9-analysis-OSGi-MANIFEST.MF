@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: Apache Jakarta
+
+Name: org/apache/lucene/
+Specification-Title: Lucene Search Engine
+Specification-Version: 1.9.1
+Specification-Vendor: Lucene
+Implementation-Title: org.apache.lucene
+Implementation-Version: build @DATE@
+Implementation-Vendor: Lucene
+Bundle-ManifestVersion: 2
+Export-Package: org.apache.lucene.analysis.br,org.apache.lucene.analys
+ is.cjk,org.apache.lucene.analysis.cn,org.apache.lucene.analysis.cz,or
+ g.apache.lucene.analysis.de,org.apache.lucene.analysis.el,org.apache.
+ lucene.analysis.fr,org.apache.lucene.analysis.nl,org.apache.lucene.an
+ alysis.ru
+Bundle-Version: 1.9.1.v200706181610
+Require-Bundle: org.apache.lucene;bundle-version="[1.9.1,2.0.0)";visib
+ ility:=reexport
+Bundle-SymbolicName: org.apache.lucene.analysis
+Bundle-Name: Apache Lucene Analysis
+Bundle-Localization: plugin
+Bundle-Vendor: Lucene
+
