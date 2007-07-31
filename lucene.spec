@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.9.1
-Release:        1jpp.1%{?dist}
+Release:        1jpp.2%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -259,6 +259,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 31 2007 Ben Konrath <bkonrath@redhat.com> 0:1.9.1-1jpp.2
+- Use OSGi manifests from eclipse 3.3.0 instead of merged manifests.
+- Resolves: #250221.
+
 * Tue Jul 17 2007 Ben Konrath <bkonrath@redhat.com> 0:1.9.1-1jpp.1
 - Disable db sub-package.
 - Disable generating test report.
