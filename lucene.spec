@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.9.1
-Release:        1jpp.2%{?dist}
+Release:        1jpp.3%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -139,11 +139,8 @@ ant -Dbuild.sysclasspath=first \
 
 mkdir META-INF
 cp %{SOURCE1} META-INF/MANIFEST.MF
-DATE=$(date +%D)
-sed --in-place "s|@DATE@|$DATE|" META-INF/MANIFEST.MF
 zip -u build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 cp %{SOURCE2} META-INF/MANIFEST.MF
-sed --in-place "s|@DATE@|$DATE|" META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 
 %install
@@ -259,6 +256,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 02 2007 Ben Konrath <bkonrath@redhat.com> 0:1.9.1-1jpp.3
+- Cleanup packaging of OSGi manifests.
+
 * Tue Jul 31 2007 Ben Konrath <bkonrath@redhat.com> 0:1.9.1-1jpp.2
 - Use OSGi manifests from eclipse 3.3.0 instead of merged manifests.
 - Resolves: #250221.
