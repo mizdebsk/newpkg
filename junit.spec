@@ -34,7 +34,7 @@
 
 Name:           junit
 Version:        3.8.2
-Release:        3jpp.2%{?dist}
+Release:        3jpp.3%{?dist}
 Summary:        Java regression test package
 License:        CPL
 Url:            http://www.junit.org/
@@ -163,6 +163,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Thu Sep 20 2007 Deepak Bhole <dbhole@redhat.com> - 3.8.2-3jpp.3
+- Fix location of stylesheet for javadocs
+
 * Thu Sep 20 2007 Deepak Bhole <dbhole@redhat.com> - 3.8.2-3jpp.2
 - Rebuild for ppc32 execmem issue and new build-id
 
