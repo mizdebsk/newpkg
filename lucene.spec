@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.9.1
-Release:        1jpp.3%{?dist}
+Release:        1jpp.4%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -256,6 +256,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 20 2007 Deepak Bhole <dbhole@redhat.com> 0:1.9.1-1jpp.4
+- Rebuild for ppc32 execmem issue and new build-id
+
 * Thu Aug 02 2007 Ben Konrath <bkonrath@redhat.com> 0:1.9.1-1jpp.3
 - Cleanup packaging of OSGi manifests.
 
