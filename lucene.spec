@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        1.9.1
-Release:        1jpp.5%{?dist}
+Release:        2jpp.5%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -265,6 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0:1.9.1-2jpp.5
+- Autorebuild for GCC 4.3
+
 * Fri Sep 21 2007 Deepak Bhole <dbhole@redhat.com> 1.9.1-1jpp.5
 - Disable tests due to random hangs (see FIXME comment above ant call)
 
