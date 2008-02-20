@@ -33,18 +33,17 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        1.9.1
-Release:        2jpp.5%{?dist}
+Version:        2.3.0
+Release:        1jpp.0%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
 Group:          Internet/WWW/Indexing/Search
-Source0:        http://www.apache.org/dist/lucene/java/lucene-1.9.1-src.tar.gz
+Source0:        http://www.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:	lucene-1.9-OSGi-MANIFEST.MF
 Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
-Patch0:		lucene-1.9-common-build_xml.patch
-Patch1:		lucene-1.9-contrib-db-bdb-build_xml.patch
-Patch2:		lucene-1.9-contrib-db-bdb-je-build_xml.patch
+Patch3:         lucene-2.3.0-version.patch
+Patch4:         lucene-2.3.0-db-javadoc.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
@@ -56,6 +55,8 @@ BuildRequires:  java-javadoc
 BuildRequires:  jline
 BuildRequires:  jtidy
 BuildRequires:  regexp
+BuildRequires:  commons-digester
+Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
 %if %{gcj_support}
@@ -113,15 +114,14 @@ Requires:       %{name} = %{epoch}:%{version}-%{release}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 
-%patch0 -b .sav
-#%patch1 -b .sav
-#%patch2 -b .sav
+%patch3 -p1 -b .version
+%patch4 -p1 -b .db-javadoc
 
 %build
 mkdir -p docs
 mkdir -p lib
 export OPT_JAR_LIST="ant/ant-junit junit"
-export CLASSPATH=$(build-classpath jline jtidy regexp)
+export CLASSPATH=$(build-classpath jline jtidy regexp commons-digester)
 #pushd contrib/db/bdb/lib
 #ln -sf $(build-classpath berkeleydb-native) .
 #popd
@@ -265,6 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 19 2008 Lubomir Kundrak <lkundrak@redhat.com> - 0:2.3.0-1jpp.0
+- 2.3.0 (#228141)
+
 * Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0:1.9.1-2jpp.5
 - Autorebuild for GCC 4.3
 

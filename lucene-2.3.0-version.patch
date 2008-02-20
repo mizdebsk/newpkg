@@ -1,0 +1,16 @@
+Version number is slightly wrong and confuses our SPEC.
+
+Lubomir Kundrak <lkundrak@redhat.com>
+
+diff -urp lucene-2.3.0.orig/common-build.xml lucene-2.3.0/common-build.xml
+--- lucene-2.3.0.orig/common-build.xml	2008-01-21 02:29:41.000000000 +0100
++++ lucene-2.3.0/common-build.xml	2008-02-19 16:34:04.000000000 +0100
+@@ -40,7 +40,7 @@
+ 
+   <property name="name" value="${ant.project.name}"/>
+   <property name="Name" value="Lucene"/>
+-  <property name="version" value="2.3"/>
++  <property name="version" value="2.3.0"/>
+   <property name="spec.version" value="${version}"/>
+   <property name="year" value="2000-${current.year}"/>
+   <property name="final.name" value="lucene-${name}-${version}"/>
