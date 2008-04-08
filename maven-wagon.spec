@@ -16,7 +16,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.1.a5.3jpp.1%{?dist}
+Release:        0.1.a5.3jpp.2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        Apache Software License
@@ -53,7 +53,6 @@ Patch10:        wagon-1.0-alpha5-providers-scm-build_xml.patch
 Patch11:        wagon-1.0-alpha5-providers-ssh-build_xml.patch
 Patch12:        wagon-1.0-alpha5-providers-ssh-external-build_xml.patch
 Patch13:        wagon-1.0-alpha5-provider-test-build_xml.patch
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -67,7 +66,7 @@ BuildRequires:  jakarta-commons-codec
 BuildRequires:  jakarta-commons-collections
 BuildRequires:  jakarta-commons-httpclient
 BuildRequires:  jakarta-commons-logging
-BuildRequires:  jsch >= 0:0.1.26
+BuildRequires:  jsch >= 0:0.1.31-2jpp.3
 BuildRequires:  oro
 BuildRequires:  plexus-container-default
 BuildRequires:  plexus-interactivity
@@ -396,6 +395,9 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Sat Apr 05 2008 Matt Wringe <mwringe@redhat.com> - 0:1.0-0.1.a5.3jpp.2
+- Rebuild with new version of jsch
+
 * Tue Mar 13 2007 Matt Wringe <mwringe@redhat.com> - 0:1.0-0.1.a5.3jpp.1
 - Merge in the changes neeeded to build without jetty
 - Fix rpmlint issues
