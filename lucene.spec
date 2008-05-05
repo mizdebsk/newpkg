@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        1jpp.0%{?dist}
+Release:        2jpp.0%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -42,7 +42,6 @@ Group:          Internet/WWW/Indexing/Search
 Source0:        http://www.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:	lucene-1.9-OSGi-MANIFEST.MF
 Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
-Patch3:         lucene-2.3.0-version.patch
 Patch4:         lucene-2.3.0-db-javadoc.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
@@ -114,7 +113,6 @@ Requires:       %{name} = %{epoch}:%{version}-%{release}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 
-%patch3 -p1 -b .version
 %patch4 -p1 -b .db-javadoc
 
 %build
@@ -143,6 +141,7 @@ ant -Dbuild.sysclasspath=first \
   -Djavacc.jar=%{_javadir}/javacc.jar \
   -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=%{_javadocdir}/java \
+  -Dversion=%{version} \
   package
 #  package test generate-test-reports
 
@@ -265,6 +264,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 5 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-2jpp.0
+- Unbreak build by repacing the version patch with and -Dversion
+
 * Mon May 5 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-1jpp.0
 - 2.3.1, bugfixes only
 
