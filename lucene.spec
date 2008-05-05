@@ -33,7 +33,7 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        2.3.0
+Version:        2.3.1
 Release:        1jpp.0%{?dist}
 Epoch:          0
 License:        Apache Software License
@@ -265,6 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 5 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-1jpp.0
+- 2.3.1, bugfixes only
+
 * Tue Feb 19 2008 Lubomir Kundrak <lkundrak@redhat.com> - 0:2.3.0-1jpp.0
 - 2.3.0 (#228141)
 
