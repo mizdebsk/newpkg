@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2005, JPackate Project
+# Copyright (c) 2000-2005, JPackage Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,14 @@
 #
 
 %define section         devel
-%define gcj_support 	1
+
+# Use rpmbuild --without gcj to disable native bits
+%define with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        2jpp.0%{?dist}
+Release:        3jpp.0%{?dist}
 Epoch:          0
 License:        Apache Software License
 URL:            http://lucene.apache.org/
@@ -58,12 +60,10 @@ BuildRequires:  commons-digester
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
-%if %{gcj_support}
-BuildRequires:	java-gcj-compat-devel >= 1.0.43
-Requires(post): java-1.5.0-gcj
-Requires(postun): java-1.5.0-gcj
-%endif
-%if %{gcj_support}
+%if %{with_gcj}
+BuildRequires:    java-gcj-compat-devel >= 1.0.43
+Requires(post):   java-gcj-compat >= 1.0.43
+Requires(postun): java-gcj-compat >= 1.0.43
 %else
 BuildArch:	noarch
 %endif
@@ -187,8 +187,8 @@ install -d -m 0755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 install -m 0644 build/%{name}web.war \
   $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 
-%if %{gcj_support}
-aot-compile-rpm --exclude %{_datadir}/%{name}-%{version}/luceneweb.war
+%if %{with_gcj}
+%{_bindir}/aot-compile-rpm --exclude %{_datadir}/%{name}-%{version}/luceneweb.war
 %endif
 
 %post javadoc
@@ -203,12 +203,18 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %{gcj_support}
+%if %{with_gcj}
 %post
-/usr/bin/rebuild-gcj-db
+if [ -x %{_bindir}/rebuild-gcj-db ]
+then
+  %{_bindir}/rebuild-gcj-db
+fi
 
 %postun
-/usr/bin/rebuild-gcj-db
+if [ -x %{_bindir}/rebuild-gcj-db ]
+then
+  %{_bindir}/rebuild-gcj-db
+fi
 %endif
 
 %files
@@ -217,7 +223,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}.jar
 %{_datadir}/%{name}-%{version}
-%if %{gcj_support}
+%if %{with_gcj}
 %dir %{_libdir}/gcj/%{name}
 %{_libdir}/gcj/%{name}/%{name}-%{version}.jar.*
 %endif
@@ -230,7 +236,7 @@ rm -rf $RPM_BUILD_ROOT
 %files contrib
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-contrib
-%if %{gcj_support}
+%if %{with_gcj}
 %{_libdir}/gcj/%{name}/lucene-analyzers-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-ant-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-highlighter-%{version}.jar.*
@@ -249,7 +255,7 @@ rm -rf $RPM_BUILD_ROOT
 #%files contrib-db
 #%defattr(0644,root,root,0755)
 #%{_javadir}/%{name}-contrib-db
-#%if %{gcj_support}
+#%if %{with_gcj}
 #%{_libdir}/gcj/%{name}/lucene-bdb-%{version}.jar.*
 #%{_libdir}/gcj/%{name}/lucene-bdb-je-%{version}.jar.*
 #%endif
@@ -258,12 +264,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-demos-%{version}.jar
 %{_javadir}/%{name}-demos.jar
-%if %{gcj_support}
+%if %{with_gcj}
 %{_libdir}/gcj/%{name}/%{name}-demos-%{version}.jar.*
 %endif
 
 
 %changelog
+* Mon May 19 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-3jpp.0
+- Correct gcj-compat dependencies, so that this builds on RHEL
+- Use --without gcj to disable gcj aot compilation
+
 * Mon May 5 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-2jpp.0
 - Unbreak build by repacing the version patch with and -Dversion
 
