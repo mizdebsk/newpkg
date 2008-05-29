@@ -36,9 +36,9 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        3jpp.0%{?dist}
+Release:        3jpp.1%{?dist}
 Epoch:          0
-License:        Apache Software License
+License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Group:          Internet/WWW/Indexing/Search
 Source0:        http://www.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
@@ -270,6 +270,9 @@ fi
 
 
 %changelog
+* Thu May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.1-3jpp.1
+- fix license tag
+
 * Mon May 19 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-3jpp.0
 - Correct gcj-compat dependencies, so that this builds on RHEL
 - Use --without gcj to disable gcj aot compilation
