@@ -34,7 +34,7 @@
 
 Name:           junit
 Version:        3.8.2
-Release:        4jpp.3%{?dist}
+Release:        4.4%{?dist}
 Summary:        Java regression test package
 License:        CPL
 Url:            http://www.junit.org/
@@ -163,6 +163,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 3.8.2-4.4
+- drop repotag
+
 * Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 3.8.2-4jpp.3
 - Autorebuild for GCC 4.3
 
