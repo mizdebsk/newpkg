@@ -16,10 +16,10 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.1.a5.3jpp.2%{?dist}
+Release:        0.1.a5.3.3%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
-License:        Apache Software License
+License:        ASL 2.0
 Group:          Development/Java
 URL:            http://maven.apache.org/wagon
 Source0:        wagon-1.0-alpha-5-src.tar.gz
@@ -395,6 +395,10 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.0-0.1.a5.3.3
+- drop repotag
+- fix license tag
+
 * Sat Apr 05 2008 Matt Wringe <mwringe@redhat.com> - 0:1.0-0.1.a5.3jpp.2
 - Rebuild with new version of jsch
 
