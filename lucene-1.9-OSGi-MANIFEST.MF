@@ -7,7 +7,7 @@ Export-Package: org.apache.lucene,org.apache.lucene.analysis,org.apach
  ucene.document,org.apache.lucene.index,org.apache.lucene.queryParser,
  org.apache.lucene.search,org.apache.lucene.search.spans,org.apache.lu
  cene.store,org.apache.lucene.util
-Bundle-Version: 1.9.1.v200706111724
+Bundle-Version: 1.9.1.v20080530-1600
 Bundle-SymbolicName: org.apache.lucene
 Bundle-Name: Apache Lucene
 Bundle-Localization: plugin

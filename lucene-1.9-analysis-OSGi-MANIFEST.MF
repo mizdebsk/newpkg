@@ -7,7 +7,7 @@ Export-Package: org.apache.lucene.analysis.br,org.apache.lucene.analys
  g.apache.lucene.analysis.de,org.apache.lucene.analysis.el,org.apache.
  lucene.analysis.fr,org.apache.lucene.analysis.nl,org.apache.lucene.an
  alysis.ru
-Bundle-Version: 1.9.1.v200706181610
+Bundle-Version: 1.9.1.v20080530-1600
 Require-Bundle: org.apache.lucene;bundle-version="[1.9.1,2.0.0)";visib
  ility:=reexport
 Bundle-SymbolicName: org.apache.lucene.analysis
