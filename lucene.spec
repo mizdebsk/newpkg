@@ -36,7 +36,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        3.3%{?dist}
+Release:        3.4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -270,7 +270,7 @@ fi
 
 
 %changelog
-* Fri Jul 11 2008 Andrew Overholt <overholt@redhat.com> 0:2.3.1-3.2
+* Mon Jul 14 2008 Andrew Overholt <overholt@redhat.com> 0:2.3.1-3.4
 - Update OSGi manifest data for Eclipse SDK 3.4
 
 * Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.1-3.2
