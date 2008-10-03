@@ -16,7 +16,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.1.a5.3.3%{?dist}
+Release:        0.1.a5.3.4%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -53,6 +53,7 @@ Patch10:        wagon-1.0-alpha5-providers-scm-build_xml.patch
 Patch11:        wagon-1.0-alpha5-providers-ssh-build_xml.patch
 Patch12:        wagon-1.0-alpha5-providers-ssh-external-build_xml.patch
 Patch13:        wagon-1.0-alpha5-provider-test-build_xml.patch
+Patch14:	maven-wagon-jsch.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -146,6 +147,7 @@ cp %{SOURCE17} wagon-providers/wagon-ssh-external/build.xml
 %patch11 -b .sav
 %patch12 -b .sav
 %patch13 -b .sav
+%patch14 -b .sav
 
 %build
 pushd wagon-provider-api
@@ -395,6 +397,9 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Fri Oct 03 2008 Matt Wringe <mwringe@redhat.com> - 0:1.0-0.1.a5.3.4
+- added patch to make it compatible with the newer version of jsch
+
 * Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.0-0.1.a5.3.3
 - drop repotag
 - fix license tag
