@@ -16,7 +16,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.1.a5.3.4%{?dist}
+Release:        0.1.a5.3.5%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -382,6 +382,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_javadir}/*
+%dir %{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}/LICENSE.txt
 
 # Needs to be re-enabled when spec files starts building with maven2
@@ -397,6 +398,9 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Mon Dec  1 2008 Michael Schwendt <mschwendt@fedoraproject.org> - 0:1.0-0.1.a5.3.5
+- include missing dir below _docdir
+
 * Fri Oct 03 2008 Matt Wringe <mwringe@redhat.com> - 0:1.0-0.1.a5.3.4
 - added patch to make it compatible with the newer version of jsch
 
