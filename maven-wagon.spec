@@ -16,7 +16,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.1.a5.3.5%{?dist}
+Release:        0.2.a5.3.5%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -398,6 +398,9 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-0.2.a5.3.5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Mon Dec  1 2008 Michael Schwendt <mschwendt@fedoraproject.org> - 0:1.0-0.1.a5.3.5
 - include missing dir below _docdir
 
