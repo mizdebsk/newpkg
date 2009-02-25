@@ -36,7 +36,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        3.4%{?dist}
+Release:        4.4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -270,6 +270,9 @@ fi
 
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.1-4.4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Mon Jul 14 2008 Andrew Overholt <overholt@redhat.com> 0:2.3.1-3.4
 - Update OSGi manifest data for Eclipse SDK 3.4
 
