@@ -1,0 +1,31 @@
+diff -up ./common-build.xml.sav ./common-build.xml
+--- ./common-build.xml.sav	2009-04-30 14:12:20.000000000 -0400
++++ ./common-build.xml	2009-04-30 14:12:26.000000000 -0400
+@@ -277,7 +277,7 @@
+ 		<attribute name="Implementation-Title" value="org.apache.lucene"/>
+ 		<!-- impl version can be any string -->
+ 		<attribute name="Implementation-Version"
+-		           value="${version} ${svnversion} - ${user.name} - ${DSTAMP} ${TSTAMP}"/>
++		           value="${version} - ${DSTAMP} ${TSTAMP}"/>
+ 		<attribute name="Implementation-Vendor"
+ 		           value="The Apache Software Foundation"/>
+ 		<attribute name="X-Compile-Source-JDK" 
+diff -up ./contrib/lucli/build.xml.sav ./contrib/lucli/build.xml
+--- ./contrib/lucli/build.xml.sav	2009-04-30 14:09:52.000000000 -0400
++++ ./contrib/lucli/build.xml	2009-04-30 14:10:11.000000000 -0400
+@@ -42,7 +42,6 @@
+     <jarify>
+       <manifest-attributes>
+         <attribute name="Main-Class" value="lucli.Lucli" />
+-        <attribute name="Class-Path" value="lib/jline.jar lib/lucene.jar" />
+       </manifest-attributes>
+     </jarify>
+    </target>
+@@ -51,7 +50,6 @@
+   	<jarify basedir="${src.dir}" destfile="${build.dir}/${final.name}-src.jar">
+       <manifest-attributes>
+         <attribute name="Main-Class" value="lucli.Lucli" />
+-        <attribute name="Class-Path" value="lib/jline.jar lib/lucene.jar" />
+       </manifest-attributes>
+   	</jarify>
+   </target>   

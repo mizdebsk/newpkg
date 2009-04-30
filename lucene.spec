@@ -36,7 +36,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.3.1
-Release:        4.4%{?dist}
+Release:        4.5%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -44,7 +44,8 @@ Group:          Internet/WWW/Indexing/Search
 Source0:        http://www.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:	lucene-1.9-OSGi-MANIFEST.MF
 Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
-Patch4:         lucene-2.3.0-db-javadoc.patch
+Patch1:         lucene-2.3.0-db-javadoc.patch
+Patch2:         %{name}-%{version}-fixmanifests.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
@@ -113,7 +114,8 @@ Requires:       %{name} = %{epoch}:%{version}-%{release}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 
-%patch4 -p1 -b .db-javadoc
+%patch1 -p1 -b .db-javadoc
+%patch2 -p1 -b .fixmanifests
 
 %build
 mkdir -p docs
@@ -270,6 +272,9 @@ fi
 
 
 %changelog
+* Thu Apr 30 2009 Deepak Bhole <dbhole@redhat.com> - 0:2.3.1-4.5
+- rhbz #465344: Fix Implementation-Version and remove Class-Path from manifest
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.1-4.4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
