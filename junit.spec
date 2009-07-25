@@ -34,7 +34,7 @@
 
 Name:           junit
 Version:        3.8.2
-Release:        5.4%{?dist}
+Release:        6.4%{?dist}
 Summary:        Java regression test package
 License:        CPL
 Url:            http://www.junit.org/
@@ -163,6 +163,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.8.2-6.4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.8.2-5.4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
