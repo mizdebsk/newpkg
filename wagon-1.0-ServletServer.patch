@@ -1,0 +1,11 @@
+--- wagon-providers/wagon-webdav/src/test/java/org/apache/maven/wagon/providers/webdav/ServletServer.java.sav	2006-12-09 10:14:44.000000000 +0100
++++ wagon-providers/wagon-webdav/src/test/java/org/apache/maven/wagon/providers/webdav/ServletServer.java	2006-12-09 10:15:17.000000000 +0100
+@@ -128,7 +128,7 @@
+         {
+             server.start();
+         }
+-        catch ( MultiException e )
++        catch ( Exception e )
+         {
+             throw new StartingException( "Error starting the jetty webdav server: ", e );
+         }

@@ -1,21 +1,14 @@
-<project name="wagon-scm" default="jar" basedir=".">
+<project name="wagon-provider-api" default="jar" basedir=".">
   <property file="${user.home}/.m2/maven.properties"/>
   <property name="maven.build.output" value="target/classes"/>
   <property name="maven.build.directory" value="target"/>
-  <property name="maven.build.final.name" value="wagon-scm-1.0-alpha-5"/>
+  <property name="maven.build.final.name" value="wagon-provider-api-1.0-beta-2"/>
   <property name="maven.test.reports" value="${maven.build.directory}/test-reports"/>
   <property name="maven.test.output" value="target/test-classes"/>
   <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
   <path id="build.classpath">
     <fileset dir="${maven.repo.local}">
-      <include name="org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar"/>
-      <include name="org/apache/maven/scm/maven-scm-api/1.0-alpha-1/maven-scm-api-1.0-alpha-1.jar"/>
-      <include name="org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar"/>
-      <include name="plexus/plexus-utils/1.0-alpha-2/plexus-utils-1.0-alpha-2.jar"/>
-      <include name="regexp/regexp/1.3/regexp-1.3.jar"/>
-      <include name="org/apache/maven/scm/maven-scm-provider-svn/1.0-alpha-1/maven-scm-provider-svn-1.0-alpha-1.jar"/>
-      <include name="org/apache/maven/scm/maven-scm-provider-cvs/1.0-alpha-1/maven-scm-provider-cvs-1.0-alpha-1.jar"/>
-      <include name="plexus/plexus-container-default/1.0-alpha-2/plexus-container-default-1.0-alpha-2.jar"/>
+      <include name="org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar"/>
     </fileset>
   </path>
   <target name="clean" description="Clean the output directory">
@@ -29,9 +22,6 @@
       </src>
       <classpath refid="build.classpath"/>
     </javac>
-    <copy todir="${maven.build.output}">
-      <fileset dir="src/main/resources"/>
-    </copy>
   </target>
   <target name="jar" depends="compile,test" description="Clean the JAR">
     <jar jarfile="${maven.build.directory}/${maven.build.final.name}.jar" basedir="${maven.build.output}" excludes="**/package.html"/>
@@ -85,13 +75,27 @@
   </target>
   <target name="get-deps" depends="test-offline" description="Download all dependencies" unless="maven.mode.offline">
     <mkdir dir="${maven.repo.local}"/>
-    <get src="http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/1.0-alpha-1/maven-scm-api-1.0-alpha-1.jar" dest="${maven.repo.local}/org/apache/maven/scm/maven-scm-api/1.0-alpha-1/maven-scm-api-1.0-alpha-1.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar" dest="${maven.repo.local}/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/plexus/plexus-utils/1.0-alpha-2/plexus-utils-1.0-alpha-2.jar" dest="${maven.repo.local}/plexus/plexus-utils/1.0-alpha-2/plexus-utils-1.0-alpha-2.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/regexp/regexp/1.3/regexp-1.3.jar" dest="${maven.repo.local}/regexp/regexp/1.3/regexp-1.3.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-provider-svn/1.0-alpha-1/maven-scm-provider-svn-1.0-alpha-1.jar" dest="${maven.repo.local}/org/apache/maven/scm/maven-scm-provider-svn/1.0-alpha-1/maven-scm-provider-svn-1.0-alpha-1.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-provider-cvs/1.0-alpha-1/maven-scm-provider-cvs-1.0-alpha-1.jar" dest="${maven.repo.local}/org/apache/maven/scm/maven-scm-provider-cvs/1.0-alpha-1/maven-scm-provider-cvs-1.0-alpha-1.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/plexus/plexus-container-default/1.0-alpha-2/plexus-container-default-1.0-alpha-2.jar" dest="${maven.repo.local}/plexus/plexus-container-default/1.0-alpha-2/plexus-container-default-1.0-alpha-2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <mkdir dir="/var/home/jpp/rebuild/free/BUILD/wagon-1.0-beta-2/org/codehaus/plexus/plexus-utils/1.2"/>
+    <get src="http://svn.apache.org/maven-snapshot-repository/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="file:///usr/share/maven2/repository/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+  </target>
+  <target name="javadoc" description="o Generate javadoc" depends="get-deps">
+    <mkdir dir="target/site/apidocs">
+    </mkdir>
+    <tstamp>
+      <format pattern="2002-yyyy" property="year">
+      </format>
+    </tstamp>
+    <property name="copyright" value="Copyright &amp;copy;  Apache Software Foundation. All Rights Reserved.">
+    </property>
+    <property name="title" value="Maven Wagon 1.0 API">
+    </property>
+    <javadoc use="true" private="true" destdir="target/site/apidocs" author="true" version="true" sourcepath="src/main/java" packagenames="org.apache.maven.wagon.*">
+      <classpath>
+        <path refid="build.classpath">
+        </path>
+      </classpath>
+    </javadoc>
   </target>
 </project>

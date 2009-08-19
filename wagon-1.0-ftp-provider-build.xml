@@ -2,16 +2,16 @@
   <property file="${user.home}/.m2/maven.properties"/>
   <property name="maven.build.output" value="target/classes"/>
   <property name="maven.build.directory" value="target"/>
-  <property name="maven.build.final.name" value="wagon-ftp-1.0-alpha-5"/>
+  <property name="maven.build.final.name" value="wagon-ftp-1.0-beta-2"/>
   <property name="maven.test.reports" value="${maven.build.directory}/test-reports"/>
   <property name="maven.test.output" value="target/test-classes"/>
   <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
   <path id="build.classpath">
     <fileset dir="${maven.repo.local}">
-      <include name="org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar"/>
+      <include name="org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar"/>
       <include name="commons-net/commons-net/1.1.0/commons-net-1.1.0.jar"/>
       <include name="oro/oro/2.0.7/oro-2.0.7.jar"/>
-      <include name="org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar"/>
+      <include name="org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar"/>
     </fileset>
   </path>
   <target name="clean" description="Clean the output directory">
@@ -49,7 +49,8 @@
   </target>
   <target name="test" depends="junit-present, compile-tests" if="junit.present" description="Run the test cases">
     <mkdir dir="${maven.test.reports}"/>
-    <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="true" dir=".">
+    <junit printSummary="yes" haltonerror="false" haltonfailure="false" fork="true" dir=".">
+      <jvmarg value="-Xmx128m"/>
       <sysproperty key="basedir" value="."/>
       <formatter type="xml"/>
       <formatter type="plain" usefile="false"/>
@@ -81,9 +82,39 @@
   </target>
   <target name="get-deps" depends="test-offline" description="Download all dependencies" unless="maven.mode.offline">
     <mkdir dir="${maven.repo.local}"/>
-    <get src="http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar" usetimestamp="true" ignoreerrors="true"/>
+    <mkdir dir="/var/home/jpp/rebuild/free/BUILD/wagon-1.0-beta-2/org/codehaus/plexus/plexus-utils/1.2"/>
+    <get src="http://svn.apache.org/maven-snapshot-repository/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="file:///usr/share/maven2/repository/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" dest="${maven.repo.local}/org/codehaus/plexus/plexus-utils/1.2/plexus-utils-1.2.jar" usetimestamp="true" ignoreerrors="true"/>
+    <mkdir dir="/var/home/jpp/rebuild/free/BUILD/wagon-1.0-beta-2/commons-net/commons-net/1.1.0"/>
+    <get src="http://svn.apache.org/maven-snapshot-repository/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" dest="${maven.repo.local}/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="file:///usr/share/maven2/repository/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" dest="${maven.repo.local}/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" usetimestamp="true" ignoreerrors="true"/>
     <get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" dest="${maven.repo.local}/commons-net/commons-net/1.1.0/commons-net-1.1.0.jar" usetimestamp="true" ignoreerrors="true"/>
+    <mkdir dir="/var/home/jpp/rebuild/free/BUILD/wagon-1.0-beta-2/oro/oro/2.0.7"/>
+    <get src="http://svn.apache.org/maven-snapshot-repository/oro/oro/2.0.7/oro-2.0.7.jar" dest="${maven.repo.local}/oro/oro/2.0.7/oro-2.0.7.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="file:///usr/share/maven2/repository/oro/oro/2.0.7/oro-2.0.7.jar" dest="${maven.repo.local}/oro/oro/2.0.7/oro-2.0.7.jar" usetimestamp="true" ignoreerrors="true"/>
     <get src="http://repo1.maven.org/maven2/oro/oro/2.0.7/oro-2.0.7.jar" dest="${maven.repo.local}/oro/oro/2.0.7/oro-2.0.7.jar" usetimestamp="true" ignoreerrors="true"/>
-    <get src="http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar" dest="${maven.repo.local}/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar" usetimestamp="true" ignoreerrors="true"/>
+    <mkdir dir="/var/home/jpp/rebuild/free/BUILD/wagon-1.0-beta-2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6"/>
+    <get src="http://svn.apache.org/maven-snapshot-repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" dest="${maven.repo.local}/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="file:///usr/share/maven2/repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" dest="${maven.repo.local}/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" usetimestamp="true" ignoreerrors="true"/>
+    <get src="http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" dest="${maven.repo.local}/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-6/wagon-provider-api-1.0-alpha-6.jar" usetimestamp="true" ignoreerrors="true"/>
+  </target>
+  <target name="javadoc" description="o Generate javadoc" depends="get-deps">
+    <mkdir dir="target/site/apidocs">
+    </mkdir>
+    <tstamp>
+      <format pattern="2002-yyyy" property="year">
+      </format>
+    </tstamp>
+    <property name="copyright" value="Copyright &amp;copy;  Apache Software Foundation. All Rights Reserved.">
+    </property>
+    <property name="title" value="Maven Wagon FTP Provider 1.0 API">
+    </property>
+    <javadoc use="true" private="true" destdir="target/site/apidocs" author="true" version="true" sourcepath="src/main/java" packagenames="org.apache.maven.wagon.*">
+      <classpath>
+        <path refid="build.classpath">
+        </path>
+      </classpath>
+    </javadoc>
   </target>
 </project>

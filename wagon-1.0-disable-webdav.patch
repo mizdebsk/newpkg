@@ -1,0 +1,13 @@
+diff -up ./wagon-providers/pom.xml.sav ./wagon-providers/pom.xml
+--- ./wagon-providers/pom.xml.sav	2006-12-12 16:51:47.000000000 -0500
++++ ./wagon-providers/pom.xml	2008-11-25 23:54:54.000000000 -0500
+@@ -20,7 +20,9 @@
+     <module>wagon-ssh-common-test</module>
+     <module>wagon-ssh</module>
+     <module>wagon-ssh-ganymed</module>
++<!--
+     <module>wagon-webdav</module>
++-->
+   </modules>
+   <dependencyManagement>
+     <dependencies>

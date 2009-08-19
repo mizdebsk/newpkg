@@ -1,0 +1,18 @@
+--- wagon-providers/wagon-webdav/src/main/java/org/apache/maven/wagon/providers/webdav/WebDavWagon.java.sav	2006-06-13 00:14:37.000000000 +0200
++++ wagon-providers/wagon-webdav/src/main/java/org/apache/maven/wagon/providers/webdav/WebDavWagon.java	2006-12-08 17:07:57.000000000 +0100
+@@ -138,13 +138,9 @@
+             throw new ConnectionException( "Connection Exception: " + url + " " + he.getReasonCode() + " "
+                 + HttpStatus.getStatusText( he.getReasonCode() ), he );
+         }
+-        catch ( URIException urie )
++        catch ( Exception e )
+         {
+-            throw new ConnectionException( "Connection Exception: " + urie.getReason(), urie );
+-        }
+-        catch ( IOException ioe )
+-        {
+-            throw new ConnectionException( "Connection Exception: " + ioe.getMessage(), ioe );
++            throw new ConnectionException( "Connection Exception: " , e );
+         }
+     }
+ 

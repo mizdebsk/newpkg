@@ -1,0 +1,10 @@
+--- pom.xml.sav	2007-03-13 16:07:47.000000000 +0100
++++ pom.xml	2007-03-13 16:08:10.000000000 +0100
+@@ -72,6 +72,7 @@
+     <module>wagon-provider-api</module>
+     <module>wagon-provider-test</module>
+     <module>wagon-providers</module>
++    <module>wagon-site</module>
+   </modules>
+   <dependencies>
+     <dependency>
