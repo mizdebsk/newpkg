@@ -28,8 +28,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
-
 # If you don't want to build with maven, and use straight ant instead,
 # give rpmbuild option '--without maven'
 
@@ -49,7 +47,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.2.b2.6%{?dist}
+Release:        0.2.b2.7%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -88,9 +86,7 @@ Patch7:         wagon-1.0-disable-webdav.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%if ! %{gcj_support}
 BuildArch:      noarch
-%endif
 BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
@@ -123,11 +119,6 @@ BuildRequires:  plexus-interactivity
 BuildRequires:  plexus-utils
 BuildRequires:  servletapi5
 BuildRequires:  xml-commons-apis
-%if %{gcj_support}
-BuildRequires:    java-gcj-compat-devel
-Requires(post):   java-gcj-compat
-Requires(postun): java-gcj-compat
-%endif
 
 Requires:       ganymed-ssh2
 Requires:       jakarta-commons-httpclient
@@ -493,7 +484,7 @@ cp -pr wagon-providers/wagon-ssh/target/site/apidocs/* $RPM_BUILD_ROOT%{_javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/provider-test
 cp -pr wagon-provider-test/target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/provider-test
 
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # manual
 install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
@@ -505,38 +496,15 @@ install -m 644 wagon-provider-api/LICENSE.txt \
 #                $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 #%endif
 
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-%post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-  rm -f %{_javadocdir}/%{name}
-fi
 
 %post
 %update_maven_depmap
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 
 %postun
 %update_maven_depmap
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 
 %files
 %defattr(-,root,root,-)
@@ -544,15 +512,11 @@ fi
 %doc %{_docdir}/%{name}-%{version}/LICENSE.txt
 %{_datadir}/maven2/poms/*.pom
 %{_mavendepmapfragdir}
-%if %{gcj_support}
-%dir %attr(-,root,root) %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/*%{version}.jar.*
-%endif
 
 %files javadoc
 %defattr(-,root,root,-)
 %doc %{_javadocdir}/%{name}-%{version}
-%ghost %doc %{_javadocdir}/%{name}
+%doc %{_javadocdir}/%{name}
 
 %if %{with_maven}
 %files manual
@@ -561,6 +525,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 19 2009 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.2.b2.7
+- Remove gcj parts.
+
 * Wed Aug 19 2009 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.2.b2.6
 - Update to beta2 - sync with jpackage.
 
