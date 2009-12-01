@@ -35,17 +35,19 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        2.3.1
-Release:        5.5%{?dist}
+Version:        2.4.1
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Group:          Internet/WWW/Indexing/Search
-Source0:        http://www.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
+Source0:        http://archive.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:	lucene-1.9-OSGi-MANIFEST.MF
 Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
-Patch1:         lucene-2.3.0-db-javadoc.patch
-Patch2:         %{name}-%{version}-fixmanifests.patch
+Patch1:         lucene-2.4.1-db-javadoc.patch
+Patch2:         %{name}-2.4.1-fixmanifests.patch
+# Remove -Xmaxwarns, -Xmaxerrs that gcj does not support
+Patch3:         %{name}-2.4.1-Xmax.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
@@ -116,6 +118,7 @@ find . -name "*.jar" -exec rm -f {} \;
 
 %patch1 -p1 -b .db-javadoc
 %patch2 -p1 -b .fixmanifests
+%patch3 -p1 -b .Xmax
 
 %build
 mkdir -p docs
@@ -243,7 +246,6 @@ fi
 %{_libdir}/gcj/%{name}/lucene-ant-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-highlighter-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-lucli-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-memory-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-misc-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-queries-%{version}.jar.*
 %{_libdir}/gcj/%{name}/lucene-snowball-%{version}.jar.*
@@ -272,6 +274,9 @@ fi
 
 
 %changelog
+* Tue Dec  1 2009 Orion Poplawski <orion@cora.nwra.com> - 0:2.4.1-1
+- Update to 2.4.1
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.1-5.5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
