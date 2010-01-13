@@ -2,7 +2,7 @@
 
 Name:		logback
 Version:	0.9.18
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A Java logging library
 
 Group:		Development/Tools
@@ -27,6 +27,7 @@ BuildRequires:	jpackage-utils >= 0:1.5
 BuildRequires:	slf4j
 BuildRequires:	tomcat5-server-lib
 BuildRequires:	tomcat5-servlet-2.4-api
+BuildRequires:	tomcat5
 BuildRequires:	hsqldb >= 1:1.8.0.10-5
 
 # Maven build requirements
@@ -58,6 +59,7 @@ Requires:	javamail
 Requires:	dom4j
 Requires:	tomcat5-server-lib
 Requires:	tomcat5-servlet-2.4-api
+Requires:	tomcat5
 Requires:	jetty
 Requires:	hsqldb >= 1:1.8.0.10-5
 
@@ -218,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Wed Jan 13 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-3
+- Actually, you do need tomcat5 for the parent POM
+
 * Tue Jan 12 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-2
 - Add maven2 BuildRequirements
 - Remove requirement for specific slf4j version
