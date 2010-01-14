@@ -28,6 +28,7 @@ BuildRequires:	slf4j
 BuildRequires:	tomcat5-server-lib
 BuildRequires:	tomcat5-servlet-2.4-api
 BuildRequires:	tomcat5
+BuildRequires:  easymock2
 BuildRequires:	hsqldb >= 1:1.8.0.10-5
 
 # Maven build requirements
@@ -53,15 +54,17 @@ BuildArch:	noarch
 %endif
 
 # Dependencies from the pom files
-Requires:	slf4j
+Requires:	dom4j
+Requires:       easymock2
+Requires:       geronimo-specs
+Requires:	hsqldb >= 1:1.8.0.10-5
 Requires:	janino
 Requires:	javamail
-Requires:	dom4j
+Requires:	jetty
+Requires:	slf4j
+Requires:	tomcat5
 Requires:	tomcat5-server-lib
 Requires:	tomcat5-servlet-2.4-api
-Requires:	tomcat5
-Requires:	jetty
-Requires:	hsqldb >= 1:1.8.0.10-5
 
 Requires(post):	jpackage-utils
 Requires(postun):	jpackage-utils
@@ -221,7 +224,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Jan 13 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-3
-- Actually, you do need tomcat5 for the parent POM
+- Add some missing (Build)Requirements
 
 * Tue Jan 12 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-2
 - Add maven2 BuildRequirements
