@@ -2,7 +2,7 @@
 
 Name:		logback
 Version:	0.9.18
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A Java logging library
 
 Group:		Development/Tools
@@ -18,7 +18,7 @@ Patch1:		%{name}-%{version}-clean-poms.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	dos2unix
-BuildRequires:	geronimo-specs
+BuildRequires:	jms
 BuildRequires:	janino 
 BuildRequires:	java-devel >= 1.6.0
 BuildRequires:	javamail >= 1.4
@@ -56,7 +56,7 @@ BuildArch:	noarch
 # Dependencies from the pom files
 Requires:	dom4j
 Requires:       easymock2
-Requires:       geronimo-specs
+Requires:       jms
 Requires:	hsqldb >= 1:1.8.0.10-5
 Requires:	janino
 Requires:	javamail
@@ -223,6 +223,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Wed Jan 13 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-4
+- Change (Build)Requirement from geronimo-specs to jms
+
 * Wed Jan 13 2010 Mary Ellen Foster <mefoster at gmail.com> - 0.9.18-3
 - Add some missing (Build)Requirements
 
