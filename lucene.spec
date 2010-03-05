@@ -30,13 +30,10 @@
 
 %define section         devel
 
-# Use rpmbuild --without gcj to disable native bits
-%define with_gcj %{!?_without_gcj:1}%{?_without_gcj:0}
-
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -63,13 +60,7 @@ BuildRequires:  commons-digester
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
-%if %{with_gcj}
-BuildRequires:    java-gcj-compat-devel >= 1.0.43
-Requires(post):   java-gcj-compat >= 1.0.43
-Requires(postun): java-gcj-compat >= 1.0.43
-%else
 BuildArch:	noarch
-%endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -192,10 +183,6 @@ install -d -m 0755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 install -m 0644 build/%{name}web.war \
   $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 
-%if %{with_gcj}
-%{_bindir}/aot-compile-rpm --exclude %{_datadir}/%{name}-%{version}/luceneweb.war
-%endif
-
 %post javadoc
 rm -f %{_javadocdir}/%{name}
 ln -s %{name}-%{version} %{_javadocdir}/%{name}
@@ -208,30 +195,12 @@ fi
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with_gcj}
-%post
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-
-%postun
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
 %files
 %defattr(0644,root,root,0755)
 %doc CHANGES.txt LICENSE.txt README.txt
 %{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}.jar
 %{_datadir}/%{name}-%{version}
-%if %{with_gcj}
-%dir %{_libdir}/gcj/%{name}
-%{_libdir}/gcj/%{name}/%{name}-%{version}.jar.*
-%endif
 
 %files javadoc
 %defattr(0644,root,root,0755)
@@ -241,20 +210,6 @@ fi
 %files contrib
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-contrib
-%if %{with_gcj}
-%{_libdir}/gcj/%{name}/lucene-analyzers-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-ant-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-highlighter-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-lucli-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-misc-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-queries-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-snowball-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-spellchecker-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-surround-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-swing-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-wordnet-%{version}.jar.*
-%{_libdir}/gcj/%{name}/lucene-xml-query-parser-%{version}.jar.*
-%endif
 
 #%files contrib-db
 #%defattr(0644,root,root,0755)
@@ -268,12 +223,11 @@ fi
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-demos-%{version}.jar
 %{_javadir}/%{name}-demos.jar
-%if %{with_gcj}
-%{_libdir}/gcj/%{name}/%{name}-demos-%{version}.jar.*
-%endif
-
 
 %changelog
+* Fri Mar 5 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-2
+- Drop gcj_support.
+
 * Tue Dec  1 2009 Orion Poplawski <orion@cora.nwra.com> - 0:2.4.1-1
 - Update to 2.4.1
 
