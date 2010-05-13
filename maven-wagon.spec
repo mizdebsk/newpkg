@@ -229,6 +229,9 @@ rm -f wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/
 #rm -f wagon-provider-test/src/main/java/org/apache/maven/wagon/WagonTestCase.java
 rm -f wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
 
+# skip site generation due to the failure of maven site
+rm -rf src/site/site.xml
+
 %build
 %if %{with_maven}
 
