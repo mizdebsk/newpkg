@@ -268,4 +268,13 @@
       <version>2.1</version>
     </maven>
   </dependency>
+
+  <dependency>
+    <maven>
+      <groupId>nekohtml</groupId>
+      <artifactId>xercesMinimal</artifactId>
+      <version>1.9.6.2</version>
+    </maven>
+  </dependency>
+  
 </dependencies>
