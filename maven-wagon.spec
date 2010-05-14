@@ -47,7 +47,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.2.b6.1%{?dist}
+Release:        0.2.b6.2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -86,6 +86,9 @@ Patch5:         wagon-1.0-pom_xml.patch
 Patch6:         wagon-1.0-wagon-ftp-pom_xml.patch
 Patch7:         wagon-1.0-disable-webdav.patch
 
+#patch for 1.0 beta-6
+Patch8:         wagon-http-shared-pom_xml.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -107,8 +110,9 @@ BuildRequires:  maven2-plugin-enforcer
 #BuildRequires:  maven2-default-skin
 BuildRequires:  plexus-maven-plugin
 %endif
+BuildRequires:  xerces-j2
 BuildRequires:  classworlds
-#BuildRequires:  nekohtml
+BuildRequires:  nekohtml
 BuildRequires:  concurrent
 BuildRequires:  ganymed-ssh2
 BuildRequires:  jakarta-commons-codec
@@ -136,6 +140,8 @@ Requires:       jtidy
 Requires:       plexus-interactivity
 Requires:       plexus-utils
 Requires:       xml-commons-apis
+Requires:       nekohtml
+Requires:       xerces-j2
 
 %description
 Maven Wagon is a transport abstraction that is used in Maven's
@@ -219,6 +225,7 @@ cp %{SOURCE2} wagon-site/src/site/site.xml
 %patch6 -b .sav
 %patch7 -b .sav
 %endif
+%patch8 -b .sav
 
 # To wire out jetty, plexus-avalon-personality and plexus-ftpd requirement
 rm -f wagon-providers/wagon-ftp/src/test/java/org/apache/maven/wagon/providers/ftp/FtpWagonTest.java
@@ -577,6 +584,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri May 14 2010 Yong Yang <yyang@redhat.com> 0:1.0-0.2.b6.2
+- Create patch for wagon-http-shared pom.xml
+
 * Wed May 12 2010 Yong Yang <yyang@redhat.com> 0:1.0-0.2.b6.1
 - Update to beta 6, build with with_maven 1
 
