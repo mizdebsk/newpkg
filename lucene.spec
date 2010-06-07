@@ -28,16 +28,14 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define section         devel
-
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
-Group:          Internet/WWW/Indexing/Search
+Group:          Development/Libraries
 Source0:        http://archive.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:	lucene-1.9-OSGi-MANIFEST.MF
 Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
@@ -56,7 +54,7 @@ BuildRequires:  java-javadoc
 BuildRequires:  jline
 BuildRequires:  jtidy
 BuildRequires:  regexp
-BuildRequires:  commons-digester
+BuildRequires:  apache-commons-digester
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
@@ -70,14 +68,14 @@ application that requires full-text search, especially cross-platform.
 
 %package javadoc
 Summary:        Javadoc for Lucene
-Group:          Development/Documentation
+Group:          Documentation
 
 %description javadoc
 %{summary}.
 
 %package demo
 Summary:        Lucene demonstration library
-Group:          Internet/WWW/Indexing/Search
+Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description demo
@@ -85,22 +83,11 @@ Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %package contrib
 Summary:        Lucene contributed extensions
-Group:          Internet/WWW/Indexing/Search
+Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description contrib
 %{summary}.
-
-#%package contrib-db
-#Summary:        Lucene contributed bdb extensions
-#Group:          Internet/WWW/Indexing/Search
-#Requires:       %{name} = %{epoch}:%{version}-%{release}
-#Requires:  berkeleydb
-#Requires:  berkeleydb-native >= 0:4.3.29
-
-#%description contrib-db
-#%{summary}.
-
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -164,14 +151,6 @@ for c in analyzers ant highlighter lucli memory misc queries similarity snowball
 done
 (cd $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
 
-# bdb contrib jars
-#install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib-db
-#install -m 0644 build/contrib/db/bdb/%{name}-bdb-%{version}.jar \
-#		$RPM_BUILD_ROOT%{_javadir}/%{name}-contrib-db
-#install -m 0644 build/contrib/db/bdb-je/%{name}-bdb-je-%{version}.jar \
-#		$RPM_BUILD_ROOT%{_javadir}/%{name}-contrib-db
-#(cd $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib-db && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
-
 # javadoc
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr build/docs/api/* \
@@ -211,20 +190,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-contrib
 
-#%files contrib-db
-#%defattr(0644,root,root,0755)
-#%{_javadir}/%{name}-contrib-db
-#%if %{with_gcj}
-#%{_libdir}/gcj/%{name}/lucene-bdb-%{version}.jar.*
-#%{_libdir}/gcj/%{name}/lucene-bdb-je-%{version}.jar.*
-#%endif
-
 %files demo
 %defattr(0644,root,root,0755)
 %{_javadir}/%{name}-demos-%{version}.jar
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Mon Jun 7 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-3
+- Fix build.
+- FIx various rpmlint warnings.
+
 * Fri Mar 5 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-2
 - Drop gcj_support.
 
