@@ -1,5 +1,5 @@
 Name:           maven-plugin-build-helper
-Version:        1.4
+Version:        1.5
 Release:        1%{?dist}
 Summary:        Build Helper Maven Plugin
 
@@ -9,24 +9,27 @@ URL:            http://mojo.codehaus.org/build-helper-maven-plugin/
 # The source tarball has been generated from upstream VCS:
 # svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} 
 #            %{name}-%{version}
-# tar cjvf %{name}-%{version}.tar.bz2 %{name}-%{version}
-Source0:        maven-plugin-build-helper-1.4.tar.bz2
+# tar caf %{name}-%{version}.tar.xz %{name}-%{version}
+Source0:        %{name}-%{version}.tar.xz
+Patch0:         add-junit-dependency.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch: noarch
 
 BuildRequires: plexus-utils
 BuildRequires: maven-plugin-cobertura
-BuildRequires: maven2-plugin-plugin
-BuildRequires: maven2-plugin-resources
-BuildRequires: maven2-plugin-compiler
-BuildRequires: maven2-plugin-install
-BuildRequires: maven2-plugin-jar
-BuildRequires: maven2-plugin-javadoc
-BuildRequires: maven2-plugin-enforcer
-BuildRequires: maven-surefire-maven-plugin
-BuildRequires: maven-surefire-provider-junit
+BuildRequires: maven-plugin-plugin
+BuildRequires: maven-resources-plugin
+BuildRequires: maven-compiler-plugin
+BuildRequires: maven-install-plugin
+BuildRequires: maven-jar-plugin
+BuildRequires: maven-javadoc-plugin
+BuildRequires: maven-enforcer-plugin
+BuildRequires: maven-surefire-plugin
+BuildRequires: maven-surefire-provider-junit4
 BuildRequires: maven-doxia-sitetools
+BuildRequires: mojo-parent
+BuildRequires: junit4
 Requires: plexus-utils
 Requires(post): jpackage-utils
 Requires(postun): jpackage-utils
@@ -44,6 +47,7 @@ API documentation for %{name}.
 
 %prep
 %setup -q 
+%patch0
 
 %build
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
@@ -100,5 +104,9 @@ rm -rf target/site/api*
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Sep 16 2010 Alexander Kurtakov <akurtako@redhat.com> 1.5-1
+- Update to 1.5.
+- Use newer maven packages' names.
+
 * Thu Sep 10 2009 Alexander Kurtakov <akurtako@gmail.com> 1.4-1
 - Initial package.
