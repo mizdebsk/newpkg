@@ -9,4 +9,3 @@ Bundle-SymbolicName: org.apache.lucene
 Bundle-Name: Apache Lucene
 Bundle-Localization: plugin
 Bundle-Vendor: Apache Software Foundation
-

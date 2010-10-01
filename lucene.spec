@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -133,9 +133,11 @@ ant -Dbuild.sysclasspath=first \
 mkdir META-INF
 unzip -o build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 cat %{SOURCE1} >> META-INF/MANIFEST.MF
+sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 unzip -o build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 cat %{SOURCE2} >> META-INF/MANIFEST.MF
+sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 
 %install
@@ -200,6 +202,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Fri Oct 01 2010 Caolán McNamara <caolanm@redhat.com> 0:2.4.1-5
+- remove empty lines from MANIFEST.MF
+
 * Fri Oct 01 2010 Caolán McNamara <caolanm@redhat.com> 0:2.4.1-4
 - Resolves: rhbz#615609 custom MANIFEST.MF in lucene drops
   "Specification-Version"

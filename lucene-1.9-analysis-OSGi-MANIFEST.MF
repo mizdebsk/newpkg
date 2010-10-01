@@ -11,4 +11,3 @@ Bundle-SymbolicName: org.apache.lucene.analysis
 Bundle-Name: Apache Lucene Analysis
 Bundle-Localization: plugin
 Bundle-Vendor: Apache Software Foundation
-
