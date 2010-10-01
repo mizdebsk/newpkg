@@ -1,6 +1,3 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.7.0
-Created-By: 2.3 (IBM Corporation)
 Bundle-ManifestVersion: 2
 Export-Package: org.apache.lucene,org.apache.lucene.analysis,org.apach
  e.lucene.analysis.de,org.apache.lucene.analysis.standard,org.apache.l

@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -55,6 +55,7 @@ BuildRequires:  jline
 BuildRequires:  jtidy
 BuildRequires:  regexp
 BuildRequires:  apache-commons-digester
+BuildRequires:  unzip
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
@@ -128,10 +129,13 @@ ant -Dbuild.sysclasspath=first \
   package
 #  package test generate-test-reports
 
+# add missing OSGi metadata to manifests
 mkdir META-INF
-cp %{SOURCE1} META-INF/MANIFEST.MF
+unzip -o build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
+cat %{SOURCE1} >> META-INF/MANIFEST.MF
 zip -u build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-cp %{SOURCE2} META-INF/MANIFEST.MF
+unzip -o build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
+cat %{SOURCE2} >> META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 
 %install
@@ -196,6 +200,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Fri Oct 01 2010 Caolán McNamara <caolanm@redhat.com> 0:2.4.1-4
+- Resolves: rhbz#615609 custom MANIFEST.MF in lucene drops
+  "Specification-Version"
+
 * Mon Jun 7 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-3
 - Fix build.
 - FIx various rpmlint warnings.
