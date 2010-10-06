@@ -28,32 +28,20 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define _with_gcj_support 1
-
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
-
 Name:           junit
 Version:        3.8.2
-Release:        6.4%{?dist}
+Release:        7%{?dist}
 Summary:        Java regression test package
 License:        CPL
-Url:            http://www.junit.org/
+URL:            http://www.junit.org/
 Group:          Development/Tools
 # http://osdn.dl.sourceforge.net/junit/junit3.8.2.zip
 Source0:        junit3.8.2.zip
 Source1:        junit3.8.2-build.xml
 BuildRequires:  ant
 BuildRequires:  jpackage-utils >= 0:1.6
-%if ! %{gcj_support}
-Buildarch:     noarch
-%endif
+BuildArch:     noarch
 Buildroot:      %{_tmppath}/%{name}-%{version}-buildroot
-
-%if %{gcj_support}
-BuildRequires:          java-gcj-compat-devel
-Requires(post):         java-gcj-compat
-Requires(postun):       java-gcj-compat
-%endif
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent
@@ -79,12 +67,6 @@ Javadoc for %{name}.
 Group:          Development/Libraries
 Summary:        Demos for %{name}
 Requires:       %{name} = %{version}-%{release}
-
-%if %{gcj_support}
-BuildRequires:          java-gcj-compat-devel
-Requires(post):         java-gcj-compat
-Requires(postun):       java-gcj-compat
-%endif
 
 %description demo
 Demonstrations and samples for %{name}.
@@ -113,56 +95,33 @@ install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit # Not using %nam
                                                                 # part of package name
 cp -pr %{name}%{version}/%{name}/* $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit
 
-%if %{gcj_support}
-# these --exclude options work around an aot-compile-rpm problem with test.jar
-%{_bindir}/aot-compile-rpm --exclude usr/share/junit/demo --exclude usr/share/junit/demo/junit/tests/runner/test.jar
-%endif
-
 ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
-%postun
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
 %files
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc README.html
 %{_javadir}/*
 
-%if %{gcj_support}
-%dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/junit-3.8.2.jar.*
-%endif
-
 %files manual
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc %{name}%{version}/doc/*
 
 %files javadoc
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc %{_javadocdir}/%{name}-%{version}
 %doc %{_javadocdir}/%{name}
 
 %files demo
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %{_datadir}/%{name}
 
 %changelog
+* Thu Oct 7 2010 Alexander Kurtakov <akurtako@redhat.com> 3.8.2-7
+- Drop gcj support.
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.8.2-6.4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
