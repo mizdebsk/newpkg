@@ -1,0 +1,8 @@
+--- simplyhtml-0_13_1/src/MANIFEST.MF	2009-05-24 20:45:16.000000000 +0200
++++ simplyhtml-0_13_1/src/MANIFEST.MF	2010-10-01 21:34:11.234955214 +0200
+@@ -1,5 +1,4 @@
+ Manifest-Version: 1.0
+ Main-Class: com.lightdev.app.shtm.App
+-Class-Path:  SimplyHTML.jar jhall.jar SimplyHTMLHelp.jar gnu-regexp.jar
+ Created-By: Dimitri Polivaev
+ 
