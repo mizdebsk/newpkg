@@ -1,0 +1,18 @@
+--- contrib/lucli/build.xml.sav	2010-10-13 00:10:02.626635161 +0300
++++ contrib/lucli/build.xml	2010-10-13 00:10:32.866857676 +0300
+@@ -42,7 +42,6 @@
+     <jarify>
+       <manifest-attributes>
+         <attribute name="Main-Class" value="lucli.Lucli" />
+-        <attribute name="Class-Path" value="lib/jline.jar lib/lucene.jar" />
+       </manifest-attributes>
+     </jarify>
+    </target>
+@@ -51,7 +50,6 @@
+   	<jarify basedir="${src.dir}" destfile="${build.dir}/${final.name}-src.jar">
+       <manifest-attributes>
+         <attribute name="Main-Class" value="lucli.Lucli" />
+-        <attribute name="Class-Path" value="lib/jline.jar lib/lucene.jar" />
+       </manifest-attributes>
+   	</jarify>
+   </target>   
