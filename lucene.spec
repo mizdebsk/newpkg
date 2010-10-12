@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -55,6 +55,7 @@ BuildRequires:  jtidy
 BuildRequires:  regexp
 BuildRequires:  apache-commons-digester
 BuildRequires:  unzip
+BuildRequires:  java-devel >= 1:1.6.0
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
@@ -197,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Wed Oct 13 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-7
+- BR java 1.6.0.
+
 * Wed Oct 13 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-6
 - Fix merge review comments (rhbz#226110).
 
