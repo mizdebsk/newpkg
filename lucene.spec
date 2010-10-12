@@ -31,18 +31,17 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.4.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Group:          Development/Libraries
 Source0:        http://archive.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
-Source1:	lucene-1.9-OSGi-MANIFEST.MF
-Source2:	lucene-1.9-analysis-OSGi-MANIFEST.MF
+Source1:        lucene-1.9-OSGi-MANIFEST.MF
+Source2:        lucene-1.9-analysis-OSGi-MANIFEST.MF
 Patch1:         lucene-2.4.1-db-javadoc.patch
 Patch2:         %{name}-2.4.1-fixmanifests.patch
-# Remove -Xmaxwarns, -Xmaxerrs that gcj does not support
-Patch3:         %{name}-2.4.1-Xmax.patch
+Patch4:         lucli-remove-classpath.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
@@ -59,8 +58,8 @@ BuildRequires:  unzip
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
-BuildArch:	noarch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildArch:      noarch
+Requires:       jpackage-utils
 
 %description
 Jakarta Lucene is a high-performance, full-featured text search engine
@@ -70,6 +69,7 @@ application that requires full-text search, especially cross-platform.
 %package javadoc
 Summary:        Javadoc for Lucene
 Group:          Documentation
+Requires:       jpackage-utils
 
 %description javadoc
 %{summary}.
@@ -97,7 +97,9 @@ find . -name "*.jar" -exec rm -f {} \;
 
 %patch1 -p1 -b .db-javadoc
 %patch2 -p1 -b .fixmanifests
-%patch3 -p1 -b .Xmax
+%patch4
+
+iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new 
 
 %build
 mkdir -p docs
@@ -115,7 +117,7 @@ rm -r contrib/db
 #FIXME: Tests freeze randomly. Turning on debug messages shows warnings like:
 
 # [junit] GC Warning: Repeated allocation of very large block (appr. size 512000):
-# [junit] 	May lead to memory leak and poor performance.
+# [junit]   May lead to memory leak and poor performance.
 
 # See: http://koji.fedoraproject.org/koji/getfile?taskID=169839&name=build.log
 # for an example
@@ -153,7 +155,7 @@ install -m 0644 build/%{name}-demos-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
 for c in analyzers ant highlighter lucli memory misc queries similarity snowball spellchecker surround swing wordnet xml-query-parser; do
     install -m 0644 build/contrib/$c/%{name}-${c}-%{version}.jar \
-		$RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
+        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
 done
 (cd $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
 
@@ -168,40 +170,36 @@ install -d -m 0755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 install -m 0644 build/%{name}web.war \
   $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 
-%post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-    rm -f %{_javadocdir}/%{name}
-fi
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %doc CHANGES.txt LICENSE.txt README.txt
 %{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}.jar
 %{_datadir}/%{name}-%{version}
 
 %files javadoc
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
+%doc LICENSE.txt
 %{_javadocdir}/%{name}-%{version}
-%ghost %{_javadocdir}/%{name}
+%{_javadocdir}/%{name}
 
 %files contrib
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %{_javadir}/%{name}-contrib
+%doc contrib/CHANGES.txt
 
 %files demo
-%defattr(0644,root,root,0755)
+%defattr(-,root,root,-)
 %{_javadir}/%{name}-demos-%{version}.jar
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Wed Oct 13 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-6
+- Fix merge review comments (rhbz#226110).
+
 * Fri Oct 01 2010 Caolán McNamara <caolanm@redhat.com> 0:2.4.1-5
 - remove empty lines from MANIFEST.MF
 
