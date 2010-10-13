@@ -1,0 +1,42 @@
+From 7af563b4004f9b450a4cabb66bfb529a54437b7f Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Thu, 7 Oct 2010 14:35:14 +0200
+Subject: [PATCH 1/3] aop-fix
+
+---
+ .../google/inject/internal/ConstructionProxy.java  |    3 +++
+ .../internal/DefaultConstructionProxyFactory.java  |    2 ++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/src/com/google/inject/internal/ConstructionProxy.java b/src/com/google/inject/internal/ConstructionProxy.java
+index 930d660..b63f6c8 100644
+--- a/src/com/google/inject/internal/ConstructionProxy.java
++++ b/src/com/google/inject/internal/ConstructionProxy.java
+@@ -22,7 +22,10 @@ import java.lang.reflect.Constructor;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.util.List;
++
++/*if[AOP]*/
+ import org.aopalliance.intercept.MethodInterceptor;
++/*end[AOP]*/
+ 
+ /**
+  * Proxies calls to a {@link java.lang.reflect.Constructor} for a class
+diff --git a/src/com/google/inject/internal/DefaultConstructionProxyFactory.java b/src/com/google/inject/internal/DefaultConstructionProxyFactory.java
+index c654bbc..bad7ccd 100644
+--- a/src/com/google/inject/internal/DefaultConstructionProxyFactory.java
++++ b/src/com/google/inject/internal/DefaultConstructionProxyFactory.java
+@@ -24,7 +24,9 @@ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Modifier;
+ import java.util.List;
++/*if[AOP]*/
+ import org.aopalliance.intercept.MethodInterceptor;
++/*end[AOP]*/
+ 
+ /**
+  * Produces construction proxies that invoke the class constructor.
+-- 
+1.7.2.3
+
