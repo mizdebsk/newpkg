@@ -3,7 +3,7 @@
 
 Name:           google-%{short_name}
 Version:        2.0
-Release:        2.1219svn%{?dist}
+Release:        3.1219svn%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -27,6 +27,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 
+BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  ant
 BuildRequires:  jarjar => 1.0
 BuildRequires:  cglib
@@ -170,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 14 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0-3.1219svn
+- Add java-devel >= 1:1.6.0 to BR
+
 * Wed Oct 13 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0-2.1219svn
 - Moved munge repacking to prep
 - Added -Dversion to change generated manifest version
