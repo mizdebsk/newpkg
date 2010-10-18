@@ -2,7 +2,7 @@
 
 Name:           sisu
 Version:        1.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -38,6 +38,7 @@ BuildRequires:  maven-javadoc-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  atinject
+BuildRequires:  felix-framework
 
 Requires:       google-guice
 Requires:       java >= 1:1.6.0
@@ -143,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 18 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.4.2-2
+- Add felix-framework BR
+
 * Thu Oct 14 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.4.2-1
 - Initial version of the package
 
