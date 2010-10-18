@@ -1,0 +1,29 @@
+<dependencies>
+    <dependency>
+        <maven>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+        </maven>
+    </dependency>
+    <dependency>
+        <maven>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </maven>
+        <jpp>
+            <groupId>JPP/felix</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </jpp>
+    </dependency>
+    <dependency>
+        <maven>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </maven>
+        <jpp>
+            <groupId>JPP/felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </jpp>
+    </dependency>
+
+</dependencies>

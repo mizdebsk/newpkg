@@ -1,0 +1,75 @@
+From f468c161563690c2b3a979f40bb53df329d5be47 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Fri, 8 Oct 2010 17:09:03 +0200
+Subject: [PATCH] Fix shading
+
+---
+ sisu-inject/guice-bean/sisu-inject-bean/pom.xml    |   13 +++----------
+ .../guice-plexus/sisu-inject-plexus/pom.xml        |    8 --------
+ 2 files changed, 3 insertions(+), 18 deletions(-)
+
+diff --git a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
+index aa7fc26..2256ff1 100644
+--- a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
++++ b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
+@@ -59,10 +59,9 @@
+             </DynamicImport-Package>
+             <Export-Package>
+               org.sonatype.inject;-noimport:=true;-split-package:=merge-first;version=${project.version},
+-              javax.*|org.aopalliance.*;version=1
+             </Export-Package>
+             <Private-Package>
+-              org.sonatype.guice.*,org.objectweb.asm
++              org.sonatype.guice.*
+             </Private-Package>
+           </instructions>
+         </configuration>
+@@ -81,18 +80,12 @@
+                   <include>${project.groupId}:${project.artifactId}</include>
+                 </includes>
+               </artifactSet>
+-              <relocations>
+-                <relocation>
+-                  <pattern>org.objectweb</pattern>
+-                  <shadedPattern>org.sonatype.guice</shadedPattern>
+-                </relocation>
+-              </relocations>
+               <filters>
+                 <filter>
+                   <artifact>*:*</artifact>
+                   <excludes>
+-                    <exclude>org/objectweb/asm/*Adapter*</exclude>
+-                    <exclude>org/objectweb/asm/*Writer*</exclude>
++                    <exclude>org.objectweb.asm:asm</exclude>
++                    <exclude>javax.inject:javax.inject</exclude>
+                   </excludes>
+                 </filter>
+               </filters>
+diff --git a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
+index 506bd3c..2045e04 100644
+--- a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
++++ b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
+@@ -82,20 +82,12 @@
+                   <include>${project.groupId}:${project.artifactId}</include>
+                 </includes>
+               </artifactSet>
+-              <relocations>
+-                <relocation>
+-                  <pattern>org.objectweb</pattern>
+-                  <shadedPattern>org.sonatype.guice</shadedPattern>
+-                </relocation>
+-              </relocations>
+               <filters>
+                 <filter>
+                   <artifact>*:*</artifact>
+                   <includes>
+                     <include>META-INF/**</include>
+-                    <include>org/codehaus/plexus/**</include>
+                     <include>org/sonatype/guice/plexus/**</include>
+-                    <include>org/objectweb/asm/*Writer*</include>
+                   </includes>
+                 </filter>
+               </filters>
+-- 
+1.7.2.3
+
