@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
 Version:        1.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build Helper Maven Plugin
 
 Group:          Development/Libraries
@@ -31,6 +31,7 @@ BuildRequires: maven-doxia-sitetools
 BuildRequires: mojo-parent
 BuildRequires: junit4
 Requires: plexus-utils
+Requires: mojo-parent
 Requires(post): jpackage-utils
 Requires(postun): jpackage-utils
 
@@ -104,6 +105,9 @@ rm -rf target/site/api*
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Oct 28 2010 Alexander Kurtakov <akurtako@redhat.com> 1.5-2
+- Maven plugins should require parent poms because they are totally unusable without them.
+
 * Thu Sep 16 2010 Alexander Kurtakov <akurtako@redhat.com> 1.5-1
 - Update to 1.5.
 - Use newer maven packages' names.
