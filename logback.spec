@@ -14,7 +14,7 @@ Source1:        %{name}-depmap.xml
 Patch0:		%{name}-LifecycleListener.patch
 # Modify the POMs to remove unavailable dependencies, and to avoid
 # building the "site" and "examples" directories
-Patch1:		%{name}-%{version}-clean-pom.patch
+Patch1:		%{name}-%{version}-clean-poms.patch
 
 BuildRequires:	jms
 BuildRequires:	janino
