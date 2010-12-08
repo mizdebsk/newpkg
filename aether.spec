@@ -3,7 +3,7 @@
 
 Name:           aether
 Version:        1.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -15,7 +15,6 @@ URL:            https://docs.sonatype.org/display/AETHER/Home
 # click "download .tar.gz"
 Source0:        sonatype-%{full_name}-%{name}-%{version}-0-%{githash}.tar.gz
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 
 BuildRequires:  maven2
@@ -65,8 +64,6 @@ mvn-jpp -e \
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
@@ -74,26 +71,19 @@ for module in aether-api aether-connector-file aether-connector-wagon \
          aether-impl aether-spi aether-test-util aether-util;do
 pushd $module
       jarname=`echo $module | sed s:aether-::`
-      install -m 644 target/$module-*.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$jarname-%{version}.jar
+      install -m 644 target/$module-*.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$jarname.jar
 
       install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$jarname.pom
-      %add_to_maven_depmap  org.sonatype.aether $module %{version} JPP/%{name} $jarname
+      %add_to_maven_depmap org.sonatype.aether $module %{version} JPP/%{name} $jarname
 popd
 done
 
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
-
-
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-(cd $RPM_BUILD_ROOT%{_javadocdir} && ln -sf %{name}-%{version} %{name})
+install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %add_to_maven_depmap  org.sonatype.aether %{name}-parent %{version} JPP/%{name} parent
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_maven_depmap
@@ -111,12 +101,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files javadoc
 %defattr(-,root,root,-)
-%{_javadocdir}/%{name}-%{version}
 %{_javadocdir}/%{name}
 
 
 
 %changelog
+* Wed Dec  8 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.7-3
+- Make jars/javadocs versionless
+- Remove buildroot and clean section
+
 * Wed Oct 13 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.7-2
 - Explained how to get tarball properly
 - Removed noreplace on depmap fragment
