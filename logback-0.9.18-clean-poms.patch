@@ -1,7 +1,38 @@
-diff -ur logback-0.9.18.orig/logback-access/pom.xml logback-0.9.18/logback-access/pom.xml
---- logback-0.9.18.orig/logback-access/pom.xml	2009-12-03 19:28:59.000000000 +0000
-+++ logback-0.9.18/logback-access/pom.xml	2010-01-11 14:54:19.408869342 +0000
-@@ -64,7 +64,7 @@
+From e72da7b52be43461e94ff05f21e069948022803a Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Tue, 7 Dec 2010 15:48:59 +0100
+Subject: [PATCH] Clean pom files
+
+---
+ logback-access/pom.xml  |   14 ++-----
+ logback-classic/pom.xml |   89 +----------------------------------------------
+ logback-core/pom.xml    |    2 +-
+ pom.xml                 |   11 +-----
+ 4 files changed, 7 insertions(+), 109 deletions(-)
+
+diff --git a/logback-access/pom.xml b/logback-access/pom.xml
+index af7e1e7..a697d11 100644
+--- a/logback-access/pom.xml
++++ b/logback-access/pom.xml
+@@ -42,15 +42,9 @@
+     </dependency>
+ 
+     <dependency>
+-      <groupId>ch.qos.logback</groupId>
+-      <artifactId>logback-core</artifactId>
+-      <type>test-jar</type>
+-      <scope>test</scope>
+-    </dependency>
+-
+-    <dependency>
+-      <groupId>tomcat</groupId>
++      <groupId>org.apache.tomcat</groupId>
+       <artifactId>catalina</artifactId>
++      <version>6.0.26</version>
+       <scope>compile</scope>
+       <optional>true</optional>
+     </dependency>
+@@ -64,7 +58,7 @@
  
      <dependency>
        <groupId>org.mortbay.jetty</groupId>
@@ -10,34 +41,28 @@ diff -ur logback-0.9.18.orig/logback-access/pom.xml logback-0.9.18/logback-acces
        <scope>compile</scope>
        <optional>true</optional>
      </dependency>
-@@ -77,6 +77,13 @@
-     </dependency>
- 
-     <dependency>
-+      <groupId>javax.servlet</groupId>
-+      <artifactId>servlet-api</artifactId>
-+      <scope>compile</scope>
-+      <optional>true</optional>
-+    </dependency>
-+
-+    <dependency>
-       <groupId>hsqldb</groupId>
-       <artifactId>hsqldb</artifactId>
-       <scope>test</scope>
-@@ -202,4 +209,4 @@
+@@ -202,4 +196,4 @@
    </profiles>
  
  
 -</project>
 \ No newline at end of file
 +</project>
-diff -ur logback-0.9.18.orig/logback-classic/pom.xml logback-0.9.18/logback-classic/pom.xml
---- logback-0.9.18.orig/logback-classic/pom.xml	2009-12-03 19:28:59.000000000 +0000
-+++ logback-0.9.18/logback-classic/pom.xml	2010-01-11 14:55:44.561970153 +0000
-@@ -103,13 +103,6 @@
+diff --git a/logback-classic/pom.xml b/logback-classic/pom.xml
+index 5f0049c..4e94453 100644
+--- a/logback-classic/pom.xml
++++ b/logback-classic/pom.xml
+@@ -96,20 +96,6 @@
      </dependency>
-     
+ 
      <dependency>
+-      <groupId>ch.qos.logback</groupId>
+-      <artifactId>logback-core</artifactId>
+-      <type>test-jar</type>
+-      <scope>test</scope>
+-    </dependency>
+-    
+-    <dependency>
 -      <groupId>org.slf4j</groupId>
 -      <artifactId>integration</artifactId>
 -      <version>${slf4j.version}</version>
@@ -48,7 +73,7 @@ diff -ur logback-0.9.18.orig/logback-classic/pom.xml logback-0.9.18/logback-clas
        <groupId>org.apache.geronimo.specs</groupId>
        <artifactId>geronimo-jms_1.1_spec</artifactId>
        <scope>compile</scope>
-@@ -122,40 +115,6 @@
+@@ -122,40 +108,6 @@
        <scope>compile</scope>
        <optional>true</optional>
      </dependency>
@@ -89,8 +114,11 @@ diff -ur logback-0.9.18.orig/logback-classic/pom.xml logback-0.9.18/logback-clas
    </dependencies>
  
    <build>
-@@ -194,44 +153,6 @@
- 
+@@ -191,47 +143,8 @@
+           </execution>
+         </executions>
+       </plugin>
+-
        
        <plugin>
 -        <artifactId>maven-antrun-plugin</artifactId>
@@ -134,27 +162,17 @@ diff -ur logback-0.9.18.orig/logback-classic/pom.xml logback-0.9.18/logback-clas
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
-@@ -326,4 +247,4 @@
+@@ -326,4 +239,4 @@ org.slf4j.test_osgi
  
    </profiles>
  
 -</project>
 \ No newline at end of file
 +</project>
-diff -ur logback-0.9.18.orig/logback-core/pom.xml logback-0.9.18/logback-core/pom.xml
---- logback-0.9.18.orig/logback-core/pom.xml	2009-12-03 19:28:59.000000000 +0000
-+++ logback-0.9.18/logback-core/pom.xml	2010-01-11 14:55:58.054842609 +0000
-@@ -59,8 +59,8 @@
-     </dependency>
- 
-     <dependency>
--      <groupId>org.easymock</groupId>
--      <artifactId>easymock</artifactId>
-+      <groupId>easymock2</groupId>
-+      <artifactId>easymock2</artifactId>
-       <version>2.4</version>
-       <scope>test</scope>
-     </dependency>
+diff --git a/logback-core/pom.xml b/logback-core/pom.xml
+index c67bd99..79fd219 100644
+--- a/logback-core/pom.xml
++++ b/logback-core/pom.xml
 @@ -148,4 +148,4 @@
      </plugins>
    </build>
@@ -162,9 +180,10 @@ diff -ur logback-0.9.18.orig/logback-core/pom.xml logback-0.9.18/logback-core/po
 -</project>
 \ No newline at end of file
 +</project>
-diff -ur logback-0.9.18.orig/pom.xml logback-0.9.18/pom.xml
---- logback-0.9.18.orig/pom.xml	2010-01-11 14:52:42.285869208 +0000
-+++ logback-0.9.18/pom.xml	2010-01-11 14:56:12.036825749 +0000
+diff --git a/pom.xml b/pom.xml
+index 94f9f7a..4b02a0e 100644
+--- a/pom.xml
++++ b/pom.xml
 @@ -21,8 +21,6 @@
      <module>logback-core</module>
      <module>logback-classic</module>
@@ -195,3 +214,6 @@ diff -ur logback-0.9.18.orig/pom.xml logback-0.9.18/pom.xml
 -</project>
 \ No newline at end of file
 +</project>
+-- 
+1.7.3.2
+
