@@ -29,7 +29,7 @@
 #
 
 %global bname     wagon
-%global blevel    beta-6
+%global blevel    beta-7
 
 # FIXME1: wagon-scm has been disabled for now due to maven-scm dependency
 # FIXME2: haltOnFailure/Error has been set to false for
@@ -37,19 +37,20 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.2.b6.3%{?dist}
+Release:        0.2.b7.1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
 Group:          Development/Java
 URL:            http://maven.apache.org/wagon
-Source0:        wagon-1.0-%{blevel}-src.tar.gz
-# svn export http://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-6/
-# tar czvf wagon-1.0-beta-6-src.tar.gz wagon-1.0-beta-6
+Source0:        wagon-1.0-%{blevel}-src.tar.xz
+# svn export http://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-7/
+# tar caf wagon-1.0-beta-7-src.tar.xz wagon-1.0-beta-7
 
 Source1:        wagon-1.0-jpp-depmap.xml
 #patch for 1.0 beta-6
 Patch0:         wagon-http-shared-pom_xml.patch
+Patch1:         disable-tck.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -135,6 +136,7 @@ Documents for %{name}.
 sed -i "s|<module>wagon-webdav-jackrabbit</module>|<!-- <module>wagon-webdav-jackrabbit</module> -->|" wagon-providers/pom.xml
 
 %patch0 -b .sav
+%patch1
 
 # To wire out jetty, plexus-avalon-personality and plexus-ftpd requirement
 rm -f wagon-providers/wagon-ftp/src/test/java/org/apache/maven/wagon/providers/ftp/FtpWagonTest.java
@@ -164,90 +166,75 @@ install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 install -m 644 \
   wagon-provider-api/target/wagon-provider-api-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-api-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-api.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-provider-api %{version} JPP/%{name} provider-api
 
 install -m 644 \
   wagon-providers/wagon-file/target/wagon-file-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/file-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/file.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-file %{version} JPP/%{name} file
 
 install -m 644 \
   wagon-providers/wagon-ftp/target/wagon-ftp-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ftp-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/ftp.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-ftp %{version} JPP/%{name} ftp
 
 install -m 644 \
   wagon-providers/wagon-http/target/wagon-http-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/http.jar
 
 %add_to_maven_depmap org.apache.maven.wagon wagon-http %{version} JPP/%{name} http
 
 install -m 644 \
   wagon-providers/wagon-http-lightweight/target/wagon-http-lightweight-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-lightweight-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-lightweight.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-http-lightweight %{version} JPP/%{name} http-lightweight
 
 install -m 644 \
   wagon-providers/wagon-http-shared/target/wagon-http-shared-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-shared-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-shared.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-http-shared %{version} JPP/%{name} http-shared
 
 install -m 644 \
   wagon-providers/wagon-scm/target/wagon-scm-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/scm-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/scm.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-scm %{version} JPP/%{name} scm
 
 install -m 644 \
   wagon-providers/wagon-ssh/target/wagon-ssh-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-ssh %{version} JPP/%{name} ssh
 
 install -m 644 \
   wagon-providers/wagon-ssh-common/target/wagon-ssh-common-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-ssh-common %{version} JPP/%{name} ssh-common
 
 install -m 644 \
   wagon-providers/wagon-ssh-common-test/target/wagon-ssh-common-test-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common-test-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common-test.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-ssh-common-test %{version} JPP/%{name} ssh-common-test
 
 install -m 644 \
   wagon-providers/wagon-ssh-external/target/wagon-ssh-external-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-external-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-external.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-ssh-external %{version} JPP/%{name} ssh-external
 
 #Until webdav is available, map it to an empty dep
 #install -m 644 \
 #  wagon-providers/wagon-webdav-jackrabbit/target/wagon-webdav-jackrabbit-%{version}-%{blevel}.jar \
 #  $RPM_BUILD_ROOT%{_javadir}/%{name}/web-jackrabbit-%{version}.jar
-#%add_to_maven_depmap org.apache.maven.wagon wagon-webdav-jackrabbit %{version} JPP/%{name} webdav-jackrabbit
-%add_to_maven_depmap org.apache.maven.wagon wagon-webdav-jackrabbit %{version} JPP/maven2 empty-dep
-
-
-# no wagon-ssh-ganymed in beta 6
-#install -m 644 \
-#  wagon-providers/wagon-ssh-ganymed/target/wagon-ssh-ganymed-%{version}-%{blevel}.jar \
-#  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-ganymed-%{version}.jar
-#%add_to_maven_depmap org.apache.maven.wagon wagon-ssh-ganymed %{version} JPP/%{name} ssh-ganymed
+#%%add_to_maven_depmap org.apache.maven.wagon wagon-webdav-jackrabbit %{version} JPP/%{name} webdav-jackrabbit
 
 #install -m 644 \
 #  wagon-providers/wagon-webdav/target/wagon-webdav-%{version}-%{blevel}.jar \
 #  $RPM_BUILD_ROOT%{_javadir}/%{name}/webdav-%{version}.jar
 #%%add_to_maven_depmap org.apache.maven.wagon wagon-webdav %{version} JPP/%{name} webdav
 
-
-# Until webdav is available, map it to an empty dep
-# no wagon-webdav in beta 6
-#%add_to_maven_depmap org.apache.maven.wagon wagon-webdav %{version} JPP/maven2 empty-dep
-
 install -m 644 \
   wagon-provider-test/target/wagon-provider-test-%{version}-%{blevel}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-test-%{version}.jar
+  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-test.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-provider-test %{version} JPP/%{name} provider-test
-
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
 # poms
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
@@ -277,17 +264,14 @@ install -m 644 wagon-providers/wagon-ssh-common-test/pom.xml \
     $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.maven-wagon-ssh-common-test.pom
 install -m 644 wagon-providers/wagon-ssh-external/pom.xml \
     $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.maven-wagon-ssh-external.pom
-#install -m 644 wagon-providers/wagon-ssh-ganymed/pom.xml \
-#    $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.maven-wagon-ssh-ganymed.pom
 install -m 644 wagon-providers/wagon-ssh/pom.xml \
     $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.maven-wagon-ssh.pom
 #install -m 644 wagon-providers/wagon-webdav/pom.xml \
 #    $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.maven-wagon-webdav.pom
 
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # manual
 install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
@@ -299,9 +283,6 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 #                $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 #%endif
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_maven_depmap
@@ -317,7 +298,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files javadoc
 %defattr(-,root,root,-)
-%doc %{_javadocdir}/%{name}-%{version}
 %doc %{_javadocdir}/%{name}
 
 %files manual
@@ -325,6 +305,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Mon Dec 13 2010 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.2.b7.1
+- Update to beta 7.
+- Adapt to current guidelines.
+- Fix pom names.
+
 * Thu Sep 9 2010 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.2.b6.3
 - Use javadoc:aggregate.
 - Drop ant build.
