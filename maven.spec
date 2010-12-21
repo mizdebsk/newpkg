@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -9,14 +9,22 @@ License:        ASL 2.0 and MIT and BSD
 URL:            http://maven.apache.org/
 Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
 
+# custom resolver java files
+# source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
+Source100:      JavadirWorkspaceReader.java
+Source101:      MavenJPackageDepmap.java
+
 # 2xx for created non-buildable sources
 Source200:    %{name}-script
+Source201:    %{name}-script-local
 
 # Patch1XX could be upstreamed probably
 # Patch15X are already upstream
 Patch150:         0001-Add-plexus-default-container-dep.patch
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+# Patch2XX for non-upstreamable patches
+Patch200:       0003-Use-custom-resolver.patch
+
 BuildArch:      noarch
 
 BuildRequires:  maven2
@@ -75,17 +83,22 @@ Maven is a software project management and comprehension tool. Based on the
 concept of a project object model (POM), Maven can manage a project's build,
 reporting and documentation from a central piece of information.
 
-%package javadoc
-Summary:   API documentation for %{name}
-Group:     Documentation
-Requires:  jpackage-utils
+%package        javadoc
+Summary:        API documentation for %{name}
+Group:          Documentation
+Requires:       jpackage-utils
 
-%description javadoc
+%description    javadoc
 %{summary}.
 
 %prep
 %setup -q -n apache-%{name}-%{version}
 %patch150 -p1
+%patch200 -p1
+
+# get custom resolver in place
+cp %{SOURCE100} maven-core/src/main/java/org/apache/maven/artifact/resolver
+cp %{SOURCE101} maven-core/src/main/java/org/apache/maven/artifact/repository
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -126,8 +139,6 @@ chmod -x apache-%{name}-%{version}/conf/settings.xml
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 export M2_HOME=$(pwd)/m2home/apache-maven-%{version}
 
 # maven2 directory in /usr/share/java
@@ -182,7 +193,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 jdom
+                               xbean/xbean-reflect xerces-j2 jdom xml-commons-apis
 )
 
 ################
@@ -218,6 +229,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_bindir}
 
 # Wrappers
 cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn3
+cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn3-local
 
 ###################
 # Individual jars #
@@ -230,10 +242,8 @@ for module in maven-aether-provider maven-artifact maven-compat \
               maven-settings-builder;do
 
     pushd $module
-    install -m 644 target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/
-    ln -s $module-%version.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
-    ln -s %{_javadir}/%{name}/$module-%{version}.jar \
-          $RPM_BUILD_ROOT%{_datadir}/%{name}/lib/$module-%{version}.jar
+    install -m 644 target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
+    ln -s %{_javadir}/%{name}/$module.jar $RPM_BUILD_ROOT%{_datadir}/%{name}/lib/$module.jar
     install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.%{name}-$module.pom
     %add_to_maven_depmap org.apache.maven $module %{version} JPP/%{name} $module
     popd
@@ -243,9 +253,10 @@ done
 install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.%{name}-maven.pom
 %add_to_maven_depmap org.apache.maven maven %{version} JPP/%{name} maven
 
+# javadocs
+install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_maven_depmap
@@ -258,6 +269,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn3
+%attr(0755,root,root) %{_bindir}/mvn3-local
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvn
@@ -273,9 +285,19 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}
 
+%files javadoc
+%defattr(-,root,root,-)
+%doc LICENSE.txt
+%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Dec 21 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-4
+- Add fedora local resolver
+- Fix quoting of arguments to mvn scripts
+- Add javadoc subpackage
+- Make jars versionless and remove unneeded clean section
+
 * Wed Dec  1 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-3
 - Remove maven-ant-tasks jar in prep
 - Make fragment file as %%config

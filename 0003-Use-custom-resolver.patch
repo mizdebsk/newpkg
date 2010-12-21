@@ -1,0 +1,133 @@
+From efb78912935d04507ce36951686608d33a3b3647 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Tue, 2 Nov 2010 14:47:05 +0100
+Subject: [PATCH 3/3] Use custom resolver
+
+---
+ .../org/apache/maven/artifact/ArtifactUtils.java   |    8 ++++++--
+ .../main/java/org/apache/maven/DefaultMaven.java   |    6 ++++++
+ .../apache/maven/plugin/MavenPluginValidator.java  |    3 ++-
+ .../internal/DefaultPluginVersionResolver.java     |    7 +++++++
+ .../model/validation/DefaultModelValidator.java    |   13 ++++++++++---
+ 5 files changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
+index 1f37d4f..04bc346 100644
+--- a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
++++ b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
+@@ -99,12 +99,16 @@ public final class ArtifactUtils
+         {
+             throw new NullPointerException( "artifactId is null" );
+         }
+-        if ( version == null )
++        if ( version == null && System.getProperty("maven.jpp.mode") == null )
+         {
+             throw new NullPointerException( "version is null" );
+         }
+ 
+-        return groupId + ":" + artifactId + ":" + version;
++        if( System.getProperty("maven.jpp.mode") == null ) {
++            return groupId + ":" + artifactId + ":" + version;
++        } else {
++            return versionlessKey(groupId, artifactId);
++        }
+     }
+ 
+     public static Map<String, Artifact> artifactMapByVersionlessId( Collection<Artifact> artifacts )
+diff --git a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
+index e892ee9..b0bfea6 100644
+--- a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
++++ b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
+@@ -55,6 +55,7 @@ import org.apache.maven.project.ProjectBuildingException;
+ import org.apache.maven.project.ProjectBuildingRequest;
+ import org.apache.maven.project.ProjectBuildingResult;
+ import org.apache.maven.project.ProjectSorter;
++import org.apache.maven.artifact.resolver.JavadirWorkspaceReader;
+ import org.apache.maven.repository.DelegatingLocalArtifactRepository;
+ import org.apache.maven.repository.LocalRepositoryNotAccessibleException;
+ import org.apache.maven.settings.Mirror;
+@@ -361,6 +362,11 @@ public class DefaultMaven
+             session.setWorkspaceReader( workspaceRepository );
+         }
+ 
++        if ( System.getProperty("maven.jpp.mode") != null)
++        {
++            session.setWorkspaceReader(new JavadirWorkspaceReader());
++        }
++
+         DefaultSettingsDecryptionRequest decrypt = new DefaultSettingsDecryptionRequest();
+         decrypt.setProxies( request.getProxies() );
+         decrypt.setServers( request.getServers() );
+diff --git a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
+index 009635b..91ad68e 100644
+--- a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
++++ b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
+@@ -60,7 +60,8 @@ public class MavenPluginValidator
+             errors.add( "Plugin's descriptor contains the wrong artifact ID: " + pluginDescriptor.getArtifactId() );
+         }
+ 
+-        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() ) )
++        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() )
++             && System.getProperty("maven.jpp.mode") == null)
+         {
+             errors.add( "Plugin's descriptor contains the wrong version: " + pluginDescriptor.getVersion() );
+         }
+diff --git a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
+index fb074fb..9583d05 100644
+--- a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
++++ b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
+@@ -75,6 +75,13 @@ public class DefaultPluginVersionResolver
+         throws PluginVersionResolutionException
+     {
+         logger.debug( "Resolving plugin version for " + request.getGroupId() + ":" + request.getArtifactId() );
++        if (System.getProperty("maven.jpp.mode") != null) {
++            DefaultPluginVersionResult result = new DefaultPluginVersionResult("latest");
++            result.setRepository(request.getRepositorySession().getWorkspaceReader().getRepository());
++            logger.debug( "Resolved plugin version for " + request.getGroupId() + ":" + request.getArtifactId()
++                          + " to latest from repository " + result.getRepository());
++            return result;
++        }
+ 
+         PluginVersionResult result = resolveFromProject( request );
+ 
+diff --git a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
+index 033211a..1c09272 100644
+--- a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
++++ b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
+@@ -405,7 +405,10 @@ public class DefaultModelValidator
+ 
+                 if ( !management )
+                 {
+-                    validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
++                    if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
++                        d.setVersion("latest");
++                    else
++                        validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
+ 
+                     /*
+                      * TODO: Extensions like Flex Mojos use custom scopes like "merged", "internal", "external", etc.
+@@ -433,7 +436,10 @@ public class DefaultModelValidator
+             {
+                 validateEffectiveDependency( problems, d, false, prefix, request );
+ 
+-                validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
++                if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
++                    d.setVersion("latest");
++                else
++                    validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
+ 
+                 validateEnum( prefix + "scope", problems, errOn30, d.getScope(), d.getManagementKey(), d, "compile",
+                               "runtime", "system" );
+@@ -452,7 +458,8 @@ public class DefaultModelValidator
+         {
+             validateStringNotEmpty( prefix + "type", problems, Severity.ERROR, d.getType(), d.getManagementKey(), d );
+ 
+-            validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
++            if(System.getProperty("maven.jpp.mode") == null)
++                validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
+                                     d );
+         }
+ 
+-- 
+1.7.3.2
+
