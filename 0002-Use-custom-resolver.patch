@@ -1,25 +1,60 @@
-From efb78912935d04507ce36951686608d33a3b3647 Mon Sep 17 00:00:00 2001
+From 731d9fb5b28edb2e966ef6d6bb93a70607d7d722 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 2 Nov 2010 14:47:05 +0100
-Subject: [PATCH 3/3] Use custom resolver
+Subject: [PATCH 2/2] Use custom resolver
 
+WorkspaceReader is used to resolve main dependencies, but we had to
+add this resolve to ProjectModelResolver and DefaultModelResolver as
+well because these are instantiated early and used to build model of
+project when WorkspaceReader is not available yet.
 ---
- .../org/apache/maven/artifact/ArtifactUtils.java   |    8 ++++++--
- .../main/java/org/apache/maven/DefaultMaven.java   |    6 ++++++
- .../apache/maven/plugin/MavenPluginValidator.java  |    3 ++-
- .../internal/DefaultPluginVersionResolver.java     |    7 +++++++
- .../model/validation/DefaultModelValidator.java    |   13 ++++++++++---
- 5 files changed, 31 insertions(+), 6 deletions(-)
+ .../repository/internal/DefaultModelResolver.java  |    9 +++++++++
+ .../org/apache/maven/artifact/ArtifactUtils.java   |   10 ++++++++--
+ .../main/java/org/apache/maven/DefaultMaven.java   |    7 +++++++
+ .../apache/maven/plugin/MavenPluginValidator.java  |    5 ++++-
+ .../internal/DefaultPluginVersionResolver.java     |    9 +++++++++
+ .../apache/maven/project/ProjectModelResolver.java |    9 +++++++++
+ .../model/validation/DefaultModelValidator.java    |   16 +++++++++++++---
+ 7 files changed, 59 insertions(+), 6 deletions(-)
 
+diff --git a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
+index cae3735..2d11d64 100644
+--- a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
++++ b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
+@@ -39,6 +39,7 @@ import org.sonatype.aether.repository.RemoteRepository;
+ import org.sonatype.aether.resolution.ArtifactRequest;
+ import org.sonatype.aether.resolution.ArtifactResolutionException;
+ import org.sonatype.aether.util.artifact.DefaultArtifact;
++import org.apache.maven.artifact.resolver.JavadirWorkspaceReader;
+ 
+ /**
+  * A model resolver to assist building of dependency POMs. This resolver gives priority to those repositories that have
+@@ -108,6 +109,14 @@ class DefaultModelResolver
+         throws UnresolvableModelException
+     {
+         Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
++        if ( System.getProperty("maven.jpp.mode") != null) {
++            JavadirWorkspaceReader wReader = new JavadirWorkspaceReader();
++            File pomFile = wReader.findArtifact(pomArtifact);
++            // if pom file does not exist continue resolving using different
++            // resolvers (maybe they will have more luck)
++            if ( pomFile != null )
++                return new FileModelSource( pomFile );
++        }
+ 
+         try
+         {
 diff --git a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
-index 1f37d4f..04bc346 100644
+index 1f37d4f..d60dab8 100644
 --- a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
 +++ b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
-@@ -99,12 +99,16 @@ public final class ArtifactUtils
+@@ -99,12 +99,18 @@ public final class ArtifactUtils
          {
              throw new NullPointerException( "artifactId is null" );
          }
 -        if ( version == null )
++        // in jpp mode we ignore versions because these would only cause
++        // problems
 +        if ( version == null && System.getProperty("maven.jpp.mode") == null )
          {
              throw new NullPointerException( "version is null" );
@@ -35,7 +70,7 @@ index 1f37d4f..04bc346 100644
  
      public static Map<String, Artifact> artifactMapByVersionlessId( Collection<Artifact> artifacts )
 diff --git a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
-index e892ee9..b0bfea6 100644
+index e892ee9..0222b01 100644
 --- a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 +++ b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 @@ -55,6 +55,7 @@ import org.apache.maven.project.ProjectBuildingException;
@@ -46,10 +81,11 @@ index e892ee9..b0bfea6 100644
  import org.apache.maven.repository.DelegatingLocalArtifactRepository;
  import org.apache.maven.repository.LocalRepositoryNotAccessibleException;
  import org.apache.maven.settings.Mirror;
-@@ -361,6 +362,11 @@ public class DefaultMaven
+@@ -361,6 +362,12 @@ public class DefaultMaven
              session.setWorkspaceReader( workspaceRepository );
          }
  
++        // Set our own workspace reader to resolve from /usr/share/java
 +        if ( System.getProperty("maven.jpp.mode") != null)
 +        {
 +            session.setWorkspaceReader(new JavadirWorkspaceReader());
@@ -59,28 +95,32 @@ index e892ee9..b0bfea6 100644
          decrypt.setProxies( request.getProxies() );
          decrypt.setServers( request.getServers() );
 diff --git a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
-index 009635b..91ad68e 100644
+index 009635b..7d03748 100644
 --- a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
 +++ b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
-@@ -60,7 +60,8 @@ public class MavenPluginValidator
+@@ -60,7 +60,10 @@ public class MavenPluginValidator
              errors.add( "Plugin's descriptor contains the wrong artifact ID: " + pluginDescriptor.getArtifactId() );
          }
  
 -        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() ) )
++        // ignore incorrect version in jpp mode (we can have different
++        // versions in /usr/share/java
 +        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() )
 +             && System.getProperty("maven.jpp.mode") == null)
          {
              errors.add( "Plugin's descriptor contains the wrong version: " + pluginDescriptor.getVersion() );
          }
 diff --git a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
-index fb074fb..9583d05 100644
+index fb074fb..bf2e703 100644
 --- a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
 +++ b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
-@@ -75,6 +75,13 @@ public class DefaultPluginVersionResolver
+@@ -75,6 +75,15 @@ public class DefaultPluginVersionResolver
          throws PluginVersionResolutionException
      {
          logger.debug( "Resolving plugin version for " + request.getGroupId() + ":" + request.getArtifactId() );
 +        if (System.getProperty("maven.jpp.mode") != null) {
++            // in jpp mode we always use "latest" as a resolved version
++            // (we ignore it anyway)
 +            DefaultPluginVersionResult result = new DefaultPluginVersionResult("latest");
 +            result.setRepository(request.getRepositorySession().getWorkspaceReader().getRepository());
 +            logger.debug( "Resolved plugin version for " + request.getGroupId() + ":" + request.getArtifactId()
@@ -90,15 +130,43 @@ index fb074fb..9583d05 100644
  
          PluginVersionResult result = resolveFromProject( request );
  
+diff --git a/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java b/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
+index 403351a..2351620 100644
+--- a/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
++++ b/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
+@@ -41,6 +41,7 @@ import org.sonatype.aether.repository.RepositoryPolicy;
+ import org.sonatype.aether.resolution.ArtifactRequest;
+ import org.sonatype.aether.resolution.ArtifactResolutionException;
+ import org.sonatype.aether.util.artifact.DefaultArtifact;
++import org.apache.maven.artifact.resolver.JavadirWorkspaceReader;
+ 
+ /**
+  * A model resolver to assist building of projects. This resolver gives priority to those repositories that have been
+@@ -172,6 +173,14 @@ class ProjectModelResolver
+         if ( pomFile == null )
+         {
+             Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
++            if ( System.getProperty("maven.jpp.mode") != null) {
++                JavadirWorkspaceReader wReader = new JavadirWorkspaceReader();
++                pomFile = wReader.findArtifact(pomArtifact);
++                // if pom file does not exist continue resolving using different resolvers
++                // (maybe they will have more luck)
++                if ( pomFile != null)
++                    return new FileModelSource( pomFile );
++            }
+ 
+             try
+             {
 diff --git a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
-index 033211a..1c09272 100644
+index 033211a..eec6caf 100644
 --- a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
 +++ b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
-@@ -405,7 +405,10 @@ public class DefaultModelValidator
+@@ -405,7 +405,11 @@ public class DefaultModelValidator
  
                  if ( !management )
                  {
 -                    validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
++                    // in jpp mode set version to "latest" and validate 
 +                    if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
 +                        d.setVersion("latest");
 +                    else
@@ -106,11 +174,12 @@ index 033211a..1c09272 100644
  
                      /*
                       * TODO: Extensions like Flex Mojos use custom scopes like "merged", "internal", "external", etc.
-@@ -433,7 +436,10 @@ public class DefaultModelValidator
+@@ -433,7 +437,11 @@ public class DefaultModelValidator
              {
                  validateEffectiveDependency( problems, d, false, prefix, request );
  
 -                validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
++                // in jpp mode set version to "latest" and validate 
 +                if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
 +                    d.setVersion("latest");
 +                else
@@ -118,16 +187,17 @@ index 033211a..1c09272 100644
  
                  validateEnum( prefix + "scope", problems, errOn30, d.getScope(), d.getManagementKey(), d, "compile",
                                "runtime", "system" );
-@@ -452,7 +458,8 @@ public class DefaultModelValidator
+@@ -452,7 +460,9 @@ public class DefaultModelValidator
          {
              validateStringNotEmpty( prefix + "type", problems, Severity.ERROR, d.getType(), d.getManagementKey(), d );
  
 -            validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
++            // in jpp mode ignore missing version completely
 +            if(System.getProperty("maven.jpp.mode") == null)
 +                validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
                                      d );
          }
  
 -- 
-1.7.3.2
+1.7.3.4
 

@@ -63,7 +63,16 @@ public class JavadirWorkspaceReader
         }
 
         MavenJPackageDepmap.debug("Returning " + path.toString());
-        return new File(path.toString());
+        File ret = new File(path.toString());
+        // if file doesn't exist return null to delegate to other
+        // resolvers (reactor/local repo)
+        if ( ret.isFile() ) {
+            MavenJPackageDepmap.debug("Returning " + path.toString());
+            return ret;
+        } else {
+            MavenJPackageDepmap.debug("Returning null for gid:aid" + groupId + ":" + artifactId);
+            return null;
+        }
     }
 
     public List<String> findVersions( Artifact artifact ) {

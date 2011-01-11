@@ -18,6 +18,9 @@ Source101:      MavenJPackageDepmap.java
 Source200:    %{name}-script
 Source201:    %{name}-script-local
 
+# Other included files
+Source250:    repo-metadata.tar.xz
+
 # Patch1XX could be upstreamed probably
 # Patch15X are already upstream
 Patch150:         0001-Add-plexus-default-container-dep.patch
@@ -97,8 +100,14 @@ Requires:       jpackage-utils
 %patch200 -p1
 
 # get custom resolver in place
-cp %{SOURCE100} maven-core/src/main/java/org/apache/maven/artifact/resolver
-cp %{SOURCE101} maven-core/src/main/java/org/apache/maven/artifact/repository
+mkdir -p maven-aether-provider/src/main/java/org/apache/maven/artifact/resolver \
+         maven-aether-provider/src/main/java/org/apache/maven/artifact/repository
+
+cp %{SOURCE100} maven-aether-provider/src/main/java/org/apache/maven/artifact/resolver
+cp %{SOURCE101} maven-aether-provider/src/main/java/org/apache/maven/artifact/repository
+
+# by adding our things this has become compile dep
+sed -i 's:<scope>runtime</scope>::' maven-core/pom.xml
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -152,6 +161,12 @@ mv $M2_HOME/bin/m2.conf $RPM_BUILD_ROOT%{_sysconfdir}/
 # M2_HOME #
 ###########
 install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}
+
+#################
+# Repo metadata #
+#################
+install -m 755 %{SOURCE250} $RPM_BUILD_ROOT%{_datadir}/%{name}/
+
 
 ###############
 # M2_HOME/bin #
@@ -284,6 +299,7 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %{_datadir}/%{name}/repository
 %config %{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}
+%{_datadir}/%{name}/repo-metadata.tar.xz
 
 %files javadoc
 %defattr(-,root,root,-)
@@ -292,6 +308,12 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Jan 11 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-5
+- Fix bugs #667625 #667614 and #667636
+- Install maven metadata so they are not downloaded when mvn is run
+- Rename mvn3-local to mvn-local
+- Add more comments to resolver patch
+
 * Tue Dec 21 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-4
 - Add fedora local resolver
 - Fix quoting of arguments to mvn scripts
