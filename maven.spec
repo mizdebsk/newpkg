@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -23,7 +23,7 @@ Source201:    %{name}-script-local
 Patch150:         0001-Add-plexus-default-container-dep.patch
 
 # Patch2XX for non-upstreamable patches
-Patch200:       0003-Use-custom-resolver.patch
+Patch200:       0002-Use-custom-resolver.patch
 
 BuildArch:      noarch
 
@@ -229,7 +229,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_bindir}
 
 # Wrappers
 cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn3
-cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn3-local
+cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn-local
 
 ###################
 # Individual jars #
@@ -269,7 +269,7 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %defattr(-,root,root,-)
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn3
-%attr(0755,root,root) %{_bindir}/mvn3-local
+%attr(0755,root,root) %{_bindir}/mvn-local
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvn
