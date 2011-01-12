@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -308,6 +308,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Wed Jan 12 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-6
+- Fix bug #669034
+
 * Tue Jan 11 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-5
 - Fix bugs #667625 #667614 and #667636
 - Install maven metadata so they are not downloaded when mvn is run

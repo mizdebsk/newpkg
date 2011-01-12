@@ -1,4 +1,4 @@
-From 731d9fb5b28edb2e966ef6d6bb93a70607d7d722 Mon Sep 17 00:00:00 2001
+From 0ef392488f676a6b64d408bb98d21eefaa1d3d10 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 2 Nov 2010 14:47:05 +0100
 Subject: [PATCH 2/2] Use custom resolver
@@ -14,8 +14,9 @@ project when WorkspaceReader is not available yet.
  .../apache/maven/plugin/MavenPluginValidator.java  |    5 ++++-
  .../internal/DefaultPluginVersionResolver.java     |    9 +++++++++
  .../apache/maven/project/ProjectModelResolver.java |    9 +++++++++
+ .../project/artifact/MavenMetadataSource.java      |    9 +++++++++
  .../model/validation/DefaultModelValidator.java    |   16 +++++++++++++---
- 7 files changed, 59 insertions(+), 6 deletions(-)
+ 8 files changed, 68 insertions(+), 6 deletions(-)
 
 diff --git a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
 index cae3735..2d11d64 100644
@@ -157,6 +158,26 @@ index 403351a..2351620 100644
  
              try
              {
+diff --git a/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java b/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
+index 066fbf3..a7cbf40 100644
+--- a/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
++++ b/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
+@@ -326,6 +326,15 @@ public class MavenMetadataSource
+             return null;
+         }
+ 
++        // this is a workaround for 669034
++        // Seems like plexus-container-default has some quirks that
++        // cause it to lose version. Needs more looking into and fix it
++        // properly
++        if (dependency.getVersion() == null && System.getProperty("maven.jpp.mode") != null) 
++        {
++            System.out.println("FIXING NULL VERSION:" + dependency.getGroupId() + ":" + dependency.getArtifactId() + ":" + dependency.getVersion());
++            dependency.setVersion("1.0.0");
++        }
+         VersionRange versionRange = VersionRange.createFromVersionSpec( dependency.getVersion() );
+ 
+         Artifact dependencyArtifact =
 diff --git a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
 index 033211a..eec6caf 100644
 --- a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
