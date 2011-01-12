@@ -1,19 +1,21 @@
 %global full_name sonatype-aether
-%global githash g6ef7c04
+%global githash g23f7474
 
 Name:           aether
-Version:        1.7
-Release:        3%{?dist}
+Version:        1.9
+Release:        1%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
-License:        ASL 2.0
+License:        EPL
 URL:            https://docs.sonatype.org/display/AETHER/Home
 # it seems github has redirects plus it generates tarball on the fly
-# to get tarball go to http://github.com/sonatype/sonatype-aether/tree/aether-1.7
+# to get tarball go to http://github.com/sonatype/sonatype-aether/tree/aether-1.9
 # click "downloads" in upper right corner
 # click "download .tar.gz"
 Source0:        sonatype-%{full_name}-%{name}-%{version}-0-%{githash}.tar.gz
+
+Patch0:         0001-Remove-sonatype-test-dependencies.patch
 
 BuildArch:      noarch
 
@@ -29,8 +31,11 @@ BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
 BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  mojo-parent
+BuildRequires:  async-http-client
+BuildRequires:  sonatype-oss-parent
 
 
+Requires:       async-http-client
 Requires:       maven2
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
@@ -51,8 +56,12 @@ Requires:  jpackage-utils
 
 %prep
 # last part will have to change every time
-%setup -q -n sonatype-%{full_name}-074c2fb
+%setup -q -n sonatype-%{full_name}-333a944
 
+# we'd need org.sonatype.http-testing-harness so let's remove async
+# http tests (leave others enabled)
+%patch0 -p1
+rm -rf aether-connector-asynchttpclient/src/test
 
 %build
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
@@ -106,6 +115,11 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 
 
 %changelog
+* Wed Jan 19 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.9-1
+- License changed to EPL
+- Add async-http-client to BR/R
+- Update to latest version
+
 * Wed Dec  8 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.7-3
 - Make jars/javadocs versionless
 - Remove buildroot and clean section

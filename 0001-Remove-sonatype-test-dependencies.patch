@@ -1,0 +1,41 @@
+From f4e4ddbf486dd3222a5cd114c92bc71f8cc42064 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Fri, 28 Jan 2011 16:21:02 +0100
+Subject: [PATCH] Remove sonatype test dependencies
+
+---
+ aether-connector-asynchttpclient/pom.xml |   18 ------------------
+ 1 files changed, 0 insertions(+), 18 deletions(-)
+
+diff --git a/aether-connector-asynchttpclient/pom.xml b/aether-connector-asynchttpclient/pom.xml
+index b14ff86..398d5cb 100644
+--- a/aether-connector-asynchttpclient/pom.xml
++++ b/aether-connector-asynchttpclient/pom.xml
+@@ -58,24 +58,6 @@ http://www.eclipse.org/legal/epl-v10.html
+       <version>6.1.25</version>
+       <scope>test</scope>
+     </dependency>
+-    <dependency>
+-      <groupId>org.sonatype.http-testing-harness</groupId>
+-      <artifactId>junit-runner</artifactId>
+-      <version>0.3</version>
+-      <scope>test</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.sonatype.http-testing-harness</groupId>
+-      <artifactId>server-provider</artifactId>
+-      <version>0.3</version>
+-      <scope>test</scope>
+-      <exclusions>
+-        <exclusion>
+-          <groupId>ch.qos.logback</groupId>
+-          <artifactId>logback-classic</artifactId>
+-        </exclusion>
+-      </exclusions>
+-    </dependency>
+        
+     <dependency>
+       <groupId>org.slf4j</groupId>
+-- 
+1.7.3.5
+
