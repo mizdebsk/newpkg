@@ -40,4 +40,8 @@ fi
 export M2_HOME=/usr/share/maven
 echo $JAVA_HOME
 export JAVA_HOME
-$M2_HOME/bin/mvn -o -Dmaven.jpp.mode ${local_add} "$@"
+# can't put it on command line due to
+# http://jira.codehaus.org/browse/SUREFIRE-121
+export MAVEN_OPTS="-Dmaven.jpp.mode ${local_add}"
+
+$M2_HOME/bin/mvn -o "$@"

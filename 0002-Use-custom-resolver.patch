@@ -1,6 +1,6 @@
-From 0ef392488f676a6b64d408bb98d21eefaa1d3d10 Mon Sep 17 00:00:00 2001
+From c804249cb3355df3ac10b4a83fffa2a4c84bd69b Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
-Date: Tue, 2 Nov 2010 14:47:05 +0100
+Date: Tue, 18 Jan 2011 11:09:32 +0100
 Subject: [PATCH 2/2] Use custom resolver
 
 WorkspaceReader is used to resolve main dependencies, but we had to
@@ -11,12 +11,13 @@ project when WorkspaceReader is not available yet.
  .../repository/internal/DefaultModelResolver.java  |    9 +++++++++
  .../org/apache/maven/artifact/ArtifactUtils.java   |   10 ++++++++--
  .../main/java/org/apache/maven/DefaultMaven.java   |    7 +++++++
+ .../main/java/org/apache/maven/ReactorReader.java  |    4 ++--
  .../apache/maven/plugin/MavenPluginValidator.java  |    5 ++++-
  .../internal/DefaultPluginVersionResolver.java     |    9 +++++++++
  .../apache/maven/project/ProjectModelResolver.java |    9 +++++++++
  .../project/artifact/MavenMetadataSource.java      |    9 +++++++++
  .../model/validation/DefaultModelValidator.java    |   16 +++++++++++++---
- 8 files changed, 68 insertions(+), 6 deletions(-)
+ 9 files changed, 70 insertions(+), 8 deletions(-)
 
 diff --git a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
 index cae3735..2d11d64 100644
@@ -95,6 +96,28 @@ index e892ee9..0222b01 100644
          DefaultSettingsDecryptionRequest decrypt = new DefaultSettingsDecryptionRequest();
          decrypt.setProxies( request.getProxies() );
          decrypt.setServers( request.getServers() );
+diff --git a/maven-core/src/main/java/org/apache/maven/ReactorReader.java b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
+index 62e181a..3d08c65 100644
+--- a/maven-core/src/main/java/org/apache/maven/ReactorReader.java
++++ b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
+@@ -216,7 +216,7 @@ class ReactorReader
+ 
+     public File findArtifact( Artifact artifact )
+     {
+-        String projectKey = artifact.getGroupId() + ':' + artifact.getArtifactId() + ':' + artifact.getVersion();
++        String projectKey = ArtifactUtils.key( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() );
+ 
+         MavenProject project = projectsByGAV.get( projectKey );
+ 
+@@ -230,7 +230,7 @@ class ReactorReader
+ 
+     public List<String> findVersions( Artifact artifact )
+     {
+-        String key = artifact.getGroupId() + ':' + artifact.getArtifactId();
++        String key = ArtifactUtils.versionlessKey( artifact.getGroupId(), artifact.getArtifactId() );
+ 
+         List<MavenProject> projects = projectsByGA.get( key );
+         if ( projects == null || projects.isEmpty() )
 diff --git a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
 index 009635b..7d03748 100644
 --- a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
