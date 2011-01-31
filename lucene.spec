@@ -30,8 +30,8 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        2.4.1
-Release:        7%{?dist}
+Version:        2.9.4
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -39,14 +39,12 @@ Group:          Development/Libraries
 Source0:        http://archive.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
 Source1:        lucene-1.9-OSGi-MANIFEST.MF
 Source2:        lucene-1.9-analysis-OSGi-MANIFEST.MF
-Patch1:         lucene-2.4.1-db-javadoc.patch
-Patch2:         %{name}-2.4.1-fixmanifests.patch
-Patch4:         lucli-remove-classpath.patch
+Patch1:         0001-Remove-bdb-packageset.patch
+Patch2:         0002-Fix-version-string.patch
+Patch3:         0003-Remove-classpath.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
-#BuildRequires:  berkeleydb
-#BuildRequires:  berkeleydb-native >= 0:4.3.29
 BuildRequires:  junit
 BuildRequires:  javacc
 BuildRequires:  java-javadoc
@@ -56,16 +54,23 @@ BuildRequires:  regexp
 BuildRequires:  apache-commons-digester
 BuildRequires:  unzip
 BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  apache-commons-compress
+BuildRequires:  icu4j
+# for tests
+BuildRequires:  subversion
+
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{version}
 BuildArch:      noarch
+
 Requires:       jpackage-utils
 
 %description
-Jakarta Lucene is a high-performance, full-featured text search engine
-written entirely in Java. It is a technology suitable for nearly any
-application that requires full-text search, especially cross-platform.
+Apache Lucene is a high-performance, full-featured text search
+engine library written entirely in Java. It is a technology suitable
+for nearly any application that requires full-text search, especially
+cross-platform.
 
 %package javadoc
 Summary:        Javadoc for Lucene
@@ -98,30 +103,16 @@ find . -name "*.jar" -exec rm -f {} \;
 
 %patch1 -p1 -b .db-javadoc
 %patch2 -p1 -b .fixmanifests
-%patch4
+%patch3 -p1 -b .removeclasspath
 
-iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new 
+iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new
 
 %build
 mkdir -p docs
 mkdir -p lib
 export OPT_JAR_LIST="ant/ant-junit junit"
-export CLASSPATH=$(build-classpath jline jtidy regexp commons-digester)
-#pushd contrib/db/bdb/lib
-#ln -sf $(build-classpath berkeleydb-native) .
-#popd
-#pushd contrib/db/bdb-je/lib
-#ln -sf $(build-classpath berkeleydb) .
-#popd
+export CLASSPATH=$(build-classpath jline jtidy regexp commons-digester apache-commons-compress icu4j)
 rm -r contrib/db
-
-#FIXME: Tests freeze randomly. Turning on debug messages shows warnings like:
-
-# [junit] GC Warning: Repeated allocation of very large block (appr. size 512000):
-# [junit]   May lead to memory leak and poor performance.
-
-# See: http://koji.fedoraproject.org/koji/getfile?taskID=169839&name=build.log
-# for an example
 
 ant -Dbuild.sysclasspath=first \
   -Djavacc.home=%{_bindir}/javacc \
@@ -129,8 +120,7 @@ ant -Dbuild.sysclasspath=first \
   -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=%{_javadocdir}/java \
   -Dversion=%{version} \
-  package
-#  package test generate-test-reports
+  package test-core test-contrib
 
 # add missing OSGi metadata to manifests
 mkdir META-INF
@@ -138,53 +128,53 @@ unzip -o build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 cat %{SOURCE1} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-unzip -o build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
+unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 cat %{SOURCE2} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 
 %install
-rm -rf $RPM_BUILD_ROOT
 
 # jars
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}
-install -m 0644 build/%{name}-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-install -m 0644 build/%{name}-demos-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-demos-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+install -m 0644 build/%{name}-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+install -m 0644 build/%{name}-demos-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-demos.jar
 
 # contrib jars
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
-for c in analyzers ant highlighter lucli memory misc queries similarity snowball spellchecker surround swing wordnet xml-query-parser; do
+for c in analyzers ant benchmark collation fast-vector-highlighter highlighter \
+         instantiated lucli memory misc queries queryparser regex remote \
+         snowball spatial spellchecker surround swing wikipedia wordnet \
+         xml-query-parser; do
     install -m 0644 build/contrib/$c/%{name}-${c}-%{version}.jar \
-        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
+        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
 done
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
 
 # javadoc
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr build/docs/api/* \
-  $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+  $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # webapp
 install -d -m 0755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 install -m 0644 build/%{name}web.war \
   $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%pre javadoc
+# workaround for rpm bug, can be removed in F-17
+[ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
+rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
+
 
 %files
 %defattr(-,root,root,-)
-%doc CHANGES.txt LICENSE.txt README.txt
-%{_javadir}/%{name}-%{version}.jar
+%doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt
 %{_javadir}/%{name}.jar
 %{_datadir}/%{name}-%{version}
 
 %files javadoc
 %defattr(-,root,root,-)
 %doc LICENSE.txt
-%{_javadocdir}/%{name}-%{version}
 %{_javadocdir}/%{name}
 
 %files contrib
@@ -194,10 +184,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files demo
 %defattr(-,root,root,-)
-%{_javadir}/%{name}-demos-%{version}.jar
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Mon Jan 31 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.9.4-1
+- Update to latest 2.x version (3.x is not API compatible)
+- Add new modules
+- Enable tests again
+- Versionless jars & javadocs
+
 * Wed Oct 13 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.4.1-7
 - BR java 1.6.0.
 

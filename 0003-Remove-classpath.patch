@@ -1,5 +1,16 @@
---- contrib/lucli/build.xml.sav	2010-10-13 00:10:02.626635161 +0300
-+++ contrib/lucli/build.xml	2010-10-13 00:10:32.866857676 +0300
+From 98425c17c2ac31515d365536fa123da4c505bff2 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Mon, 31 Jan 2011 14:11:25 +0100
+Subject: [PATCH 3/3] Remove classpath
+
+---
+ contrib/lucli/build.xml |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/lucli/build.xml b/contrib/lucli/build.xml
+index 61837de..7b2c8a3 100644
+--- a/contrib/lucli/build.xml
++++ b/contrib/lucli/build.xml
 @@ -42,7 +42,6 @@
      <jarify>
        <manifest-attributes>
@@ -16,3 +27,6 @@
        </manifest-attributes>
    	</jarify>
    </target>   
+-- 
+1.7.3.5
+
