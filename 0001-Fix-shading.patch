@@ -1,6 +1,6 @@
-From f468c161563690c2b3a979f40bb53df329d5be47 Mon Sep 17 00:00:00 2001
+From dc9fcf7a07ea3d7f0796625523ef8bd8fc248357 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
-Date: Fri, 8 Oct 2010 17:09:03 +0200
+Date: Wed, 2 Feb 2011 13:59:28 +0100
 Subject: [PATCH] Fix shading
 
 ---
@@ -9,13 +9,13 @@ Subject: [PATCH] Fix shading
  2 files changed, 3 insertions(+), 18 deletions(-)
 
 diff --git a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
-index aa7fc26..2256ff1 100644
+index 2b129c6..6a9a9b4 100644
 --- a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
 +++ b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
-@@ -59,10 +59,9 @@
+@@ -58,10 +58,9 @@
              </DynamicImport-Package>
              <Export-Package>
-               org.sonatype.inject;-noimport:=true;-split-package:=merge-first;version=${project.version},
+               org.sonatype.inject.*;-noimport:=true;-split-package:=merge-first;version=${project.version},
 -              javax.*|org.aopalliance.*;version=1
              </Export-Package>
              <Private-Package>
@@ -24,7 +24,7 @@ index aa7fc26..2256ff1 100644
              </Private-Package>
            </instructions>
          </configuration>
-@@ -81,18 +80,12 @@
+@@ -80,18 +79,12 @@
                    <include>${project.groupId}:${project.artifactId}</include>
                  </includes>
                </artifactSet>
@@ -46,10 +46,10 @@ index aa7fc26..2256ff1 100644
                  </filter>
                </filters>
 diff --git a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
-index 506bd3c..2045e04 100644
+index 0eef00e..48fe364 100644
 --- a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
 +++ b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
-@@ -82,20 +82,12 @@
+@@ -81,20 +81,12 @@
                    <include>${project.groupId}:${project.artifactId}</include>
                  </includes>
                </artifactSet>
@@ -71,5 +71,5 @@ index 506bd3c..2045e04 100644
                  </filter>
                </filters>
 -- 
-1.7.2.3
+1.7.3.5
 
