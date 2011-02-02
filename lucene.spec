@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.9.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -132,12 +132,18 @@ unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF
 cat %{SOURCE2} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
+cp contrib/analyzers/common/pom.xml.template contrib/analyzers/
+# prepare pom files (replace @version@ with real version)
+find contrib -iname '*.pom.xml.template' -exec \
+             sed -i "s:@version@:%{version}:g" \{\} \;
 
 %install
 
 # jars
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}
+install -d -m 0755 $RPM_BUILD_ROOT%{_mavenpomdir}
 install -m 0644 build/%{name}-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-core.jar
 install -m 0644 build/%{name}-demos-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-demos.jar
 
 # contrib jars
@@ -148,6 +154,17 @@ for c in analyzers ant benchmark collation fast-vector-highlighter highlighter \
          xml-query-parser; do
     install -m 0644 build/contrib/$c/%{name}-${c}-%{version}.jar \
         $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
+
+    install -m 0644 contrib/$c/pom.xml.template \
+               $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.lucene-contrib-lucene-$c.pom
+    %add_to_maven_depmap org.apache.lucene lucene-$c %{version} JPP/lucene-contrib lucene-$c
+done
+
+# main poms
+for pom in contrib core demos parent; do
+    install -m 0644 lucene-$pom-pom.xml.template \
+           $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-$pom.pom
+    %add_to_maven_depmap org.apache.lucene lucene-$pom %{version} JPPlucene lucene-$pom
 done
 
 # javadoc
@@ -165,11 +182,20 @@ install -m 0644 build/%{name}web.war \
 [ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
 rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
+%post
+%update_maven_depmap
+
+%postun
+%update_maven_depmap
+
 
 %files
 %defattr(-,root,root,-)
 %doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt
+%{_mavenpomdir}/JPP*pom
+%{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}.jar
+%{_javadir}/%{name}-core.jar
 %{_datadir}/%{name}-%{version}
 
 %files javadoc
@@ -187,6 +213,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Wed Feb  2 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.9.4-2
+- Add maven metadata (rhbz#566775)
+
 * Mon Jan 31 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.9.4-1
 - Update to latest 2.x version (3.x is not API compatible)
 - Add new modules
