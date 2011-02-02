@@ -164,7 +164,7 @@ done
 for pom in contrib core demos parent; do
     install -m 0644 lucene-$pom-pom.xml.template \
            $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-$pom.pom
-    %add_to_maven_depmap org.apache.lucene lucene-$pom %{version} JPPlucene lucene-$pom
+    %add_to_maven_depmap org.apache.lucene lucene-$pom %{version} JPP lucene-$pom
 done
 
 # javadoc
