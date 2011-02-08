@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.9.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -107,6 +107,10 @@ find . -name "*.jar" -exec rm -f {} \;
 
 iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new
 
+# prepare pom files (replace @version@ with real version)
+find contrib -iname '*.pom.xml.template' -exec \
+             sed -i "s:@version@:%{version}:g" \{\} \;
+
 %build
 mkdir -p docs
 mkdir -p lib
@@ -131,11 +135,9 @@ zip -u build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 cat %{SOURCE2} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
-zip -u build/contrib/analyzers/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
+zip -u build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 cp contrib/analyzers/common/pom.xml.template contrib/analyzers/
-# prepare pom files (replace @version@ with real version)
-find contrib -iname '*.pom.xml.template' -exec \
-             sed -i "s:@version@:%{version}:g" \{\} \;
+cp build/contrib/analyzers/common/lucene-analyzers-%{version}.jar build/contrib/analyzers/
 
 %install
 
@@ -213,6 +215,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Tue Feb  8 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.9.4-3
+- Fix empty lucene-analyzers (rhbz#675950)
+
 * Wed Feb  2 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.9.4-2
 - Add maven metadata (rhbz#566775)
 
