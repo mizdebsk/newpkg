@@ -1,7 +1,7 @@
 
 Name:		logback
 Version:	0.9.18
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	A Java logging library
 
 Group:		Development/Tools
@@ -188,6 +188,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.18-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Tue Dec  7 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.9.18-5
 - Make jars and javadoc versionless
 - Fix pom filenames (#655813)
