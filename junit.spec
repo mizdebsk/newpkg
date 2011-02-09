@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        3.8.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.8.2-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Thu Oct 7 2010 Alexander Kurtakov <akurtako@redhat.com> 3.8.2-7
 - Drop gcj support.
 
