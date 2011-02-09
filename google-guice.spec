@@ -3,7 +3,7 @@
 
 Name:           google-%{short_name}
 Version:        2.0
-Release:        3.1219svn%{?dist}
+Release:        4.1219svn%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -171,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0-4.1219svn
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Thu Oct 14 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0-3.1219svn
 - Add java-devel >= 1:1.6.0 to BR
 
