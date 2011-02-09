@@ -1,6 +1,6 @@
 Name:           sisu
 Version:        1.4.3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -134,6 +134,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.3.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Wed Feb  2 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.4.3.2-1
 - Update to latest upstream version
 - Versionless jars & javadocs
