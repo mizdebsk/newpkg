@@ -1,0 +1,47 @@
+#!/bin/sh
+if [ -f /usr/share/java-utils/java-functions ] ; then
+  . /usr/share/java-utils/java-functions
+  set_jvm
+  set_javacmd
+fi
+
+function install_metadata()
+{
+    mkdir -p "$1"
+    tar xf /usr/share/maven/repo-metadata.tar.xz -C "$1"
+}
+
+
+# add maven.repo.local if it's not defined already
+local_add="-Dmaven.repo.local=$(pwd)/.m2/"
+
+function process_args()
+{
+while [ $# != 0 ]; do
+        flag="$1"
+        case "$flag" in
+             *) ind=`expr match "$flag" -Dmaven.repo.local=`
+                if [[ $ind != 0 ]];then
+                    install_metadata "${flag/-Dmaven.repo.local=/}/"
+                    local_add=""
+                fi
+                ;;
+        esac
+        shift
+done
+}
+
+process_args "$@"
+
+if [ -n "$local_add" ];then
+    install_metadata "${local_add/-Dmaven.repo.local=/}/"
+fi
+
+export M2_HOME=/usr/share/maven
+echo $JAVA_HOME
+export JAVA_HOME
+# can't put it on command line due to
+# http://jira.codehaus.org/browse/SUREFIRE-121
+export MAVEN_OPTS="-Dmaven.local.mode ${local_add}"
+
+$M2_HOME/bin/mvn -o "$@"

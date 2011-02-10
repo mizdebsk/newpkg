@@ -85,18 +85,18 @@ public class JavadirWorkspaceReader
 
         StringBuffer path = new StringBuffer();
         String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-" + artifactId + ".pom";
-        path.append(System.getProperty("maven.jpp.pom.path", "JPP/maven2/poms")).append("/").append(fName);
+        path.append(System.getProperty("maven.local.pom.path", "JPP/maven2/poms")).append("/").append(fName);
         java.io.File f;
 
         // NOTE: We are returning default_poms/ as the path for this pom
         // even though it may not exist there. This may cause an error,
         // but that is fine because if the pom is not there, there is
         // a serious problem anyways..
-        f = new java.io.File(System.getProperty("maven.jpp.default.repo", "/usr/share/maven2/repository") + "/" + path.toString());
+        f = new java.io.File(System.getProperty("maven.local.default.repo", "/usr/share/maven2/repository") + "/" + path.toString());
         //System.err.println("Checking path " + f.getAbsolutePath() + " for the pom");
         if (!f.exists()) {
             path = new StringBuffer();
-            path.append(System.getProperty("maven.jpp.default.pom.path", "JPP/maven2/default_poms")).append("/").append(fName);
+            path.append(System.getProperty("maven.local.default.pom.path", "JPP/maven2/default_poms")).append("/").append(fName);
         }
         path.insert(0, "/usr/share/maven2/repository/");
         return path;

@@ -35,7 +35,7 @@ index cae3735..2d11d64 100644
          throws UnresolvableModelException
      {
          Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
-+        if ( System.getProperty("maven.jpp.mode") != null) {
++        if ( System.getProperty("maven.local.mode") != null) {
 +            JavadirWorkspaceReader wReader = new JavadirWorkspaceReader();
 +            File pomFile = wReader.findArtifact(pomArtifact);
 +            // if pom file does not exist continue resolving using different
@@ -55,15 +55,15 @@ index 1f37d4f..d60dab8 100644
              throw new NullPointerException( "artifactId is null" );
          }
 -        if ( version == null )
-+        // in jpp mode we ignore versions because these would only cause
++        // in local mode we ignore versions because these would only cause
 +        // problems
-+        if ( version == null && System.getProperty("maven.jpp.mode") == null )
++        if ( version == null && System.getProperty("maven.local.mode") == null )
          {
              throw new NullPointerException( "version is null" );
          }
  
 -        return groupId + ":" + artifactId + ":" + version;
-+        if( System.getProperty("maven.jpp.mode") == null ) {
++        if( System.getProperty("maven.local.mode") == null ) {
 +            return groupId + ":" + artifactId + ":" + version;
 +        } else {
 +            return versionlessKey(groupId, artifactId);
@@ -88,7 +88,7 @@ index e892ee9..0222b01 100644
          }
  
 +        // Set our own workspace reader to resolve from /usr/share/java
-+        if ( System.getProperty("maven.jpp.mode") != null)
++        if ( System.getProperty("maven.local.mode") != null)
 +        {
 +            session.setWorkspaceReader(new JavadirWorkspaceReader());
 +        }
@@ -127,10 +127,10 @@ index 009635b..7d03748 100644
          }
  
 -        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() ) )
-+        // ignore incorrect version in jpp mode (we can have different
++        // ignore incorrect version in local mode (we can have different
 +        // versions in /usr/share/java
 +        if ( !pluginArtifact.getBaseVersion().equals( pluginDescriptor.getVersion() )
-+             && System.getProperty("maven.jpp.mode") == null)
++             && System.getProperty("maven.local.mode") == null)
          {
              errors.add( "Plugin's descriptor contains the wrong version: " + pluginDescriptor.getVersion() );
          }
@@ -142,8 +142,8 @@ index fb074fb..bf2e703 100644
          throws PluginVersionResolutionException
      {
          logger.debug( "Resolving plugin version for " + request.getGroupId() + ":" + request.getArtifactId() );
-+        if (System.getProperty("maven.jpp.mode") != null) {
-+            // in jpp mode we always use "latest" as a resolved version
++        if (System.getProperty("maven.local.mode") != null) {
++            // in local mode we always use "latest" as a resolved version
 +            // (we ignore it anyway)
 +            DefaultPluginVersionResult result = new DefaultPluginVersionResult("latest");
 +            result.setRepository(request.getRepositorySession().getWorkspaceReader().getRepository());
@@ -170,7 +170,7 @@ index 403351a..2351620 100644
          if ( pomFile == null )
          {
              Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
-+            if ( System.getProperty("maven.jpp.mode") != null) {
++            if ( System.getProperty("maven.local.mode") != null) {
 +                JavadirWorkspaceReader wReader = new JavadirWorkspaceReader();
 +                pomFile = wReader.findArtifact(pomArtifact);
 +                // if pom file does not exist continue resolving using different resolvers
@@ -193,7 +193,7 @@ index 066fbf3..a7cbf40 100644
 +        // Seems like plexus-container-default has some quirks that
 +        // cause it to lose version. Needs more looking into and fix it
 +        // properly
-+        if (dependency.getVersion() == null && System.getProperty("maven.jpp.mode") != null) 
++        if (dependency.getVersion() == null && System.getProperty("maven.local.mode") != null) 
 +        {
 +            System.out.println("FIXING NULL VERSION:" + dependency.getGroupId() + ":" + dependency.getArtifactId() + ":" + dependency.getVersion());
 +            dependency.setVersion("1.0.0");
@@ -210,8 +210,8 @@ index 033211a..eec6caf 100644
                  if ( !management )
                  {
 -                    validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
-+                    // in jpp mode set version to "latest" and validate 
-+                    if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
++                    // in local mode set version to "latest" and validate 
++                    if(System.getProperty("maven.local.mode") != null && d.getVersion() == null)
 +                        d.setVersion("latest");
 +                    else
 +                        validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
@@ -223,8 +223,8 @@ index 033211a..eec6caf 100644
                  validateEffectiveDependency( problems, d, false, prefix, request );
  
 -                validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
-+                // in jpp mode set version to "latest" and validate 
-+                if(System.getProperty("maven.jpp.mode") != null && d.getVersion() == null)
++                // in local mode set version to "latest" and validate 
++                if(System.getProperty("maven.local.mode") != null && d.getVersion() == null)
 +                    d.setVersion("latest");
 +                else
 +                    validateVersion( prefix + "version", problems, errOn30, d.getVersion(), d.getManagementKey(), d );
@@ -236,8 +236,8 @@ index 033211a..eec6caf 100644
              validateStringNotEmpty( prefix + "type", problems, Severity.ERROR, d.getType(), d.getManagementKey(), d );
  
 -            validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
-+            // in jpp mode ignore missing version completely
-+            if(System.getProperty("maven.jpp.mode") == null)
++            // in local mode ignore missing version completely
++            if(System.getProperty("maven.local.mode") == null)
 +                validateStringNotEmpty( prefix + "version", problems, Severity.ERROR, d.getVersion(), d.getManagementKey(),
                                      d );
          }

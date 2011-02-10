@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -17,6 +17,7 @@ Source101:      MavenJPackageDepmap.java
 # 2xx for created non-buildable sources
 Source200:    %{name}-script
 Source201:    %{name}-script-local
+Source202:    %{name}-script-rpmbuild
 
 # Other included files
 Source250:    repo-metadata.tar.xz
@@ -246,6 +247,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_bindir}
 # Wrappers
 cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn3
 cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn-local
+cp -af %{SOURCE202} $RPM_BUILD_ROOT%{_bindir}/mvn-rpmbuild
 
 ###################
 # Individual jars #
@@ -286,6 +288,7 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn3
 %attr(0755,root,root) %{_bindir}/mvn-local
+%attr(0755,root,root) %{_bindir}/mvn-rpmbuild
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvn
@@ -309,6 +312,11 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Feb 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.2-2
+- Added mvn-rpmbuild script to be used in spec files
+- mvn-local is now mixed mode (online with javadir priority)
+- Changed mvn.jpp to mvn.local
+
 * Fri Jan 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.2-1
 - Update to latest version (3.0.2)
 - Ignore test failures temporarily

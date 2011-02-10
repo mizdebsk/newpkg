@@ -51,7 +51,7 @@ public class MavenJPackageDepmap {
 		Hashtable<String, String> jppDep;
 		String idToCheck, jppCombination;
 
-		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.jpp.mode") == null) {
+		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
 			idToCheck = groupId+","+artifactId+","+version;
 		} else {
 			idToCheck = groupId+","+artifactId;
@@ -86,7 +86,7 @@ public class MavenJPackageDepmap {
 	public boolean shouldEliminate(String groupId, String artifactId, String version) {
 		String idToCheck;
 
-		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.jpp.mode") == null) {
+		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
 			idToCheck = groupId+","+artifactId+","+version;
 		} else {
 			idToCheck = groupId+","+artifactId;
@@ -98,7 +98,7 @@ public class MavenJPackageDepmap {
 
 	private static void buildJppArtifactMap() {
 
-		if (System.getProperty("maven.ignore.versions") != null || System.getProperty("maven.jpp.mode") != null) {
+		if (System.getProperty("maven.ignore.versions") != null || System.getProperty("maven.local.mode") != null) {
 			debug("Processing file: /usr/share/java-utils/xml/maven2-versionless-depmap.xml");
 			processDepmapFile("/etc/maven/maven2-versionless-depmap.xml");
 		}
@@ -106,7 +106,7 @@ public class MavenJPackageDepmap {
 		debug("Processing file: /usr/share/java-utils/xml/maven2-depmap.xml");
 		processDepmapFile("/etc/maven/maven2-depmap.xml");
 
-		String customFileName = System.getProperty("maven.jpp.depmap.file", null);
+		String customFileName = System.getProperty("maven.local.depmap.file", null);
 		if (customFileName != null) {
 			debug("Processing file: " + customFileName);
 			processDepmapFile(customFileName);
@@ -158,7 +158,7 @@ public class MavenJPackageDepmap {
 			
 			if (jppNodeList.getLength() == 1) {
 				jppAD = getArtifactDefinition((Element) jppNodeList.item(0));
-				if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.jpp.mode") == null) {
+				if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
 					debug("*** Adding: " + mavenAD.groupId + "," + mavenAD.artifactId + "," + mavenAD.version + " => "
 							+  jppAD.groupId + "," + jppAD.artifactId + "," + jppAD.version + " to map...");
 
@@ -207,7 +207,7 @@ public class MavenJPackageDepmap {
 
 
 	public static void debug(String msg) {
-		if (System.getProperty("maven.jpp.debug") != null)
+		if (System.getProperty("maven.local.debug") != null)
 			System.err.println(msg);
 	}
 }
