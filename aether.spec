@@ -1,19 +1,14 @@
-%global full_name sonatype-aether
-%global githash g23f7474
-
 Name:           aether
-Version:        1.9
-Release:        2%{?dist}
+Version:        1.11
+Release:        1%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
-License:        EPL
+License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
-# it seems github has redirects plus it generates tarball on the fly
-# to get tarball go to http://github.com/sonatype/sonatype-aether/tree/aether-1.9
-# click "downloads" in upper right corner
-# click "download .tar.gz"
-Source0:        sonatype-%{full_name}-%{name}-%{version}-0-%{githash}.tar.gz
+# git clone https://github.com/sonatype/sonatype-aether.git
+# git archive --prefix="aether-1.11/" --format=tar aether-1.11 | bzip2 > aether-1.11.tar.bz2
+Source0:        %{name}-%{version}.tar.bz2
 
 Patch0:         0001-Remove-sonatype-test-dependencies.patch
 
@@ -31,11 +26,11 @@ BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
 BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  mojo-parent
-BuildRequires:  async-http-client
+BuildRequires:  async-http-client >= 1.6.1
 BuildRequires:  sonatype-oss-parent
 
 
-Requires:       async-http-client
+Requires:       async-http-client >= 1.6.1
 Requires:       maven2
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
@@ -56,12 +51,13 @@ Requires:  jpackage-utils
 
 %prep
 # last part will have to change every time
-%setup -q -n sonatype-%{full_name}-333a944
+%setup -q
 
 # we'd need org.sonatype.http-testing-harness so let's remove async
-# http tests (leave others enabled)
+# and wagon http tests (leave others enabled)
 %patch0 -p1
 rm -rf aether-connector-asynchttpclient/src/test
+rm -rf aether-connector-wagon/src/test
 
 %build
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
@@ -115,6 +111,10 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 
 
 %changelog
+* Fri Feb 25 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.11-1
+- Update to latest version
+- Add ASL 2.0 back as optional license
+
 * Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
