@@ -1,6 +1,6 @@
 Name:           sisu
-Version:        1.4.3.2
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -9,16 +9,17 @@ License:        ASL 2.0
 URL:            http://github.com/sonatype/sisu
 
 # git clone git://github.com/sonatype/sisu
-# git archive --prefix="sonatype-sisu-1.4.3.2/" --format=tar sisu-1.4.3.2 > sisu-1.4.3.2.tar.gz
-Source0:        %{name}-%{version}.tar.gz
+# git archive --prefix="sisu-2.1.1/" --format=tar sisu-2.1.1 | bzip2 > sisu-2.1.1.tar.bz2
+Source0:        %{name}-%{version}.tar.bz2
 Source1:        %{name}-depmap.xml
-Patch0:         0001-Fix-shading.patch
+Patch0:         0001-Remove-test-deps.patch
+Patch1:         0002-Fix-plexus-bundling.patch
 
 
 BuildArch:      noarch
 
 BuildRequires:  google-guice
-BuildRequires:  maven2
+BuildRequires:  maven
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-enforcer-plugin
 BuildRequires:  maven-invoker-plugin
@@ -55,13 +56,16 @@ Requires:       jpackage-utils
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+
+
+# TODO enable guice-eclipse
+sed -i 's:.*guice-eclipse.*::g' sisu-inject/pom.xml
+rm -rf sisu-inject/guice-eclipse
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-mvn-jpp \
-  -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-  -Dmaven2.jpp.depmap.file=%{SOURCE1} \
+mvn-rpmbuild \
+  -Dmaven.local.depmap.file=%{SOURCE1} \
   -Dmaven.test.skip=true \
   install javadoc:aggregate
 
@@ -134,6 +138,11 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Mon Feb 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.1.1-1
+- Update to 2.1.1
+- Update patch
+- Disable guice-eclipse for now
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.3.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 

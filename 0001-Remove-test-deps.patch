@@ -1,0 +1,38 @@
+From 3851989abd3be705ed6e2bdeed733192e795c654 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Mon, 28 Feb 2011 13:52:40 +0100
+Subject: [PATCH 1/2] Remove test deps
+
+---
+ pom.xml |   15 ---------------
+ 1 files changed, 0 insertions(+), 15 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 35ecf55..5f4ac89 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -98,21 +98,6 @@
+     <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+   </properties>
+ 
+-  <dependencies>
+-    <dependency>
+-      <groupId>ch.qos.logback</groupId>
+-      <artifactId>logback-classic</artifactId>
+-      <version>0.9.28</version>
+-      <scope>test</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.testng</groupId>
+-      <artifactId>testng</artifactId>
+-      <version>5.14.9</version>
+-      <scope>test</scope>
+-    </dependency>
+-  </dependencies>
+-
+   <dependencyManagement>
+     <dependencies>
+ 
+-- 
+1.7.4
+

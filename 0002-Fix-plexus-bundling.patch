@@ -1,0 +1,39 @@
+From 754a250de67f064662072c87f4f3e129ee149991 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Mon, 28 Feb 2011 16:41:30 +0100
+Subject: [PATCH 2/2] Fix plexus bundling
+
+---
+ sisu-inject/guice-bean/sisu-inject-bean/pom.xml    |    1 -
+ .../guice-plexus/sisu-inject-plexus/pom.xml        |    3 ---
+ 2 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
+index 44f53bd..adbccd0 100644
+--- a/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
++++ b/sisu-inject/guice-bean/sisu-inject-bean/pom.xml
+@@ -74,7 +74,6 @@
+             </DynamicImport-Package>
+             <Export-Package>
+               org.sonatype.inject;-noimport:=true;-split-package:=merge-first;version=${project.version},
+-              javax.*|org.aopalliance.*;version=1
+             </Export-Package>
+             <Private-Package>
+               org.sonatype.guice.bean.*
+diff --git a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
+index c49291f..6afb568 100644
+--- a/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
++++ b/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
+@@ -74,9 +74,6 @@
+             <DynamicImport-Package>
+               org.slf4j,junit.framework
+             </DynamicImport-Package>
+-            <Export-Package>
+-              org.codehaus.plexus.*;-noimport:=true;-split-package:=merge-first
+-            </Export-Package>
+             <Private-Package>
+               META-INF.plexus,org.sonatype.guice.plexus.*
+             </Private-Package>
+-- 
+1.7.4
+
