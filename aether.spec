@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -111,6 +111,9 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 
 
 %changelog
+* Mon Feb 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.11-2
+- Rebuild after bugfix update to plexus-containers (#675865)
+
 * Fri Feb 25 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.11-1
 - Update to latest version
 - Add ASL 2.0 back as optional license
