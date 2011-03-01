@@ -1,6 +1,6 @@
 Name:           sisu
 Version:        2.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -138,6 +138,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.1.1-2
+- Add atinject into poms as dependency
+
 * Mon Feb 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.1.1-1
 - Update to 2.1.1
 - Update patch
