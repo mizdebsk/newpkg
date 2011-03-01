@@ -1,4 +1,4 @@
-From c804249cb3355df3ac10b4a83fffa2a4c84bd69b Mon Sep 17 00:00:00 2001
+From 2f1e46675a26996103ba9c96ae62d3b5876bdba8 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 18 Jan 2011 11:09:32 +0100
 Subject: [PATCH 2/2] Use custom resolver
@@ -11,19 +11,18 @@ project when WorkspaceReader is not available yet.
  .../repository/internal/DefaultModelResolver.java  |    9 +++++++++
  .../org/apache/maven/artifact/ArtifactUtils.java   |   10 ++++++++--
  .../main/java/org/apache/maven/DefaultMaven.java   |    7 +++++++
- .../main/java/org/apache/maven/ReactorReader.java  |    4 ++--
  .../apache/maven/plugin/MavenPluginValidator.java  |    5 ++++-
  .../internal/DefaultPluginVersionResolver.java     |    9 +++++++++
  .../apache/maven/project/ProjectModelResolver.java |    9 +++++++++
  .../project/artifact/MavenMetadataSource.java      |    9 +++++++++
  .../model/validation/DefaultModelValidator.java    |   16 +++++++++++++---
- 9 files changed, 70 insertions(+), 8 deletions(-)
+ 8 files changed, 68 insertions(+), 6 deletions(-)
 
 diff --git a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
-index cae3735..2d11d64 100644
+index 746f852..4232fd7 100644
 --- a/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
 +++ b/maven-aether-provider/src/main/java/org/apache/maven/repository/internal/DefaultModelResolver.java
-@@ -39,6 +39,7 @@ import org.sonatype.aether.repository.RemoteRepository;
+@@ -40,6 +40,7 @@ import org.sonatype.aether.repository.RemoteRepository;
  import org.sonatype.aether.resolution.ArtifactRequest;
  import org.sonatype.aether.resolution.ArtifactResolutionException;
  import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -31,7 +30,7 @@ index cae3735..2d11d64 100644
  
  /**
   * A model resolver to assist building of dependency POMs. This resolver gives priority to those repositories that have
-@@ -108,6 +109,14 @@ class DefaultModelResolver
+@@ -114,6 +115,14 @@ class DefaultModelResolver
          throws UnresolvableModelException
      {
          Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
@@ -47,7 +46,7 @@ index cae3735..2d11d64 100644
          try
          {
 diff --git a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
-index 1f37d4f..d60dab8 100644
+index 1f37d4f..05b7df6 100644
 --- a/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
 +++ b/maven-artifact/src/main/java/org/apache/maven/artifact/ArtifactUtils.java
 @@ -99,12 +99,18 @@ public final class ArtifactUtils
@@ -72,10 +71,10 @@ index 1f37d4f..d60dab8 100644
  
      public static Map<String, Artifact> artifactMapByVersionlessId( Collection<Artifact> artifacts )
 diff --git a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
-index e892ee9..0222b01 100644
+index a7c1a2b..8fdb6ed 100644
 --- a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 +++ b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
-@@ -55,6 +55,7 @@ import org.apache.maven.project.ProjectBuildingException;
+@@ -56,6 +56,7 @@ import org.apache.maven.project.ProjectBuildingException;
  import org.apache.maven.project.ProjectBuildingRequest;
  import org.apache.maven.project.ProjectBuildingResult;
  import org.apache.maven.project.ProjectSorter;
@@ -83,7 +82,7 @@ index e892ee9..0222b01 100644
  import org.apache.maven.repository.DelegatingLocalArtifactRepository;
  import org.apache.maven.repository.LocalRepositoryNotAccessibleException;
  import org.apache.maven.settings.Mirror;
-@@ -361,6 +362,12 @@ public class DefaultMaven
+@@ -363,6 +364,12 @@ public class DefaultMaven
              session.setWorkspaceReader( workspaceRepository );
          }
  
@@ -96,30 +95,8 @@ index e892ee9..0222b01 100644
          DefaultSettingsDecryptionRequest decrypt = new DefaultSettingsDecryptionRequest();
          decrypt.setProxies( request.getProxies() );
          decrypt.setServers( request.getServers() );
-diff --git a/maven-core/src/main/java/org/apache/maven/ReactorReader.java b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
-index 62e181a..3d08c65 100644
---- a/maven-core/src/main/java/org/apache/maven/ReactorReader.java
-+++ b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
-@@ -216,7 +216,7 @@ class ReactorReader
- 
-     public File findArtifact( Artifact artifact )
-     {
--        String projectKey = artifact.getGroupId() + ':' + artifact.getArtifactId() + ':' + artifact.getVersion();
-+        String projectKey = ArtifactUtils.key( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() );
- 
-         MavenProject project = projectsByGAV.get( projectKey );
- 
-@@ -230,7 +230,7 @@ class ReactorReader
- 
-     public List<String> findVersions( Artifact artifact )
-     {
--        String key = artifact.getGroupId() + ':' + artifact.getArtifactId();
-+        String key = ArtifactUtils.versionlessKey( artifact.getGroupId(), artifact.getArtifactId() );
- 
-         List<MavenProject> projects = projectsByGA.get( key );
-         if ( projects == null || projects.isEmpty() )
 diff --git a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
-index 009635b..7d03748 100644
+index 009635b..93b86d0 100644
 --- a/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
 +++ b/maven-core/src/main/java/org/apache/maven/plugin/MavenPluginValidator.java
 @@ -60,7 +60,10 @@ public class MavenPluginValidator
@@ -135,10 +112,10 @@ index 009635b..7d03748 100644
              errors.add( "Plugin's descriptor contains the wrong version: " + pluginDescriptor.getVersion() );
          }
 diff --git a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
-index fb074fb..bf2e703 100644
+index c5f5604..cac7fc8 100644
 --- a/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
 +++ b/maven-core/src/main/java/org/apache/maven/plugin/version/internal/DefaultPluginVersionResolver.java
-@@ -75,6 +75,15 @@ public class DefaultPluginVersionResolver
+@@ -89,6 +89,15 @@ public class DefaultPluginVersionResolver
          throws PluginVersionResolutionException
      {
          logger.debug( "Resolving plugin version for " + request.getGroupId() + ":" + request.getArtifactId() );
@@ -155,10 +132,10 @@ index fb074fb..bf2e703 100644
          PluginVersionResult result = resolveFromProject( request );
  
 diff --git a/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java b/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
-index 403351a..2351620 100644
+index e788cea..430960c 100644
 --- a/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
 +++ b/maven-core/src/main/java/org/apache/maven/project/ProjectModelResolver.java
-@@ -41,6 +41,7 @@ import org.sonatype.aether.repository.RepositoryPolicy;
+@@ -42,6 +42,7 @@ import org.sonatype.aether.repository.RemoteRepository;
  import org.sonatype.aether.resolution.ArtifactRequest;
  import org.sonatype.aether.resolution.ArtifactResolutionException;
  import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -166,7 +143,7 @@ index 403351a..2351620 100644
  
  /**
   * A model resolver to assist building of projects. This resolver gives priority to those repositories that have been
-@@ -172,6 +173,14 @@ class ProjectModelResolver
+@@ -147,6 +148,14 @@ class ProjectModelResolver
          if ( pomFile == null )
          {
              Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "", "pom", version );
@@ -182,10 +159,10 @@ index 403351a..2351620 100644
              try
              {
 diff --git a/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java b/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
-index 066fbf3..a7cbf40 100644
+index 44a6879..7209b49 100644
 --- a/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
 +++ b/maven-core/src/main/java/org/apache/maven/project/artifact/MavenMetadataSource.java
-@@ -326,6 +326,15 @@ public class MavenMetadataSource
+@@ -325,6 +325,15 @@ public class MavenMetadataSource
              return null;
          }
  
@@ -202,10 +179,10 @@ index 066fbf3..a7cbf40 100644
  
          Artifact dependencyArtifact =
 diff --git a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
-index 033211a..eec6caf 100644
+index c97095f..ef0edc2 100644
 --- a/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
 +++ b/maven-model-builder/src/main/java/org/apache/maven/model/validation/DefaultModelValidator.java
-@@ -405,7 +405,11 @@ public class DefaultModelValidator
+@@ -434,7 +434,11 @@ public class DefaultModelValidator
  
                  if ( !management )
                  {
@@ -218,7 +195,7 @@ index 033211a..eec6caf 100644
  
                      /*
                       * TODO: Extensions like Flex Mojos use custom scopes like "merged", "internal", "external", etc.
-@@ -433,7 +437,11 @@ public class DefaultModelValidator
+@@ -462,7 +466,11 @@ public class DefaultModelValidator
              {
                  validateEffectiveDependency( problems, d, false, prefix, request );
  
@@ -231,7 +208,7 @@ index 033211a..eec6caf 100644
  
                  validateEnum( prefix + "scope", problems, errOn30, d.getScope(), d.getManagementKey(), d, "compile",
                                "runtime", "system" );
-@@ -452,7 +460,9 @@ public class DefaultModelValidator
+@@ -481,7 +489,9 @@ public class DefaultModelValidator
          {
              validateStringNotEmpty( prefix + "type", problems, Severity.ERROR, d.getType(), d.getManagementKey(), d );
  
@@ -243,5 +220,5 @@ index 033211a..eec6caf 100644
          }
  
 -- 
-1.7.3.4
+1.7.4
 

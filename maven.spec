@@ -1,13 +1,16 @@
+%global ver_add -RC1
 
 Name:           maven
-Version:        3.0.2
-Release:        2%{?dist}
+Version:        3.0.3
+Release:        0.1.rc1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
 License:        ASL 2.0 and MIT and BSD
 URL:            http://maven.apache.org/
-Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
+# Source URL is for testing only, final version will be in different place:
+# http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
+Source0:        https://repository.apache.org/content/repositories/maven-049/org/apache/maven/apache-%{name}/%{version}%{ver_add}/apache-%{name}-%{version}%{ver_add}-src.tar.gz
 
 # custom resolver java files
 # source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
@@ -24,14 +27,14 @@ Source250:    repo-metadata.tar.xz
 
 # Patch1XX could be upstreamed probably
 # Patch15X are already upstream
-Patch150:         0001-Add-plexus-default-container-dep.patch
+Patch150:         0001-Add-plugin-api-deps.patch
 
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
 
 BuildArch:      noarch
 
-BuildRequires:  maven2
+BuildRequires:  maven
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
@@ -42,21 +45,21 @@ BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  buildnumber-maven-plugin
-BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
+BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  mojo-parent
 BuildRequires:  atinject
-BuildRequires:  aether >= 1.9
+BuildRequires:  aether >= 1.11
 BuildRequires:  async-http-client
 BuildRequires:  sonatype-oss-parent
-BuildRequires:  sisu
-BuildRequires:  google-guice
+BuildRequires:  sisu >= 2.1.1-2
+BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  apache-commons-parent
 
 Requires:       java >= 1:1.6.0
-Requires:       plexus-classworlds
+Requires:       plexus-classworlds >= 2.4
 Requires:       apache-commons-cli
 Requires:       guava
 Requires:       hamcrest
@@ -70,11 +73,11 @@ Requires:       plexus-utils
 Requires:       xbean
 Requires:       xerces-j2
 Requires:       maven-wagon
-Requires:       aether >= 1.9
+Requires:       aether >= 1.11
 Requires:       async-http-client
 Requires:       sonatype-oss-parent
-Requires:       sisu
-Requires:       google-guice
+Requires:       sisu >= 2.1.1-2
+Requires:       google-guice >= 3.0
 Requires:       atinject
 Requires:       animal-sniffer >= 1.6-5
 Requires:       mojo-parent
@@ -100,7 +103,7 @@ Requires:       jpackage-utils
 %{summary}.
 
 %prep
-%setup -q -n apache-%{name}-%{version}
+%setup -q -n apache-%{name}-%{version}%{ver_add}
 %patch150 -p1
 %patch200 -p1
 
@@ -133,24 +136,17 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 popd
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-
-# temporary ignore of failures in maven-compat
-mvn-jpp -e \
-        -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-        -Dmaven.test.failure.ignore=true \
-        install javadoc:aggregate
+mvn-rpmbuild -e install javadoc:aggregate
 
 mkdir m2home
 (cd m2home
 tar xvf ../apache-maven/target/*tar.gz
-chmod -x apache-%{name}-%{version}/conf/settings.xml
+chmod -x apache-%{name}-%{version}%{ver_add}/conf/settings.xml
 )
 
 
 %install
-export M2_HOME=$(pwd)/m2home/apache-maven-%{version}
+export M2_HOME=$(pwd)/m2home/apache-maven-%{version}%{ver_add}
 
 # maven2 directory in /usr/share/java
 install -dm 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
@@ -205,12 +201,12 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
 (cd $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
 
   build-jar-repository -s -p . aether/api aether/connector-wagon aether/impl aether/spi aether/util \
-                               commons-cli guava hamcrest/core nekohtml plexus/plexus-cipher \
+                               commons-cli guava google-guice hamcrest/core nekohtml plexus/plexus-cipher \
                                plexus/containers-component-annotations plexus/containers-container-default \
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 jdom xml-commons-apis
+                               xbean/xbean-reflect xerces-j2 jdom xml-commons-apis atinject
 )
 
 ################
@@ -260,7 +256,7 @@ for module in maven-aether-provider maven-artifact maven-compat \
               maven-settings-builder;do
 
     pushd $module
-    install -m 644 target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
+    install -m 644 target/$module-%{version}%{ver_add}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
     ln -s %{_javadir}/%{name}/$module.jar $RPM_BUILD_ROOT%{_datadir}/%{name}/lib/$module.jar
     install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.%{name}-$module.pom
     %add_to_maven_depmap org.apache.maven $module %{version} JPP/%{name} $module
@@ -312,6 +308,10 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-0.1.rc1
+- Update to 3.0.3rc1
+- Enable tests again
+
 * Thu Feb 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.2-2
 - Added mvn-rpmbuild script to be used in spec files
 - mvn-local is now mixed mode (online with javadir priority)
