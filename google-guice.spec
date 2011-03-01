@@ -1,9 +1,8 @@
 %global short_name guice
-%global revision 1219
 
 Name:           google-%{short_name}
-Version:        2.0
-Release:        4.1219svn%{?dist}
+Version:        3.0
+Release:        0.1.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -13,17 +12,12 @@ URL:            http://code.google.com/p/%{name}
 
 # svn export -r1219 http://google-guice.googlecode.com/svn/trunk/ guice-2.0-1219
 # tar caf guice-2.0-1219.tar.xz guice-2.0-1219
-Source0:        %{short_name}-%{version}-%{revision}.tar.xz
+Source0:        https://%{name}.googlecode.com/files/%{short_name}-%{version}-rc2-src.zip
 
-# TODO upstream
-Patch0:         0001-aop-fix.patch
-# see http://code.google.com/p/google-guice/issues/detail?id=436
-# needed for sisu-inject (and maven-3)
-Patch1:         0002-get-type-converter-binding.patch
-# remove aopalliacne dep from pom and parent pom
-Patch2:         0003-aopaliance.patch
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# patch from http://github.com/sonatype/sisu-guice
+# excluded changes to pom.xml files that changed groupIds
+# needed for maven 3 to work
+Patch0:         sisu-custom.patch
 
 BuildArch:      noarch
 
@@ -35,6 +29,8 @@ BuildRequires:  aqute-bndlib
 BuildRequires:  objectweb-asm
 BuildRequires:  junit
 BuildRequires:  atinject
+BuildRequires:  zip
+BuildRequires:  slf4j
 
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
@@ -68,10 +64,11 @@ Requires:       jpackage-utils
 %{summary}.
 
 %prep
-%setup -q -n %{short_name}-%{version}-%{revision}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%setup -q -n %{short_name}-%{version}-rc2-src
+%patch0
+
+# remove parent definition referencing google-parent
+sed -ie '/<parent>/,/<\/parent/ {d}' pom.xml
 
 # remove bundled libraries
 find . -name '*.class' -delete
@@ -81,12 +78,12 @@ find . -name '*.jar' -not -name 'munge.jar' -delete
 
 # re-create symlinks
 pushd lib/build
-build-jar-repository -s -p . aqute-bndlib cglib \
+build-jar-repository -s -p . aqute-bndlib cglib slf4j \
                      jarjar junit objectweb-asm \
 
 mv aqute-bndlib*.jar bnd-0.0.384.jar
 mv cglib*.jar cglib-2.2.1-snapshot.jar
-mv jarjar*.jar jarjar-1.0rc8.jar
+mv jarjar*.jar jarjar-snapshot.jar
 mv objectweb-asmasm-all.jar asm-3.1.jar
 
 popd
@@ -116,37 +113,35 @@ pushd build/no_aop/
 # javadoc fails without this directory
 mkdir -p servlet/lib/build
 
-ant -Dversion=%{version} jar javadoc
+ant -Dversion=%{version} jar
 popd
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}
 pushd build/no_aop
-install -pm 644 build/dist/%{short_name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|google-||g"`; done)
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
+install -pm 644 build/dist/%{short_name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{short_name}.jar
 
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pm 644 %{short_name}-parent/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{short_name}-parent.pom
+install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}-parent.pom
+%add_to_maven_depmap com.google.inject %{short_name}-parent %{version} JPP %{name}-parent
 
-install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
+install -pm 644 core/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
 %add_to_maven_depmap com.google.inject %{short_name} %{version} JPP %{name}
 # provide sisu group/artifact (should be just mavenized google-guice
 # with
 %add_to_maven_depmap org.sonatype.sisu sisu-%{short_name} %{version} JPP %{name}
-
+popd
 
 # javadoc
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr build/javadoc/* %{buildroot}%{_javadocdir}/%{name}-%{version}/
-ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
+install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -r javadoc/* %{buildroot}%{_javadocdir}/%{name}
 
+%pre javadoc
+# workaround for rpm bug, can be removed in F-17
+[ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
+rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_maven_depmap
@@ -166,11 +161,15 @@ rm -rf $RPM_BUILD_ROOT
 %files javadoc
 %defattr(-,root,root,-)
 %doc COPYING
-%doc %{_javadocdir}/%{name}*
+%doc %{_javadocdir}/%{name}
 
 
 
 %changelog
+* Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.1.rc2
+- Update to 3.0rc2
+- Changes according to new guidelines (versionless jars & javadocs)
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0-4.1219svn
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
