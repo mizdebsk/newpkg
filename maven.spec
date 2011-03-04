@@ -1,8 +1,7 @@
-%global ver_add -RC1
 
 Name:           maven
 Version:        3.0.3
-Release:        0.1.rc1%{?dist}
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -10,7 +9,7 @@ License:        ASL 2.0 and MIT and BSD
 URL:            http://maven.apache.org/
 # Source URL is for testing only, final version will be in different place:
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
-Source0:        https://repository.apache.org/content/repositories/maven-049/org/apache/maven/apache-%{name}/%{version}%{ver_add}/apache-%{name}-%{version}%{ver_add}-src.tar.gz
+Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
 
 # custom resolver java files
 # source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
@@ -103,7 +102,7 @@ Requires:       jpackage-utils
 %{summary}.
 
 %prep
-%setup -q -n apache-%{name}-%{version}%{ver_add}
+%setup -q -n apache-%{name}-%{version}%{?ver_add}
 %patch150 -p1
 %patch200 -p1
 
@@ -141,12 +140,12 @@ mvn-rpmbuild -e install javadoc:aggregate
 mkdir m2home
 (cd m2home
 tar xvf ../apache-maven/target/*tar.gz
-chmod -x apache-%{name}-%{version}%{ver_add}/conf/settings.xml
+chmod -x apache-%{name}-%{version}%{?ver_add}/conf/settings.xml
 )
 
 
 %install
-export M2_HOME=$(pwd)/m2home/apache-maven-%{version}%{ver_add}
+export M2_HOME=$(pwd)/m2home/apache-maven-%{version}%{?ver_add}
 
 # maven2 directory in /usr/share/java
 install -dm 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
@@ -207,6 +206,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
                                xbean/xbean-reflect xerces-j2 jdom xml-commons-apis atinject
+  mkdir ext/
 )
 
 ################
@@ -256,7 +256,7 @@ for module in maven-aether-provider maven-artifact maven-compat \
               maven-settings-builder;do
 
     pushd $module
-    install -m 644 target/$module-%{version}%{ver_add}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
+    install -m 644 target/$module-%{version}%{?ver_add}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
     ln -s %{_javadir}/%{name}/$module.jar $RPM_BUILD_ROOT%{_datadir}/%{name}/lib/$module.jar
     install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.%{name}-$module.pom
     %add_to_maven_depmap org.apache.maven $module %{version} JPP/%{name} $module
@@ -308,6 +308,10 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Fri Mar  4 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-1
+- Update to 3.0.3
+- Add ext subdirectory to lib
+
 * Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-0.1.rc1
 - Update to 3.0.3rc1
 - Enable tests again
