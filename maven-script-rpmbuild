@@ -42,6 +42,6 @@ echo $JAVA_HOME
 export JAVA_HOME
 # can't put it on command line due to
 # http://jira.codehaus.org/browse/SUREFIRE-121
-export MAVEN_OPTS="-Dmaven.local.mode ${local_add}"
+export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.local.mode ${local_add}"
 
 $M2_HOME/bin/mvn -o "$@"
