@@ -37,7 +37,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.3.b7.1%{?dist}
+Release:        0.3.b7.21%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -52,13 +52,11 @@ Source1:        wagon-1.0-jpp-depmap.xml
 Patch0:         wagon-http-shared-pom_xml.patch
 Patch1:         disable-tck.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 BuildArch:      noarch
 BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
-BuildRequires:  maven2 >= 0:2.0.8
+BuildRequires:  maven
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
@@ -75,10 +73,9 @@ BuildRequires:  maven-scm-test
 BuildRequires:  xerces-j2
 BuildRequires:  classworlds
 BuildRequires:  nekohtml
-BuildRequires:  concurrent
 BuildRequires:  ganymed-ssh2
 BuildRequires:  apache-commons-codec
-BuildRequires:  jakarta-commons-collections
+BuildRequires:  apache-commons-collections
 BuildRequires:  apache-commons-net
 BuildRequires:  jakarta-commons-httpclient
 BuildRequires:  apache-commons-logging
@@ -88,7 +85,6 @@ BuildRequires:  jtidy
 BuildRequires:  plexus-container-default
 BuildRequires:  plexus-interactivity
 BuildRequires:  plexus-utils
-BuildRequires:  tomcat5
 BuildRequires:  servletapi5
 BuildRequires:  xml-commons-apis
 BuildRequires:  easymock
@@ -118,6 +114,7 @@ following providers:
 %package javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Documentation
+Requires:       jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
@@ -148,19 +145,13 @@ rm -f wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/
 rm -f wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-
-mvn-jpp \
+mvn-rpmbuild \
         -e \
-        -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-        -Dmaven2.jpp.depmap.file=%{SOURCE1} \
-        -Dmaven.test.failure.ignore=true \
+        -Dmaven.local.depmap.file=%{SOURCE1} \
         -Dmaven.test.skip=true \
         install javadoc:aggregate
 
 %install
-rm -rf $RPM_BUILD_ROOT
 # jars
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 
@@ -236,6 +227,8 @@ install -m 644 \
   $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-test.jar
 %add_to_maven_depmap org.apache.maven.wagon wagon-provider-test %{version} JPP/%{name} provider-test
 
+%add_to_maven_depmap org.apache.maven.wagon wagon %{version} JPP/%{name} wagon
+
 # poms
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
 install -m 644 pom.xml \
@@ -293,8 +286,8 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %files
 %defattr(-,root,root,-)
 %{_javadir}/*
-%{_datadir}/maven2/poms/*.pom
-%{_mavendepmapfragdir}
+%{_mavenpomdir}/*.pom
+%{_mavendepmapfragdir}/*
 
 %files javadoc
 %defattr(-,root,root,-)
@@ -305,6 +298,10 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Tue Apr 26 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.3.b7.21
+- Install wagon pom depmap.
+- Use maven 3 for build.
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-0.3.b7.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
