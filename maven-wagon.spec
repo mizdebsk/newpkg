@@ -37,7 +37,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        0.3.b7.21%{?dist}
+Release:        0.3.b7.22%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -228,6 +228,7 @@ install -m 644 \
 %add_to_maven_depmap org.apache.maven.wagon wagon-provider-test %{version} JPP/%{name} provider-test
 
 %add_to_maven_depmap org.apache.maven.wagon wagon %{version} JPP/%{name} wagon
+%add_to_maven_depmap org.apache.maven.wagon wagon-providers %{version} JPP/%{name} providers
 
 # poms
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
@@ -298,6 +299,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Tue Apr 26 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.3.b7.22
+- Install wagon-providers depmap too.
+
 * Tue Apr 26 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-0.3.b7.21
 - Install wagon pom depmap.
 - Use maven 3 for build.
