@@ -31,14 +31,14 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.9.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Group:          Development/Libraries
 Source0:        http://archive.apache.org/dist/lucene/java/%{name}-%{version}-src.tar.gz
-Source1:        lucene-1.9-OSGi-MANIFEST.MF
-Source2:        lucene-1.9-analysis-OSGi-MANIFEST.MF
+Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
+Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
 Patch1:         0001-Remove-bdb-packageset.patch
 Patch2:         0002-Fix-version-string.patch
 Patch3:         0003-Remove-classpath.patch
@@ -124,8 +124,8 @@ ant -Dbuild.sysclasspath=first \
   -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=%{_javadocdir}/java \
   -Dversion=%{version} \
-  package test-core test-contrib
-
+  package 
+        
 # add missing OSGi metadata to manifests
 mkdir META-INF
 unzip -o build/lucene-core-%{version}.jar META-INF/MANIFEST.MF
@@ -215,6 +215,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Tue May 3 2011 Alexander Kurtakov <akurtako@redhat.com> 0:2.9.4-5
+- Update OSGi manifests.
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.9.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
