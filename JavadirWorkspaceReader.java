@@ -39,7 +39,7 @@ public class JavadirWorkspaceReader
 
         MavenJPackageDepmap.debug("Wanted GROUPID=" + groupId);
         MavenJPackageDepmap.debug("Wanted ARTIFACTID=" + artifactId);
-        
+
         if (!groupId.startsWith("JPP")) {
             MavenJPackageDepmap map = MavenJPackageDepmap.getInstance();
             Hashtable<String,String> newInfo = map.getMappedInfo(groupId, artifactId, version);
@@ -53,9 +53,13 @@ public class JavadirWorkspaceReader
         if (artifact.getExtension().equals("pom")) {
             path = getPOMPath(groupId, artifactId);
         } else if (artifact.getExtension().equals("signature")) {
-        	path.append("/usr/share/maven/repository/");
+            path.append("/usr/share/maven/repository/");
             path.append( groupId ).append( '/' );
             path.append( artifactId ).append( ".signature" );
+        } else if (artifact.getExtension().equals("zip")) {
+            path.append("/usr/share/maven/repository/");
+            path.append( groupId ).append( '/' );
+            path.append( artifactId ).append( ".zip" );
         } else {
         	path.append("/usr/share/maven/repository/");
             path.append( groupId ).append( '/' );
@@ -70,7 +74,7 @@ public class JavadirWorkspaceReader
             MavenJPackageDepmap.debug("Returning " + path.toString());
             return ret;
         } else {
-            MavenJPackageDepmap.debug("Returning null for gid:aid" + groupId + ":" + artifactId);
+            MavenJPackageDepmap.debug("Returning null for gid:aid =>" + groupId + ":" + artifactId);
             return null;
         }
     }
@@ -83,22 +87,25 @@ public class JavadirWorkspaceReader
 
     private StringBuffer getPOMPath(String groupId, String artifactId) {
 
-        StringBuffer path = new StringBuffer();
         String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-" + artifactId + ".pom";
-        path.append(System.getProperty("maven.local.pom.path", "JPP/maven2/poms")).append("/").append(fName);
-        java.io.File f;
+        String m2path = System.getProperty("maven2.local.pom.path", "JPP/maven2/poms") + "/" + fName;
+        String m3path = System.getProperty("maven.local.pom.path", "JPP/maven/poms") + "/" + fName;
+        File f;
 
-        // NOTE: We are returning default_poms/ as the path for this pom
-        // even though it may not exist there. This may cause an error,
-        // but that is fine because if the pom is not there, there is
-        // a serious problem anyways..
-        f = new java.io.File(System.getProperty("maven.local.default.repo", "/usr/share/maven2/repository") + "/" + path.toString());
-        //System.err.println("Checking path " + f.getAbsolutePath() + " for the pom");
-        if (!f.exists()) {
-            path = new StringBuffer();
-            path.append(System.getProperty("maven.local.default.pom.path", "JPP/maven2/default_poms")).append("/").append(fName);
+        // let's try maven 2 repo first
+        f = new File(System.getProperty("maven2.local.default.repo", "/usr/share/maven2/repository") + "/" + m2path);
+        if ( f.exists() ) {
+            return new StringBuffer(f.getPath());
         }
-        path.insert(0, "/usr/share/maven2/repository/");
-        return path;
+
+        f = new File(System.getProperty("maven.local.default.repo", "/usr/share/maven/repository") + "/" + m3path);
+        if ( f.exists() ) {
+            return new StringBuffer(f.getPath());
+        }
+
+        // final fallback to m2 default poms
+        return new StringBuffer("/usr/share/maven2/repository/" +
+                                System.getProperty("maven.local.default.repo", "JPP/maven2/default_poms") +
+                                "/" + fName);
     }
 }

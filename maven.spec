@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -308,6 +308,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue May 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-3
+- Improve and clean up depmap handling for m2/m3 repos
+
 * Mon Apr 18 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-2
 - Enable MAVEN_OPTS override in scripts
 
