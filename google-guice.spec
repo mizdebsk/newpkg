@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.1.rc2%{?dist}
+Release:        0.2.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -19,6 +19,9 @@ Source0:        https://%{name}.googlecode.com/files/%{short_name}-%{version}-rc
 # needed for maven 3 to work
 Patch0:         sisu-custom.patch
 
+# bz#704222
+Patch1:         0001-Remove-test-and-missing-deps-from-core-pom.xml.patch
+
 BuildArch:      noarch
 
 BuildRequires:  java-devel >= 1:1.6.0
@@ -31,6 +34,7 @@ BuildRequires:  junit
 BuildRequires:  atinject
 BuildRequires:  zip
 BuildRequires:  slf4j
+BuildRequires:  jpackage-utils
 
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
@@ -66,6 +70,7 @@ Requires:       jpackage-utils
 %prep
 %setup -q -n %{short_name}-%{version}-rc2-src
 %patch0
+%patch1 -p1
 
 # remove parent definition referencing google-parent
 sed -ie '/<parent>/,/<\/parent/ {d}' pom.xml
@@ -149,9 +154,7 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %postun
 %update_maven_depmap
 
-
 %files
-%defattr(-,root,root,-)
 %doc COPYING
 %{_javadir}/*.jar
 %{_mavenpomdir}/*
@@ -159,13 +162,15 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %files javadoc
-%defattr(-,root,root,-)
 %doc COPYING
 %doc %{_javadocdir}/%{name}
 
 
 
 %changelog
+* Thu May 12 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.2.rc2
+- Remove test and missing deps from pom.xml
+
 * Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.1.rc2
 - Update to 3.0rc2
 - Changes according to new guidelines (versionless jars & javadocs)
