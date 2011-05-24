@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.2.rc2%{?dist}
+Release:        0.3.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -36,6 +36,8 @@ BuildRequires:  zip
 BuildRequires:  slf4j
 BuildRequires:  jpackage-utils
 
+Requires:       cglib
+Requires:       atinject
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
 Requires(postun): jpackage-utils
@@ -168,6 +170,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Tue May 24 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.3.rc2
+- Add cglib and atinject to R
+
 * Thu May 12 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.2.rc2
 - Remove test and missing deps from pom.xml
 
