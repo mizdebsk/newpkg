@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -14,7 +14,7 @@ Patch0:         0001-Remove-sonatype-test-dependencies.patch
 
 BuildArch:      noarch
 
-BuildRequires:  maven2
+BuildRequires:  maven
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
@@ -31,7 +31,6 @@ BuildRequires:  sonatype-oss-parent
 
 
 Requires:       async-http-client >= 1.6.1
-Requires:       maven2
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
 Requires(postun): jpackage-utils
@@ -60,12 +59,7 @@ rm -rf aether-connector-asynchttpclient/src/test
 rm -rf aether-connector-wagon/src/test
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-
-mvn-jpp -e \
-        -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-        install javadoc:aggregate
+mvn-rpmbuild install javadoc:aggregate
 
 
 %install
@@ -89,28 +83,27 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %add_to_maven_depmap  org.sonatype.aether %{name}-parent %{version} JPP/%{name} parent
 
-
 %post
 %update_maven_depmap
 
 %postun
 %update_maven_depmap
 
-
 %files
-%defattr(-,root,root,-)
 %doc README.md
 %{_javadir}/%{name}
 %{_mavendepmapfragdir}/%{name}
 %{_mavenpomdir}/*.pom
 
 %files javadoc
-%defattr(-,root,root,-)
 %{_javadocdir}/%{name}
 
-
-
 %changelog
+* Wed Jun 8 2011 Alexander Kurtakov <akurtako@redhat.com> 1.11-3
+- Build with maven 3.x.
+- Do not require maven - not found in dependencies in poms.
+- Guidelines fixes.
+
 * Mon Feb 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.11-2
 - Rebuild after bugfix update to plexus-containers (#675865)
 
