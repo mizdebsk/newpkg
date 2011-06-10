@@ -1,8 +1,10 @@
 package org.apache.maven.artifact.repository;
 
-
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
@@ -10,204 +12,288 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.w3c.dom.*;
-
 
 public class MavenJPackageDepmap {
 
-	private static class ArtifactDefinition {
-		String groupId = null;
-		String artifactId = null;
-		String version = null;
-	}
+    private static class ArtifactDefinition {
+        String groupId = null;
+        String artifactId = null;
+        String version = null;
+    }
 
-	private static  MavenJPackageDepmap instance;
-	private static Hashtable<String, String> jppArtifactMap;
+    /**
+     * 
+     * @author Stanislav Ochotnicky <sochotnicky@redhat.com>
+     * 
+     *         This class is used to wrap around fragments that are mapping
+     *         artifacts to jar files in our _javadir. These used to be
+     *         processed in a macro after every package installation. Fragments
+     *         themselves are not proper xml files (they have no root element)
+     *         so we have to fix them by wrapping them in one root element.
+     */
+    private static class WrapFragmentStream extends InputStream {
+        String startTag = "<deps>";
+        String endTag = "</deps>";
+        byte fragmentContent[];
+        int position;
 
-	private MavenJPackageDepmap() {
-		jppArtifactMap = new Hashtable<String,String>();
-		buildJppArtifactMap();
-	}
+        WrapFragmentStream(String fragmentPath) throws IOException {
+            FileInputStream fin = new FileInputStream(fragmentPath);
+            int nBytes = fin.available();
+            byte tmpContent[] = new byte[nBytes];
+            fin.read(tmpContent);
+            fin.close();
+            byte startBytes[] = startTag.getBytes();
+            byte endBytes[] = endTag.getBytes();
+            fragmentContent = new byte[nBytes + startBytes.length
+                    + endBytes.length];
+            System.arraycopy(startBytes, 0, fragmentContent, 0,
+                    startBytes.length);
+            System.arraycopy(tmpContent, 0, fragmentContent, startBytes.length,
+                    tmpContent.length);
+            System.arraycopy(endBytes, 0, fragmentContent, startBytes.length
+                    + tmpContent.length, endBytes.length);
+            position = 0;
+        }
 
-	public static MavenJPackageDepmap getInstance() {
-		if (instance == null) {
-			instance = new MavenJPackageDepmap();
-		}
+        public int read() throws IOException {
+            if (position < fragmentContent.length) {
+                return fragmentContent[position++];
+            } else {
+                return -1;
+            }
+        }
+    }
 
-		return instance;
-	}
+    private static MavenJPackageDepmap instance;
+    private static Hashtable<String, String> jppArtifactMap;
 
-	public Hashtable<String, String> getMappedInfo(Hashtable<String, String> mavenDep) {
-		return getMappedInfo((String) mavenDep.get("group"),
-				(String) mavenDep.get("artifact"),
-				(String) mavenDep.get("version"));
-	}
+    private MavenJPackageDepmap() {
+        jppArtifactMap = new Hashtable<String, String>();
+        buildJppArtifactMap();
+    }
 
-	public Hashtable<String, String> getMappedInfo(String groupId, String artifactId, String version) {
+    public static MavenJPackageDepmap getInstance() {
+        if (instance == null) {
+            instance = new MavenJPackageDepmap();
+        }
 
-		Hashtable<String, String> jppDep;
-		String idToCheck, jppCombination;
+        return instance;
+    }
 
-		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
-			idToCheck = groupId+","+artifactId+","+version;
-		} else {
-			idToCheck = groupId+","+artifactId;
-		}
+    public Hashtable<String, String> getMappedInfo(
+            Hashtable<String, String> mavenDep) {
+        return getMappedInfo((String) mavenDep.get("group"),
+                (String) mavenDep.get("artifact"),
+                (String) mavenDep.get("version"));
+    }
 
-		jppCombination = (String) jppArtifactMap.get(idToCheck);
+    public Hashtable<String, String> getMappedInfo(String groupId,
+            String artifactId, String version) {
 
-		//System.err.println("*** " + groupId+","+artifactId+","+version + " => " + jppCombination);
+        Hashtable<String, String> jppDep;
+        String idToCheck, jppCombination;
 
-		jppDep = new Hashtable<String, String>();
-		if (jppCombination != null && jppCombination != "") {
+        if (System.getProperty("maven.ignore.versions") == null
+                && System.getProperty("maven.local.mode") == null) {
+            idToCheck = groupId + "," + artifactId + "," + version;
+        } else {
+            idToCheck = groupId + "," + artifactId;
+        }
 
-			StringTokenizer st = new StringTokenizer(jppCombination, ",");
+        jppCombination = (String) jppArtifactMap.get(idToCheck);
 
-			jppDep.put("group", st.nextToken());
-			jppDep.put("artifact",st.nextToken());
-			jppDep.put("version",st.nextToken());
+        // System.err.println("*** " + groupId+","+artifactId+","+version +
+        // " => " + jppCombination);
 
-		} else {
-			jppDep.put("group", groupId);
-			jppDep.put("artifact", artifactId);
-			jppDep.put("version", version);
-		}
+        jppDep = new Hashtable<String, String>();
+        if (jppCombination != null && jppCombination != "") {
 
-		return jppDep;
-	}
+            StringTokenizer st = new StringTokenizer(jppCombination, ",");
 
+            jppDep.put("group", st.nextToken());
+            jppDep.put("artifact", st.nextToken());
+            jppDep.put("version", st.nextToken());
 
-	/**
-	 *	Returns whether or not the given dependency should be dropped.
-	 */
-	public boolean shouldEliminate(String groupId, String artifactId, String version) {
-		String idToCheck;
+        } else {
+            jppDep.put("group", groupId);
+            jppDep.put("artifact", artifactId);
+            jppDep.put("version", version);
+        }
 
-		if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
-			idToCheck = groupId+","+artifactId+","+version;
-		} else {
-			idToCheck = groupId+","+artifactId;
-		}
+        return jppDep;
+    }
 
-		return jppArtifactMap.get(idToCheck) != null && jppArtifactMap.get(idToCheck).equals("");
+    /**
+     * Returns whether or not the given dependency should be dropped.
+     */
+    public boolean shouldEliminate(String groupId, String artifactId,
+            String version) {
+        String idToCheck;
 
-	}
+        if (System.getProperty("maven.ignore.versions") == null
+                && System.getProperty("maven.local.mode") == null) {
+            idToCheck = groupId + "," + artifactId + "," + version;
+        } else {
+            idToCheck = groupId + "," + artifactId;
+        }
 
-	private static void buildJppArtifactMap() {
+        return jppArtifactMap.get(idToCheck) != null
+                && jppArtifactMap.get(idToCheck).equals("");
 
-		if (System.getProperty("maven.ignore.versions") != null || System.getProperty("maven.local.mode") != null) {
-			debug("Processing file: /usr/share/java-utils/xml/maven2-versionless-depmap.xml");
-			processDepmapFile("/etc/maven/maven2-versionless-depmap.xml");
-		}
+    }
 
-		debug("Processing file: /usr/share/java-utils/xml/maven2-depmap.xml");
-		processDepmapFile("/etc/maven/maven2-depmap.xml");
+    private static void buildJppArtifactMap() {
 
-		String customFileName = System.getProperty("maven.local.depmap.file", null);
-		if (customFileName != null) {
-			debug("Processing file: " + customFileName);
-			processDepmapFile(customFileName);
-		}
-	}
+        if (System.getProperty("maven.ignore.versions") != null
+                || System.getProperty("maven.local.mode") != null) {
+            debug("Processing file: /usr/share/java-utils/xml/maven2-versionless-depmap.xml");
+            processDepmapFile("/etc/maven/maven2-versionless-depmap.xml");
+        }
 
-	private static void processDepmapFile(String fileName) {
+        // process fragments in etc
+        File fragmentDir = new File("/etc/maven/fragments");
+        String flist[] = fragmentDir.list();
+        if (flist != null)
+            for (String fragFilename : flist)
+                processDepmapFile("/etc/maven/fragments/" + fragFilename);
 
-		Document mapDocument;
-		debug("Loading depmap file: " + fileName);
-		try {
-			DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-			fact.setNamespaceAware(true);
-			DocumentBuilder builder = fact.newDocumentBuilder();
-			mapDocument = builder.parse(fileName);
-		} catch (FileNotFoundException fnfe) {
-			System.err.println("ERROR: Unable to find map file: " + fileName);
-			fnfe.printStackTrace();
-			return;
-		} catch (IOException ioe) {
-			System.err.println("ERROR: I/O exception occured when opening map file");
-			ioe.printStackTrace();
-			return;
-		} catch (ParserConfigurationException pce) {
-			System.err.println("ERROR: Parsing of depmap file failed - configuration");
-			pce.printStackTrace();
-			return;
-		} catch (SAXException se) {
-			System.err.println("ERROR: Parsing of depmap file failed");
-			se.printStackTrace();
-			return;
-		}
-		
-		NodeList depNodes = (NodeList) mapDocument.getElementsByTagName("dependency");
+        // process fragments is usr. Once packages are rebuilt, we can skip
+        // fragments in /etc
+        fragmentDir = new File("/usr/share/maven-fragments");
+        flist = fragmentDir.list();
+        if (flist != null)
+            for (String fragFilename : flist)
+                processDepmapFile("/usr/share/maven-fragments/" + fragFilename);
 
-		for (int i = 0; i < depNodes.getLength(); i++) {
-			Element depNode = (Element) depNodes.item(i);
+        String customFileName = System.getProperty("maven.local.depmap.file",
+                null);
+        if (customFileName != null) {
+            debug("Processing file: " + customFileName);
+            processDepmapFile(customFileName);
+        }
 
-			NodeList mavenNodeList = (NodeList) depNode.getElementsByTagName("maven");
-			if (mavenNodeList.getLength() != 1) {
-				debug("Number of maven sub-elements is not 1. Bailing from depmap generation");
-				debug("Maven node: " + depNode.getTextContent());
-				return;
-			}
-			ArtifactDefinition mavenAD = getArtifactDefinition((Element) mavenNodeList.item(0));
+    }
 
-			ArtifactDefinition jppAD = null;
-			NodeList jppNodeList = (NodeList) depNode.getElementsByTagName("jpp");
-			
-			if (jppNodeList.getLength() == 1) {
-				jppAD = getArtifactDefinition((Element) jppNodeList.item(0));
-				if (System.getProperty("maven.ignore.versions") == null && System.getProperty("maven.local.mode") == null) {
-					debug("*** Adding: " + mavenAD.groupId + "," + mavenAD.artifactId + "," + mavenAD.version + " => "
-							+  jppAD.groupId + "," + jppAD.artifactId + "," + jppAD.version + " to map...");
+    private static void processDepmapFile(String fileName) {
 
-					jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId + "," + mavenAD.version,
-							jppAD.groupId + "," + jppAD.artifactId + "," + jppAD.version);
-				} else {
-					debug("*** Adding: " + mavenAD.groupId+"," + mavenAD.artifactId + " => " 
-							+  jppAD.groupId + "," + jppAD.artifactId + "," + jppAD.version + " to map...");
+        Document mapDocument;
+        debug("Loading depmap file: " + fileName);
+        try {
+            DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+            fact.setNamespaceAware(true);
+            DocumentBuilder builder = fact.newDocumentBuilder();
+            // we can wrap even old depmaps, no harm done
+            WrapFragmentStream wfs = new WrapFragmentStream(fileName);
+            mapDocument = builder.parse(wfs);
+            wfs.close();
+        } catch (FileNotFoundException fnfe) {
+            System.err.println("ERROR: Unable to find map file: " + fileName);
+            fnfe.printStackTrace();
+            return;
+        } catch (IOException ioe) {
+            System.err
+                    .println("ERROR: I/O exception occured when opening map file");
+            ioe.printStackTrace();
+            return;
+        } catch (ParserConfigurationException pce) {
+            System.err
+                    .println("ERROR: Parsing of depmap file failed - configuration");
+            pce.printStackTrace();
+            return;
+        } catch (SAXException se) {
+            System.err.println("ERROR: Parsing of depmap file failed");
+            se.printStackTrace();
+            return;
+        }
 
-					jppArtifactMap.put(mavenAD.groupId+","+mavenAD.artifactId, 
-							jppAD.groupId + "," + jppAD.artifactId + "," + jppAD.version);
-				}
-			} else {
-				debug("Number of jpp sub-elements is not 1. Dropping dependency");
-				debug("*** Adding: " + mavenAD.groupId+","+mavenAD.artifactId+"," + " => " +  "JPP/maven2,empty-dep,"+mavenAD.version + " to map...");
-				jppArtifactMap.put(mavenAD.groupId+","+mavenAD.artifactId, "JPP/maven2,empty-dep,"+mavenAD.version);
-			}
-		} 
-	}
+        NodeList depNodes = (NodeList) mapDocument
+                .getElementsByTagName("dependency");
 
-	private static ArtifactDefinition getArtifactDefinition(Element element) {
-		ArtifactDefinition ad = new ArtifactDefinition();
-		
-		NodeList nodes = element.getElementsByTagName("groupId");
-		if (nodes.getLength() != 1) {
-			debug("groupId definition not found in depmap");
-			return null;
-		}
-		ad.groupId = nodes.item(0).getTextContent();
+        for (int i = 0; i < depNodes.getLength(); i++) {
+            Element depNode = (Element) depNodes.item(i);
 
-		nodes = element.getElementsByTagName("artifactId");
-		if (nodes.getLength() != 1) {
-			debug("artifactId definition not found in depmap");
-			return null;
-		}
-		ad.artifactId = nodes.item(0).getTextContent();
+            NodeList mavenNodeList = (NodeList) depNode
+                    .getElementsByTagName("maven");
+            if (mavenNodeList.getLength() != 1) {
+                debug("Number of maven sub-elements is not 1. Bailing from depmap generation");
+                debug("Maven node: " + depNode.getTextContent());
+                return;
+            }
+            ArtifactDefinition mavenAD = getArtifactDefinition((Element) mavenNodeList
+                    .item(0));
 
-		nodes = element.getElementsByTagName("version");
-		if (nodes.getLength() != 1) {
-			ad.version = "DUMMY_VER";
-		} else {
-			ad.version = nodes.item(0).getTextContent();
-		}
-		return ad;
-	}
+            ArtifactDefinition jppAD = null;
+            NodeList jppNodeList = (NodeList) depNode
+                    .getElementsByTagName("jpp");
 
+            if (jppNodeList.getLength() == 1) {
+                jppAD = getArtifactDefinition((Element) jppNodeList.item(0));
+                if (System.getProperty("maven.ignore.versions") == null
+                        && System.getProperty("maven.local.mode") == null) {
+                    debug("*** Adding: " + mavenAD.groupId + ","
+                            + mavenAD.artifactId + "," + mavenAD.version
+                            + " => " + jppAD.groupId + "," + jppAD.artifactId
+                            + "," + jppAD.version + " to map...");
 
-	public static void debug(String msg) {
-		if (System.getProperty("maven.local.debug") != null)
-			System.err.println(msg);
-	}
+                    jppArtifactMap.put(mavenAD.groupId + ","
+                            + mavenAD.artifactId + "," + mavenAD.version,
+                            jppAD.groupId + "," + jppAD.artifactId + ","
+                                    + jppAD.version);
+                } else {
+                    debug("*** Adding: " + mavenAD.groupId + ","
+                            + mavenAD.artifactId + " => " + jppAD.groupId + ","
+                            + jppAD.artifactId + "," + jppAD.version
+                            + " to map...");
+
+                    jppArtifactMap.put(mavenAD.groupId + ","
+                            + mavenAD.artifactId, jppAD.groupId + ","
+                            + jppAD.artifactId + "," + jppAD.version);
+                }
+            } else {
+                debug("Number of jpp sub-elements is not 1. Dropping dependency");
+                debug("*** Adding: " + mavenAD.groupId + ","
+                        + mavenAD.artifactId + "," + " => "
+                        + "JPP/maven2,empty-dep," + mavenAD.version
+                        + " to map...");
+                jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId,
+                        "JPP/maven2,empty-dep," + mavenAD.version);
+            }
+        }
+    }
+
+    private static ArtifactDefinition getArtifactDefinition(Element element) {
+        ArtifactDefinition ad = new ArtifactDefinition();
+
+        NodeList nodes = element.getElementsByTagName("groupId");
+        if (nodes.getLength() != 1) {
+            debug("groupId definition not found in depmap");
+            return null;
+        }
+        ad.groupId = nodes.item(0).getTextContent();
+
+        nodes = element.getElementsByTagName("artifactId");
+        if (nodes.getLength() != 1) {
+            debug("artifactId definition not found in depmap");
+            return null;
+        }
+        ad.artifactId = nodes.item(0).getTextContent();
+
+        nodes = element.getElementsByTagName("version");
+        if (nodes.getLength() != 1) {
+            ad.version = "DUMMY_VER";
+        } else {
+            ad.version = nodes.item(0).getTextContent();
+        }
+        return ad;
+    }
+
+    public static void debug(String msg) {
+        if (System.getProperty("maven.local.debug") != null)
+            System.err.println(msg);
+    }
 }

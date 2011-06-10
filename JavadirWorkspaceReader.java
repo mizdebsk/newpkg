@@ -11,15 +11,11 @@ import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
 import org.sonatype.aether.artifact.Artifact;
 
-
-public class JavadirWorkspaceReader
-    implements WorkspaceReader
-{
+public class JavadirWorkspaceReader implements WorkspaceReader {
     private WorkspaceRepository workspaceRepository;
 
     private static final char GROUP_SEPARATOR = '.';
     private static final char PATH_SEPARATOR = '/';
-
 
     public JavadirWorkspaceReader() {
         workspaceRepository = new WorkspaceRepository("javadir-workspace");
@@ -29,8 +25,9 @@ public class JavadirWorkspaceReader
         return workspaceRepository;
     }
 
-    public File findArtifact( Artifact artifact ) {
-    	MavenJPackageDepmap.debug("=============JAVADIRREADER-FIND_ARTIFACT: " + artifact.getArtifactId());
+    public File findArtifact(Artifact artifact) {
+        MavenJPackageDepmap.debug("=============JAVADIRREADER-FIND_ARTIFACT: "
+                + artifact.getArtifactId());
         StringBuffer path = new StringBuffer();
 
         String artifactId = artifact.getArtifactId();
@@ -42,7 +39,8 @@ public class JavadirWorkspaceReader
 
         if (!groupId.startsWith("JPP")) {
             MavenJPackageDepmap map = MavenJPackageDepmap.getInstance();
-            Hashtable<String,String> newInfo = map.getMappedInfo(groupId, artifactId, version);
+            Hashtable<String, String> newInfo = map.getMappedInfo(groupId,
+                    artifactId, version);
 
             groupId = (String) newInfo.get("group");
             artifactId = (String) newInfo.get("artifact");
@@ -54,32 +52,33 @@ public class JavadirWorkspaceReader
             path = getPOMPath(groupId, artifactId);
         } else if (artifact.getExtension().equals("signature")) {
             path.append("/usr/share/maven/repository/");
-            path.append( groupId ).append( '/' );
-            path.append( artifactId ).append( ".signature" );
+            path.append(groupId).append('/');
+            path.append(artifactId).append(".signature");
         } else if (artifact.getExtension().equals("zip")) {
             path.append("/usr/share/maven/repository/");
-            path.append( groupId ).append( '/' );
-            path.append( artifactId ).append( ".zip" );
+            path.append(groupId).append('/');
+            path.append(artifactId).append(".zip");
         } else {
-        	path.append("/usr/share/maven/repository/");
-            path.append( groupId ).append( '/' );
-            path.append( artifactId ).append( ".jar" );
+            path.append("/usr/share/maven/repository/");
+            path.append(groupId).append('/');
+            path.append(artifactId).append(".jar");
         }
 
         MavenJPackageDepmap.debug("Returning " + path.toString());
         File ret = new File(path.toString());
         // if file doesn't exist return null to delegate to other
         // resolvers (reactor/local repo)
-        if ( ret.isFile() ) {
+        if (ret.isFile()) {
             MavenJPackageDepmap.debug("Returning " + path.toString());
             return ret;
         } else {
-            MavenJPackageDepmap.debug("Returning null for gid:aid =>" + groupId + ":" + artifactId);
+            MavenJPackageDepmap.debug("Returning null for gid:aid =>" + groupId
+                    + ":" + artifactId);
             return null;
         }
     }
 
-    public List<String> findVersions( Artifact artifact ) {
+    public List<String> findVersions(Artifact artifact) {
         List<String> ret = new LinkedList<String>();
         ret.add("latest");
         return ret;
@@ -87,25 +86,30 @@ public class JavadirWorkspaceReader
 
     private StringBuffer getPOMPath(String groupId, String artifactId) {
 
-        String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-" + artifactId + ".pom";
-        String m2path = System.getProperty("maven2.local.pom.path", "JPP/maven2/poms") + "/" + fName;
-        String m3path = System.getProperty("maven.local.pom.path", "JPP/maven/poms") + "/" + fName;
+        String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-"
+                + artifactId + ".pom";
+        String m2path = System.getProperty("maven2.local.pom.path",
+                "JPP/maven2/poms") + "/" + fName;
+        String m3path = System.getProperty("maven.local.pom.path",
+                "JPP/maven/poms") + "/" + fName;
         File f;
 
         // let's try maven 2 repo first
-        f = new File(System.getProperty("maven2.local.default.repo", "/usr/share/maven2/repository") + "/" + m2path);
-        if ( f.exists() ) {
+        f = new File(System.getProperty("maven2.local.default.repo",
+                "/usr/share/maven2/repository") + "/" + m2path);
+        if (f.exists()) {
             return new StringBuffer(f.getPath());
         }
 
-        f = new File(System.getProperty("maven.local.default.repo", "/usr/share/maven/repository") + "/" + m3path);
-        if ( f.exists() ) {
+        f = new File(System.getProperty("maven.local.default.repo",
+                "/usr/share/maven/repository") + "/" + m3path);
+        if (f.exists()) {
             return new StringBuffer(f.getPath());
         }
 
         // final fallback to m2 default poms
-        return new StringBuffer("/usr/share/maven2/repository/" +
-                                System.getProperty("maven.local.default.repo", "JPP/maven2/default_poms") +
-                                "/" + fName);
+        return new StringBuffer("/usr/share/maven2/repository/"
+                + System.getProperty("maven.local.default.repo",
+                        "JPP/maven2/default_poms") + "/" + fName);
     }
 }

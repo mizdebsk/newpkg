@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -308,6 +308,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Fri Jun 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-5
+- Process fragments directly instead of maven2-depmap.xml
+
 * Mon Jun  6 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-4
 - Add help to mvn-rpmbuild and mvn-local (rhbz#710448)
 
