@@ -310,6 +310,8 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %changelog
 * Fri Jun 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-5
 - Process fragments directly instead of maven2-depmap.xml
+- Expect fragments in /usr/share/maven-fragments
+- Resolve poms also from /usr/share/maven-poms
 
 * Mon Jun  6 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-4
 - Add help to mvn-rpmbuild and mvn-local (rhbz#710448)

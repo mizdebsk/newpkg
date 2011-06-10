@@ -1,15 +1,14 @@
 package org.apache.maven.artifact.resolver;
 
-import org.apache.maven.artifact.repository.MavenJPackageDepmap;
-
 import java.io.File;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.maven.artifact.repository.MavenJPackageDepmap;
+import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
-import org.sonatype.aether.artifact.Artifact;
 
 public class JavadirWorkspaceReader implements WorkspaceReader {
     private WorkspaceRepository workspaceRepository;
@@ -101,8 +100,16 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
             return new StringBuffer(f.getPath());
         }
 
+        // now maven 3 specific repository
         f = new File(System.getProperty("maven.local.default.repo",
                 "/usr/share/maven/repository") + "/" + m3path);
+        if (f.exists()) {
+            return new StringBuffer(f.getPath());
+        }
+
+        // now try new path in /usr. This will be the only check after all
+        // packages are rebuilt
+        f = new File("/usr/share/maven-poms/" + fName);
         if (f.exists()) {
             return new StringBuffer(f.getPath());
         }
