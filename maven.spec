@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -15,6 +15,10 @@ Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}
 # source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
 Source100:      JavadirWorkspaceReader.java
 Source101:      MavenJPackageDepmap.java
+
+# empty files for resolving to nothing
+Source104:    %{name}-empty-dep.pom
+Source105:    %{name}-empty-dep.jar
 
 # 2xx for created non-buildable sources
 Source200:    %{name}-script
@@ -56,6 +60,9 @@ BuildRequires:  sisu >= 2.1.1-2
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  apache-commons-parent
+
+# temporary for default poms resolving fix
+BuildRequires:  maven2
 
 Requires:       java >= 1:1.6.0
 Requires:       plexus-classworlds >= 2.4
@@ -235,6 +242,11 @@ install -dm 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 #*#####################
 ln -s %{_datadir}/%{name}/poms $RPM_BUILD_ROOT%{_javadir}/%{name}/poms
 
+# for our custom resolver to remove dependencies we need empty jar and
+# pom file
+install -m 644 %{SOURCE104} $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.maven-empty-dep.pom
+install -m 644 %{SOURCE105} $RPM_BUILD_ROOT%{_javadir}/%{name}/empty-dep.jar
+
 ############
 # /usr/bin #
 ############
@@ -308,6 +320,10 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Jun 21 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-6
+- Fix handling of fallback default_poms
+- Add empty-dep into maven package to not require maven2 version
+
 * Fri Jun 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-5
 - Process fragments directly instead of maven2-depmap.xml
 - Expect fragments in /usr/share/maven-fragments

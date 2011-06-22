@@ -84,25 +84,18 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
     }
 
     private StringBuffer getPOMPath(String groupId, String artifactId) {
-
         String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-"
                 + artifactId + ".pom";
-        String m2path = System.getProperty("maven2.local.pom.path",
-                "JPP/maven2/poms") + "/" + fName;
-        String m3path = System.getProperty("maven.local.pom.path",
-                "JPP/maven/poms") + "/" + fName;
         File f;
 
         // let's try maven 2 repo first
-        f = new File(System.getProperty("maven2.local.default.repo",
-                "/usr/share/maven2/repository") + "/" + m2path);
+        f = new File("/usr/share/maven2/poms/" + fName);
         if (f.exists()) {
             return new StringBuffer(f.getPath());
         }
 
         // now maven 3 specific repository
-        f = new File(System.getProperty("maven.local.default.repo",
-                "/usr/share/maven/repository") + "/" + m3path);
+        f = new File("/usr/share/maven/poms/" + fName);
         if (f.exists()) {
             return new StringBuffer(f.getPath());
         }
@@ -115,8 +108,6 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         }
 
         // final fallback to m2 default poms
-        return new StringBuffer("/usr/share/maven2/repository/"
-                + System.getProperty("maven.local.default.repo",
-                        "JPP/maven2/default_poms") + "/" + fName);
+        return new StringBuffer("/usr/share/maven2/default_poms/" + fName);
     }
 }

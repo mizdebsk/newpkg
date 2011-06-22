@@ -106,10 +106,6 @@ public class MavenJPackageDepmap {
         }
 
         jppCombination = (String) jppArtifactMap.get(idToCheck);
-
-        // System.err.println("*** " + groupId+","+artifactId+","+version +
-        // " => " + jppCombination);
-
         jppDep = new Hashtable<String, String>();
         if (jppCombination != null && jppCombination != "") {
 
@@ -255,13 +251,10 @@ public class MavenJPackageDepmap {
                             + jppAD.artifactId + "," + jppAD.version);
                 }
             } else {
-                debug("Number of jpp sub-elements is not 1. Dropping dependency");
-                debug("*** Adding: " + mavenAD.groupId + ","
-                        + mavenAD.artifactId + "," + " => "
-                        + "JPP/maven2,empty-dep," + mavenAD.version
-                        + " to map...");
+                debug("Number of jpp sub-elements is not 1. Dropping dependency for "
+                        + mavenAD.groupId + ":" + mavenAD.artifactId);
                 jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId,
-                        "JPP/maven2,empty-dep," + mavenAD.version);
+                        "JPP/maven,empty-dep," + mavenAD.version);
             }
         }
     }
