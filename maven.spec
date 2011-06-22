@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -292,7 +292,6 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %files
-%defattr(-,root,root,-)
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn3
 %attr(0755,root,root) %{_bindir}/mvn-local
@@ -314,12 +313,14 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %{_datadir}/%{name}/repo-metadata.tar.xz
 
 %files javadoc
-%defattr(-,root,root,-)
 %doc LICENSE.txt
 %{_javadocdir}/%{name}
 
 
 %changelog
+* Wed Jun 22 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-7
+- Process fragments in alphabetical order
+
 * Tue Jun 21 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-6
 - Fix handling of fallback default_poms
 - Add empty-dep into maven package to not require maven2 version

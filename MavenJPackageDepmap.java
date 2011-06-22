@@ -154,17 +154,21 @@ public class MavenJPackageDepmap {
         // process fragments in etc
         File fragmentDir = new File("/etc/maven/fragments");
         String flist[] = fragmentDir.list();
-        if (flist != null)
+        if (flist != null) {
+            java.util.Arrays.sort(flist);
             for (String fragFilename : flist)
                 processDepmapFile("/etc/maven/fragments/" + fragFilename);
+        }
 
         // process fragments is usr. Once packages are rebuilt, we can skip
         // fragments in /etc
         fragmentDir = new File("/usr/share/maven-fragments");
         flist = fragmentDir.list();
-        if (flist != null)
+        if (flist != null) {
+            java.util.Arrays.sort(flist);
             for (String fragFilename : flist)
                 processDepmapFile("/usr/share/maven-fragments/" + fragFilename);
+        }
 
         String customFileName = System.getProperty("maven.local.depmap.file",
                 null);
