@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -38,6 +38,7 @@ Patch200:       0002-Use-custom-resolver.patch
 BuildArch:      noarch
 
 BuildRequires:  maven
+BuildRequires:  maven-parent
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
@@ -65,6 +66,7 @@ BuildRequires:  apache-commons-parent
 BuildRequires:  maven2
 
 Requires:       java >= 1:1.6.0
+Requires:       maven-parent
 Requires:       plexus-classworlds >= 2.4
 Requires:       apache-commons-cli
 Requires:       guava
@@ -318,6 +320,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Jun 23 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-8
+- Add maven-parent to BR/R
+
 * Wed Jun 22 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-7
 - Process fragments in alphabetical order
 
