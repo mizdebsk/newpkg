@@ -1,16 +1,16 @@
 Name:           sisu
-Version:        2.1.1
-Release:        2%{?dist}
+Version:        2.2.3
+Release:        1%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
 Group:          Development/Tools
-License:        ASL 2.0
+License:        ASL 2.0 and EPL
 URL:            http://github.com/sonatype/sisu
 
 # git clone git://github.com/sonatype/sisu
-# git archive --prefix="sisu-2.1.1/" --format=tar sisu-2.1.1 | bzip2 > sisu-2.1.1.tar.bz2
-Source0:        %{name}-%{version}.tar.bz2
+# git archive --prefix="sisu-2.2.3/" --format=tar sisu-2.1.1 | xz > sisu-2.2.3.tar.xz
+Source0:        %{name}-%{version}.tar.xz
 Source1:        %{name}-depmap.xml
 Patch0:         0001-Remove-test-deps.patch
 Patch1:         0002-Fix-plexus-bundling.patch
@@ -35,7 +35,30 @@ BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  atinject
 BuildRequires:  felix-framework
+BuildRequires:  forge-parent
+BuildRequires:  maven-surefire-provider-testng
 
+# to get out of cyclic build failures, should be removed in next release
+# maven-resources-plugin
+BuildRequires:  plexus-build-api
+Requires:       plexus-build-api
+
+# maven-compiler-plugin
+BuildRequires:  plexus-compiler
+Requires:       plexus-compiler
+
+# maven-site-plugin and maven-dependency-plugin
+BuildRequires:  maven-shared-reporting-api
+Requires:       maven-shared-reporting-api
+
+# maven-surefire providers (various)
+BuildRequires:  maven-surefire-provider-junit4
+BuildRequires:  maven-surefire-provider-junit
+
+# maven-dependency-plugin
+BuildRequires:  maven-shared-file-management
+
+Requires:       forge-parent
 Requires:       google-guice
 Requires:       java >= 1:1.6.0
 Requires(post): jpackage-utils
@@ -55,6 +78,7 @@ Requires:       jpackage-utils
 
 %prep
 %setup -q
+
 %patch0 -p1
 %patch1 -p1
 
@@ -62,9 +86,11 @@ Requires:       jpackage-utils
 # TODO enable guice-eclipse
 sed -i 's:.*guice-eclipse.*::g' sisu-inject/pom.xml
 rm -rf sisu-inject/guice-eclipse
+sed -i 's:.*sisu-eclipse-registry.*::g' sisu-inject/registries/pom.xml
+rm -rf sisu-inject/registries/sisu-eclipse-registry
 
 %build
-mvn-rpmbuild \
+mvn-rpmbuild -X \
   -Dmaven.local.depmap.file=%{SOURCE1} \
   -Dmaven.test.skip=true \
   install javadoc:aggregate
@@ -73,40 +99,63 @@ mvn-rpmbuild \
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 install -d -m 0755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
-for dir1 in sisu-inject/guice-*;do
-    pushd $dir1
+pushd sisu-inject
+# main pom
+install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-inject.pom
+%add_maven_depmap JPP.%{name}-inject.pom
+
+
+pushd containers
+# main poms
+install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-containers.pom
+%add_maven_depmap JPP.%{name}-containers.pom
+
+for submod in guice-*;do
+    pushd $submod
     for module in guice-*;do
         install -pm 644 $module/target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
         install -pm 644 $module/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$module.pom
-        %add_to_maven_depmap  org.sonatype.sisu.inject $module %{version} JPP/%{name} $module
+        %add_maven_depmap JPP.%{name}-$module.pom %{name}/$module.jar
     done
-    popd
     # $dir is sisu-inject/XX so we strip the first part
-    submod=`echo $dir1 | sed -s 's:.*/::'`
-    install -pm 644 sisu-inject/$submod/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$submod.pom
-    %add_to_maven_depmap  org.sonatype.sisu.inject $submod %{version} JPP/%{name} $submod
+    install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$submod.pom
+    %add_maven_depmap JPP.%{name}-$submod.pom
+    popd
 done
 
-pushd sisu-inject/guice-bean
+pushd guice-bean
 module="sisu-inject-bean"
 install -pm 644 $module/target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
 install -pm 644 $module/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$module.pom
-%add_to_maven_depmap org.sonatype.sisu $module %{version} JPP/%{name} $module
-popd
+%add_maven_depmap JPP.%{name}-$module.pom %{name}/$module.jar
+popd # guice-bean
 
-pushd sisu-inject/guice-plexus
+pushd guice-plexus
 module="sisu-inject-plexus"
 install -pm 644 $module/target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
 install -pm 644 $module/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$module.pom
-%add_to_maven_depmap org.sonatype.sisu $module %{version} JPP/%{name} $module
-popd
+%add_maven_depmap JPP.%{name}-$module.pom %{name}/$module.jar
+popd # guice-plexus
 
+popd # containers
+
+pushd registries
 # main poms
-install -pm 644 sisu-inject/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-inject.pom
-%add_to_maven_depmap  org.sonatype.sisu sisu-inject %{version} JPP/%{name} inject
+install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-registries.pom
+%add_maven_depmap JPP.%{name}-containers.pom
+
+for module in *registry*;do
+    install -pm 644 $module/target/$module-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$module.jar
+    install -pm 644 $module/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$module.pom
+    %add_maven_depmap JPP.%{name}-$module.pom %{name}/$module.jar
+done
+popd # registries
+
+popd # sisu-inject
+
 
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
-%add_to_maven_depmap  org.sonatype.sisu sisu-parent %{version} JPP/%{name} parent
+%add_maven_depmap JPP.%{name}-parent.pom
 
 # javadoc
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
@@ -125,19 +174,23 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %files
-%defattr(-,root,root,-)
+%doc LICENSE-ASL.txt LICENSE-EPL.txt
 %{_javadir}/%{name}
 %{_mavenpomdir}/*
 %{_mavendepmapfragdir}/*
 
 
 %files javadoc
-%defattr(-,root,root,-)
-%doc %{_javadocdir}/%{name}*
-
+%doc LICENSE-ASL.txt LICENSE-EPL.txt
+%doc %{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Jun 23 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.2.3-1
+- Update to latest upstream 2.2.3 (#683795)
+- Add forge-parent to Requires
+- Rework spec to be more simple, update patches
+
 * Tue Mar  1 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.1.1-2
 - Add atinject into poms as dependency
 

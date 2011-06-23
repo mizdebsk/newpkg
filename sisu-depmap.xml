@@ -25,5 +25,14 @@
             <artifactId>org.osgi.core</artifactId>
         </jpp>
     </dependency>
-
+    <dependency>
+        <maven>
+            <groupId>org.apache.maven.reporting</groupId>
+            <artifactId>maven-reporting-api</artifactId>
+        </maven>
+        <jpp>
+            <groupId>JPP/maven-shared</groupId>
+            <artifactId>reporting-api</artifactId>
+        </jpp>
+    </dependency>
 </dependencies>
