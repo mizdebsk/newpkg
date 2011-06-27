@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        2.9.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -53,6 +53,7 @@ BuildRequires:  jtidy
 BuildRequires:  regexp
 BuildRequires:  apache-commons-digester
 BuildRequires:  unzip
+BuildRequires:  zip
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  apache-commons-compress
 BuildRequires:  icu4j
@@ -192,7 +193,6 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %files
-%defattr(-,root,root,-)
 %doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt
 %{_mavenpomdir}/JPP*pom
 %{_mavendepmapfragdir}/%{name}
@@ -201,20 +201,20 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_datadir}/%{name}-%{version}
 
 %files javadoc
-%defattr(-,root,root,-)
 %doc LICENSE.txt
 %{_javadocdir}/%{name}
 
 %files contrib
-%defattr(-,root,root,-)
 %{_javadir}/%{name}-contrib
 %doc contrib/CHANGES.txt
 
 %files demo
-%defattr(-,root,root,-)
 %{_javadir}/%{name}-demos.jar
 
 %changelog
+* Mon Jun 27 2011 Alexander Kurtakov <akurtako@redhat.com> 0:2.9.4-6
+- BR zip - fixes FTBFS.
+
 * Tue May 3 2011 Alexander Kurtakov <akurtako@redhat.com> 0:2.9.4-5
 - Update OSGi manifests.
 
