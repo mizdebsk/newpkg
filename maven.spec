@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -91,10 +91,6 @@ Requires:       animal-sniffer >= 1.6-5
 Requires:       mojo-parent
 Requires:       hamcrest
 Requires:       apache-commons-parent
-
-
-Requires(post): jpackage-utils
-Requires(postun): jpackage-utils
 
 
 %description
@@ -234,6 +230,18 @@ install -dm 755 $RPM_BUILD_ROOT/%{_sysconfdir}/maven/fragments
 install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/repository
 ln -s %{_javadir} $RPM_BUILD_ROOT%{_datadir}/%{name}/repository/JPP
 
+##############################
+# /usr/share/java-jni repository #
+##############################
+install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-java-jni
+ln -s %{_javajnidir} $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-java-jni/JPP
+
+##############################
+# _libdir/java repository #
+##############################
+install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-jni
+ln -s %{_jnidir} $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-jni/JPP
+
 ##################
 # javadir/maven #
 #*################
@@ -286,13 +294,6 @@ install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
-
-
 %files
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn3
@@ -310,6 +311,8 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %{_datadir}/%{name}/lib
 %{_datadir}/%{name}/poms
 %{_datadir}/%{name}/repository
+%{_datadir}/%{name}/repository-jni
+%{_datadir}/%{name}/repository-java-jni
 %config %{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}
 %{_datadir}/%{name}/repo-metadata.tar.xz
@@ -320,6 +323,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Mon Jul  4 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-9
+- Add resolving from jnidir and java-jni
+
 * Thu Jun 23 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-8
 - Add maven-parent to BR/R
 

@@ -28,7 +28,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         MavenJPackageDepmap.debug("=============JAVADIRREADER-FIND_ARTIFACT: "
                 + artifact.getArtifactId());
         StringBuffer path = new StringBuffer();
-
+        File ret = new File("");
         String artifactId = artifact.getArtifactId();
         String groupId = artifact.getGroupId();
         String version = artifact.getVersion();
@@ -49,22 +49,24 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
 
         if (artifact.getExtension().equals("pom")) {
             path = getPOMPath(groupId, artifactId);
-        } else if (artifact.getExtension().equals("signature")) {
-            path.append("/usr/share/maven/repository/");
-            path.append(groupId).append('/');
-            path.append(artifactId).append(".signature");
-        } else if (artifact.getExtension().equals("zip")) {
-            path.append("/usr/share/maven/repository/");
-            path.append(groupId).append('/');
-            path.append(artifactId).append(".zip");
+            ret = new File(path.toString());
         } else {
-            path.append("/usr/share/maven/repository/");
-            path.append(groupId).append('/');
-            path.append(artifactId).append(".jar");
+            String repos[] = { "/usr/share/maven/repository/",
+                    "/usr/share/maven/repository-java-jni/",
+                    "/usr/share/maven/repository-jni/" };
+            String relativeArtifactPath = groupId + "/" + artifactId + "."
+                    + artifact.getExtension();
+            for (String repo : repos) {
+                path = new StringBuffer(repo + relativeArtifactPath);
+                ret = new File(path.toString());
+                if (ret.isFile()) {
+                    MavenJPackageDepmap.debug("Returning " + repo
+                            + relativeArtifactPath);
+                    return ret;
+                }
+            }
         }
 
-        MavenJPackageDepmap.debug("Returning " + path.toString());
-        File ret = new File(path.toString());
         // if file doesn't exist return null to delegate to other
         // resolvers (reactor/local repo)
         if (ret.isFile()) {
@@ -87,24 +89,14 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-"
                 + artifactId + ".pom";
         File f;
+        String[] pomRepos = { "/usr/share/maven2/poms/",
+                "/usr/share/maven/poms/", "/usr/share/maven-poms/" };
 
-        // let's try maven 2 repo first
-        f = new File("/usr/share/maven2/poms/" + fName);
-        if (f.exists()) {
-            return new StringBuffer(f.getPath());
-        }
-
-        // now maven 3 specific repository
-        f = new File("/usr/share/maven/poms/" + fName);
-        if (f.exists()) {
-            return new StringBuffer(f.getPath());
-        }
-
-        // now try new path in /usr. This will be the only check after all
-        // packages are rebuilt
-        f = new File("/usr/share/maven-poms/" + fName);
-        if (f.exists()) {
-            return new StringBuffer(f.getPath());
+        for (String pomRepo : pomRepos) {
+            f = new File(pomRepo + fName);
+            if (f.exists()) {
+                return new StringBuffer(f.getPath());
+            }
         }
 
         // final fallback to m2 default poms
