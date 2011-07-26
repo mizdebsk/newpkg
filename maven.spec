@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -10,6 +10,7 @@ URL:            http://maven.apache.org/
 # Source URL is for testing only, final version will be in different place:
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
 Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
+Source1:        maven-bash-completion
 
 # custom resolver java files
 # source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
@@ -293,6 +294,8 @@ install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.%{name}-maven
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
+# Install bash-completion
+install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 %files
 %doc LICENSE.txt NOTICE.txt README.txt
@@ -316,6 +319,7 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %config %{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}
 %{_datadir}/%{name}/repo-metadata.tar.xz
+%config(noreplace) %{_sysconfdir}/bash_completion.d/%{name}
 
 %files javadoc
 %doc LICENSE.txt
@@ -323,6 +327,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Jul 26 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-10
+- Add bash completion (#706856)
+
 * Mon Jul  4 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-9
 - Add resolving from jnidir and java-jni
 
