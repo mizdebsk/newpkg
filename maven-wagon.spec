@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -42,6 +42,7 @@ Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{ver
 
 Source1:        wagon-1.0-jpp-depmap.xml
 Patch1:         disable-tck.patch
+Patch2:         %{name}-migration-to-component-metadata.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils >= 0:1.7.2
@@ -59,7 +60,7 @@ BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-enforcer-plugin
 #BuildRequires:  maven2-default-skin
-BuildRequires:  plexus-maven-plugin
+BuildRequires:  plexus-containers-component-metadata
 BuildRequires:  maven-scm-test
 BuildRequires:  xerces-j2
 BuildRequires:  classworlds
@@ -126,6 +127,7 @@ Documents for %{name}.
 sed -i "s|<module>wagon-webdav-jackrabbit</module>|<!-- <module>wagon-webdav-jackrabbit</module> -->|" wagon-providers/pom.xml
 
 %patch1
+%patch2 -p1
 
 # To wire out jetty, plexus-avalon-personality and plexus-ftpd requirement
 rm -f wagon-providers/wagon-ftp/src/test/java/org/apache/maven/wagon/providers/ftp/FtpWagonTest.java
@@ -273,6 +275,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Wed Jul 27 2011 Jaromir Capik <jcapik@redhat.com> - 0:1.0-2
+- Migration from plexus-maven-plugin to plexus-containers-component-metadata
+
 * Wed Jul 27 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-1
 - Update to 1.0 final.
 
