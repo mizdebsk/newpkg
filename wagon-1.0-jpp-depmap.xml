@@ -25,18 +25,6 @@
   </dependency>
   <dependency>
 	<maven>
-	  <groupId>servletapi</groupId>
-	  <artifactId>servletapi</artifactId>
-	  <version>2.3</version>
-	</maven>
-	<jpp>
-	  <groupId>JPP</groupId>
-	  <artifactId>servletapi5</artifactId>
-	  <version>2.4</version>
-	</jpp>
-  </dependency>
-  <dependency>
-	<maven>
 	  <groupId>ch.ethz.ganymed</groupId>
 	  <artifactId>ganymed-ssh2</artifactId>
 	  <version>build210</version>
@@ -69,18 +57,6 @@
 	  <groupId>JPP</groupId>
 	  <artifactId>it-could-webdav</artifactId>
 	  <version>0.4</version>
-	</jpp>
-  </dependency>
-  <dependency>
-	<maven>
-	  <groupId>org.apache.maven.skins</groupId>
-	  <artifactId>maven-default-skin</artifactId>
-	  <version>1.0</version>
-	</maven>
-	<jpp>
-	  <groupId>JPP/maven2</groupId>
-	  <artifactId>default-skin</artifactId>
-	  <version>1.0</version>
 	</jpp>
   </dependency>
   <dependency>
@@ -217,18 +193,6 @@
   </dependency>
   <dependency>
 	<maven>
-	  <groupId>plexus</groupId>
-	  <artifactId>plexus-container-default</artifactId>
-	  <version>1.0-alpha-9</version>
-	</maven>
-	<jpp>
-	  <groupId>JPP/plexus</groupId>
-	  <artifactId>container-default</artifactId>
-	  <version>1.0</version>
-	</jpp>
-  </dependency>
-  <dependency>
-	<maven>
 	  <groupId>cornerstone-connection</groupId>
 	  <artifactId>cornerstone-connection-impl</artifactId>
 	  <version>1.0</version>
@@ -245,13 +209,6 @@
       <artifactId>plexus-ftpd</artifactId>
       <groupId>org.codehaus.plexus</groupId>
       <version>1.0-alpha-1</version>
-    </maven>
-  </dependency>
-  <dependency>
-    <maven>
-      <artifactId>jetty</artifactId>
-      <groupId>jetty</groupId>
-      <version>4.2.10</version>
     </maven>
   </dependency>
   <dependency>
