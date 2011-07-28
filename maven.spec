@@ -1,7 +1,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -35,8 +35,6 @@ Patch150:         0001-Add-plugin-api-deps.patch
 
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
-
-BuildArch:      noarch
 
 BuildRequires:  maven
 BuildRequires:  maven-parent
@@ -92,6 +90,9 @@ Requires:       animal-sniffer >= 1.6-5
 Requires:       mojo-parent
 Requires:       hamcrest
 Requires:       apache-commons-parent
+
+# for noarch->arch change
+Obsoletes:      %{name} < 0:3.0.3-11
 
 
 %description
@@ -327,6 +328,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Thu Jul 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-11
+- Change to arch specific since we are using _libdir for _jnidir
+
 * Tue Jul 26 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-10
 - Add bash completion (#706856)
 
