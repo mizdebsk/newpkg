@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 
 Name:           maven
 Version:        3.0.3
