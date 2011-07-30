@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -329,6 +329,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Thu Jul 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-12
+- Disable debug package creation
+
 * Thu Jul 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-11
 - Change to arch specific since we are using _libdir for _jnidir
 
