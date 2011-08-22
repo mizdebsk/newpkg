@@ -1,0 +1,24 @@
+From b84e27c430a321185639096e7a0ca2ab4945bbfa Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Mon, 22 Aug 2011 16:11:57 +0200
+Subject: [PATCH] Use utf-8 source encoding
+
+---
+ pom.xml |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index e2f2cd0..6bb27f3 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -52,6 +52,7 @@
+     <jxpathVersion>1.3</jxpathVersion>
+     <aetherVersion>1.11</aetherVersion>
+     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
++    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+ 
+   <mailingLists>
+-- 
+1.7.6
+
