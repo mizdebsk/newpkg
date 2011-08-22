@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -33,7 +33,7 @@ Source250:    repo-metadata.tar.xz
 # Patch1XX could be upstreamed probably
 # Patch15X are already upstream
 Patch150:         0001-Add-plugin-api-deps.patch
-
+Patch151:         0003-Use-utf-8-source-encoding.patch
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
 
@@ -112,6 +112,7 @@ Requires:       jpackage-utils
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
 %patch150 -p1
+%patch151 -p1
 %patch200 -p1
 
 # get custom resolver in place
@@ -208,13 +209,15 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
 (cd $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
 
   build-jar-repository -s -p . aether/api aether/connector-wagon aether/impl aether/spi aether/util \
-                               commons-cli guava google-guice hamcrest/core nekohtml plexus/plexus-cipher \
-                               plexus/containers-component-annotations plexus/containers-container-default \
+                               commons-cli guava google-guice nekohtml plexus/plexus-cipher \
+                               plexus/containers-component-annotations  \
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 jdom xml-commons-apis atinject
+                               xbean/xbean-reflect xerces-j2 atinject
+  # dependency of our resolver
   mkdir ext/
+  build-jar-repository -s -p ext/ xml-commons-apis
 )
 
 ################
@@ -329,6 +332,10 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Mon Aug 22 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-13
+- Remove unnecessary deps causing problems from lib/
+- Add utf-8 source encoding patch
+
 * Thu Jul 28 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-12
 - Disable debug package creation
 
