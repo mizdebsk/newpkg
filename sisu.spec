@@ -1,6 +1,6 @@
 Name:           sisu
 Version:        2.2.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -37,26 +37,8 @@ BuildRequires:  atinject
 BuildRequires:  felix-framework
 BuildRequires:  forge-parent
 BuildRequires:  maven-surefire-provider-testng
-
-# to get out of cyclic build failures, should be removed in next release
-# maven-resources-plugin
-BuildRequires:  plexus-build-api
-Requires:       plexus-build-api
-
-# maven-compiler-plugin
-BuildRequires:  plexus-compiler
-Requires:       plexus-compiler
-
-# maven-site-plugin and maven-dependency-plugin
-BuildRequires:  maven-shared-reporting-api
-Requires:       maven-shared-reporting-api
-
-# maven-surefire providers (various)
 BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  maven-surefire-provider-junit
 
-# maven-dependency-plugin
-BuildRequires:  maven-shared-file-management
 
 Requires:       forge-parent
 Requires:       google-guice
@@ -82,6 +64,11 @@ Requires:       jpackage-utils
 %patch0 -p1
 %patch1 -p1
 
+# add backward compatible location
+cp sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/sonatype/guice/plexus/lifecycles/*java \
+   sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/codehaus/plexus/
+sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
+       sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/codehaus/plexus/*java
 
 # TODO enable guice-eclipse
 sed -i 's:.*guice-eclipse.*::g' sisu-inject/pom.xml
@@ -186,6 +173,10 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Fri Aug 19 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.2.3-2
+- Add backward compatible package path for lifecycles
+- Remove temporary BRs/Rs
+
 * Thu Jun 23 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.2.3-1
 - Update to latest upstream 2.2.3 (#683795)
 - Add forge-parent to Requires

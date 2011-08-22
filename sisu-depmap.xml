@@ -35,4 +35,15 @@
             <artifactId>reporting-api</artifactId>
         </jpp>
     </dependency>
+    <!-- for snakeyaml -->
+    <dependency>
+      <maven>
+        <groupId>com.google.gdata</groupId>
+        <artifactId>gdata-core</artifactId>
+      </maven>
+      <jpp>
+        <groupId>JPP</groupId>
+        <artifactId>gdata/gdata-core</artifactId>
+      </jpp>
+    </dependency>
 </dependencies>
