@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -36,6 +36,7 @@ Patch150:         0001-Add-plugin-api-deps.patch
 Patch151:         0003-Use-utf-8-source-encoding.patch
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
+Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 
 BuildRequires:  maven
 BuildRequires:  maven-parent
@@ -114,6 +115,7 @@ Requires:       jpackage-utils
 %patch150 -p1
 %patch151 -p1
 %patch200 -p1
+%patch201 -p1
 
 # get custom resolver in place
 mkdir -p maven-aether-provider/src/main/java/org/apache/maven/artifact/resolver \
@@ -332,6 +334,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Tue Aug 30 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-14
+- Fix test scope skipping
+
 * Mon Aug 22 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-13
 - Remove unnecessary deps causing problems from lib/
 - Add utf-8 source encoding patch

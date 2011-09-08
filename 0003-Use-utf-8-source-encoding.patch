@@ -1,7 +1,7 @@
-From b84e27c430a321185639096e7a0ca2ab4945bbfa Mon Sep 17 00:00:00 2001
+From 053974e55c21a372e544ba23f5eca6c864cc283c Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
-Date: Mon, 22 Aug 2011 16:11:57 +0200
-Subject: [PATCH] Use utf-8 source encoding
+Date: Tue, 30 Aug 2011 11:43:01 +0200
+Subject: [PATCH 3/4] Use utf-8 source encoding
 
 ---
  pom.xml |    1 +
