@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -63,9 +63,6 @@ BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  apache-commons-parent
 
-# temporary for default poms resolving fix
-BuildRequires:  maven2
-
 Requires:       java >= 1:1.6.0
 Requires:       maven-parent
 Requires:       plexus-classworlds >= 2.4
@@ -96,6 +93,8 @@ Requires:       apache-commons-parent
 # for noarch->arch change
 Obsoletes:      %{name} < 0:3.0.3-11
 
+# maven now provides "mvn" script and new maven2 mvn2
+Conflicts:      maven2 < 2.2.1-28
 
 %description
 Maven is a software project management and comprehension tool. Based on the
@@ -271,7 +270,7 @@ install -m 644 %{SOURCE105} $RPM_BUILD_ROOT%{_javadir}/%{name}/empty-dep.jar
 install -dm 755 $RPM_BUILD_ROOT%{_bindir}
 
 # Wrappers
-cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn3
+cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn
 cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn-local
 cp -af %{SOURCE202} $RPM_BUILD_ROOT%{_bindir}/mvn-rpmbuild
 
@@ -306,7 +305,7 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 %files
 %doc LICENSE.txt NOTICE.txt README.txt
-%attr(0755,root,root) %{_bindir}/mvn3
+%attr(0755,root,root) %{_bindir}/mvn
 %attr(0755,root,root) %{_bindir}/mvn-local
 %attr(0755,root,root) %{_bindir}/mvn-rpmbuild
 %dir %{_datadir}/%{name}
@@ -334,6 +333,10 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Tue Oct 11 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-15
+- Provide mvn script now instead of maven2
+- Conflict with older versions of maven2
+
 * Tue Aug 30 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-14
 - Fix test scope skipping
 
