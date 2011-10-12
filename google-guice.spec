@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.3.rc2%{?dist}
+Release:        0.4.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -28,7 +28,7 @@ BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  ant
 BuildRequires:  jarjar => 1.0
 BuildRequires:  cglib
-BuildRequires:  aqute-bndlib
+BuildRequires:  aqute-bnd
 BuildRequires:  objectweb-asm
 BuildRequires:  junit
 BuildRequires:  atinject
@@ -39,8 +39,6 @@ BuildRequires:  jpackage-utils
 Requires:       cglib
 Requires:       atinject
 Requires:       java >= 1:1.6.0
-Requires(post): jpackage-utils
-Requires(postun): jpackage-utils
 
 %description
 Put simply, Guice alleviates the need for factories and the use of new
@@ -85,10 +83,10 @@ find . -name '*.jar' -not -name 'munge.jar' -delete
 
 # re-create symlinks
 pushd lib/build
-build-jar-repository -s -p . aqute-bndlib cglib slf4j \
+build-jar-repository -s -p . aqute-bnd cglib slf4j \
                      jarjar junit objectweb-asm \
 
-mv aqute-bndlib*.jar bnd-0.0.384.jar
+mv aqute-bnd*.jar bnd-0.0.384.jar
 mv cglib*.jar cglib-2.2.1-snapshot.jar
 mv jarjar*.jar jarjar-snapshot.jar
 mv objectweb-asmasm-all.jar asm-3.1.jar
@@ -131,13 +129,11 @@ ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{short_name}.jar
 
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}-parent.pom
-%add_to_maven_depmap com.google.inject %{short_name}-parent %{version} JPP %{name}-parent
+%add_maven_depmap JPP-%{name}-parent.pom
 
 install -pm 644 core/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
-%add_to_maven_depmap com.google.inject %{short_name} %{version} JPP %{name}
 # provide sisu group/artifact (should be just mavenized google-guice
-# with
-%add_to_maven_depmap org.sonatype.sisu sisu-%{short_name} %{version} JPP %{name}
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.sonatype.sisu:sisu-guice"
 popd
 
 # javadoc
@@ -150,17 +146,13 @@ cp -r javadoc/* %{buildroot}%{_javadocdir}/%{name}
 rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
-
 %files
 %doc COPYING
-%{_javadir}/*.jar
-%{_mavenpomdir}/*
-%{_mavendepmapfragdir}/*
+%{_javadir}/%{name}.jar
+%{_javadir}/%{short_name}.jar
+%{_mavenpomdir}/JPP-%{name}-parent.pom
+%{_mavenpomdir}/JPP-%{name}.pom
+%{_mavendepmapfragdir}/%{name}
 
 
 %files javadoc
@@ -170,6 +162,11 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Wed Oct 12 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.4.rc2
+- Build with aqute-bnd (#745176)
+- Use new maven macros
+- Few packaging tweaks
+
 * Tue May 24 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.3.rc2
 - Add cglib and atinject to R
 
