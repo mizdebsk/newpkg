@@ -39,6 +39,7 @@ Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 
 BuildRequires:  maven
+BuildRequires:  maven2-common-poms
 BuildRequires:  maven-parent
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
