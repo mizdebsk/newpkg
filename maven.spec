@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -64,6 +64,7 @@ BuildRequires:  hamcrest
 BuildRequires:  apache-commons-parent
 
 Requires:       java >= 1:1.6.0
+Requires:       maven2-common-poms
 Requires:       maven-parent
 Requires:       plexus-classworlds >= 2.4
 Requires:       apache-commons-cli
@@ -333,6 +334,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Tue Dec 13 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-16
+- Add maven2-common-poms to Requires
+
 * Tue Oct 11 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-15
 - Provide mvn script now instead of maven2
 - Conflict with older versions of maven2
