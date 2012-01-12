@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.11
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -99,6 +99,9 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.11-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Jun 8 2011 Alexander Kurtakov <akurtako@redhat.com> 1.11-3
 - Build with maven 3.x.
 - Do not require maven - not found in dependencies in poms.
