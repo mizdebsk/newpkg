@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.4.rc2%{?dist}
+Release:        0.5.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -162,6 +162,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.5.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Oct 12 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.4.rc2
 - Build with aqute-bnd (#745176)
 - Use new maven macros
