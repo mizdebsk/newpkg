@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -275,6 +275,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Jul 27 2011 Jaromir Capik <jcapik@redhat.com> - 0:1.0-2
 - Migration from plexus-maven-plugin to plexus-containers-component-metadata
 
