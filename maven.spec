@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.3
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -335,6 +335,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.3-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Tue Dec 13 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.3-16
 - Add maven2-common-poms to Requires
 
