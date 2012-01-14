@@ -1,6 +1,6 @@
 Name:           sisu
 Version:        2.2.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -173,6 +173,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Fri Aug 19 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.2.3-2
 - Add backward compatible package path for lifecycles
 - Remove temporary BRs/Rs
