@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2005, JPackage Project
+# Copyright (c) 2000-2008, JPackage Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,29 +29,49 @@
 #
 
 Name:           junit
-Version:        3.8.2
-Release:        9%{?dist}
+Version:        4.10
+Release:        1%{?dist}
+Epoch:          0
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
 Group:          Development/Tools
-# http://osdn.dl.sourceforge.net/junit/junit3.8.2.zip
-Source0:        junit3.8.2.zip
-Source1:        junit3.8.2-build.xml
+BuildArch:      noarch
+
+# git clone --bare git://github.com/KentBeck/junit.git junit.git 
+# mkdir junit-4.10
+# git --git-dir=junit.git --work-tree=junit-4.10 checkout r4.10
+# tar cjf junit-4.10.tar.xz junit-4.10/
+Source0:        %{name}-%{version}.tar.xz
+Source1:        http://search.maven.org/remotecontent?filepath=%{name}/%{name}/%{version}/%{name}-%{version}.pom
+Patch0:         %{name}-removed-test.patch
+
 BuildRequires:  ant
-BuildRequires:  jpackage-utils >= 0:1.6
-BuildArch:     noarch
-Buildroot:      %{_tmppath}/%{name}-%{version}-buildroot
+BuildRequires:  ant-contrib
+BuildRequires:  jpackage-utils >= 0:1.7.4
+BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  hamcrest
+BuildRequires:  perl-MD5
+
+Requires:       hamcrest
+Requires:       java >= 1:1.6.0
+
+Provides:       junit4 = %{version}-%{release}
+Obsoletes:      junit4 < %{version}-%{release}
+Conflicts:      junit4
 
 %description
-JUnit is a regression testing framework written by Erich Gamma and Kent
-Beck. It is used by the developer who implements unit tests in Java.
+JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
+It is used by the developer who implements unit tests in Java. JUnit is Open
+Source Software, released under the Common Public License Version 1.0 and 
 JUnit is Open Source Software, released under the IBM Public License and
 hosted on SourceForge.
 
 %package manual
 Group:          Documentation
 Summary:        Manual for %{name}
+Provides:       junit4-manual = %{version}-%{release}
+Obsoletes:      junit4-manual < %{version}-%{release}
 
 %description manual
 Documentation for %{name}.
@@ -59,6 +79,9 @@ Documentation for %{name}.
 %package javadoc
 Group:          Documentation
 Summary:        Javadoc for %{name}
+Requires:       jpackage-utils
+Provides:       junit4-javadoc = %{version}-%{release}
+Obsoletes:      junit4-javadoc < %{version}-%{release}
 
 %description javadoc
 Javadoc for %{name}.
@@ -66,59 +89,71 @@ Javadoc for %{name}.
 %package demo
 Group:          Development/Libraries
 Summary:        Demos for %{name}
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+Provides:       junit4-demo = %{version}-%{release}
+Obsoletes:      junit4-demo < %{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
 
 %prep
-%setup -q -n %{name}%{version}
-# extract sources
-jar xf src.jar
-rm -f src.jar
-cp %{SOURCE1} build.xml
+%setup -q 
+%patch0 -p1
+cp %{SOURCE1} pom.xml
+find -iname '*.class' -o -iname '*.jar' -delete
+ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
 
 %build
 ant dist
 
+
 %install
-rm -rf $RPM_BUILD_ROOT
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
-install -m 644 %{name}%{version}/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} ${jar/-%{version}/}; done)
+install -d -m 755 %{buildroot}%{_javadir}
+install -m 644 %{name}%{version}/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
+# Many packages still use the junit4.jar directly
+ln -s %{_javadir}/%{name}.jar %{buildroot}%{_javadir}/%{name}4.jar
+
+# pom
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%add_maven_depmap JPP-%{name}.pom %{name}.jar
+
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr %{name}%{version}/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
+cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}
+
 # demo
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit # Not using %name for last part because it is 
-                                                                # part of package name
-cp -pr %{name}%{version}/%{name}/* $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/%{name} 
 
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
-%doc README.html
-%{_javadir}/*
-
-%files manual
-%defattr(-,root,root,-)
-%doc %{name}%{version}/doc/*
-
-%files javadoc
-%defattr(-,root,root,-)
-%doc %{_javadocdir}/%{name}-%{version}
-%doc %{_javadocdir}/%{name}
+%doc cpl-v10.html README.html
+%{_javadir}/%{name}.jar
+%{_javadir}/%{name}4.jar
+%{_mavenpomdir}/*
+%{_mavendepmapfragdir}/*
 
 %files demo
-%defattr(-,root,root,-)
+%doc cpl-v10.html
 %{_datadir}/%{name}
 
+%files javadoc
+%doc cpl-v10.html
+%doc %{_javadocdir}/%{name}
+
+%files manual
+%doc cpl-v10.html
+%doc junit%{version}/doc/*
+
 %changelog
+* Wed Jan 25 2012 Tomas Radej <tradej@redhat.com> - 0:4.10-1
+- Updated to upstream 4.10
+- Obsoleted junit4
+- Epoch added
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.8.2-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
