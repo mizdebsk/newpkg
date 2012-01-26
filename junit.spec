@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -56,8 +56,8 @@ BuildRequires:  perl-MD5
 Requires:       hamcrest
 Requires:       java >= 1:1.6.0
 
-Provides:       junit4 = %{version}-%{release}
-Obsoletes:      junit4 < %{version}-%{release}
+Provides:       junit4 = %{epoch}:%{version}-%{release}
+Obsoletes:      junit4 < %{epoch}:%{version}-%{release}
 Conflicts:      junit4
 
 %description
@@ -70,8 +70,8 @@ hosted on SourceForge.
 %package manual
 Group:          Documentation
 Summary:        Manual for %{name}
-Provides:       junit4-manual = %{version}-%{release}
-Obsoletes:      junit4-manual < %{version}-%{release}
+Provides:       junit4-manual = %{epoch}:%{version}-%{release}
+Obsoletes:      junit4-manual < %{epoch}:%{version}-%{release}
 
 %description manual
 Documentation for %{name}.
@@ -80,8 +80,8 @@ Documentation for %{name}.
 Group:          Documentation
 Summary:        Javadoc for %{name}
 Requires:       jpackage-utils
-Provides:       junit4-javadoc = %{version}-%{release}
-Obsoletes:      junit4-javadoc < %{version}-%{release}
+Provides:       junit4-javadoc = %{epoch}:%{version}-%{release}
+Obsoletes:      junit4-javadoc < %{epoch}:%{version}-%{release}
 
 %description javadoc
 Javadoc for %{name}.
@@ -90,8 +90,8 @@ Javadoc for %{name}.
 Group:          Development/Libraries
 Summary:        Demos for %{name}
 Requires:       %{name} = %{epoch}:%{version}-%{release}
-Provides:       junit4-demo = %{version}-%{release}
-Obsoletes:      junit4-demo < %{version}-%{release}
+Provides:       junit4-demo = %{epoch}:%{version}-%{release}
+Obsoletes:      junit4-demo < %{epoch}:%{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
@@ -149,6 +149,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu Jan 26 2012 Tomas Radej <tradej@redhat.com> - 0:4.10-2
+- Fixed versioning
+
 * Wed Jan 25 2012 Tomas Radej <tradej@redhat.com> - 0:4.10-1
 - Updated to upstream 4.10
 - Obsoleted junit4
