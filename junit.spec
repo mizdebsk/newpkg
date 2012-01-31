@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -44,6 +44,7 @@ BuildArch:      noarch
 # tar cjf junit-4.10.tar.xz junit-4.10/
 Source0:        %{name}-%{version}.tar.xz
 Source1:        http://search.maven.org/remotecontent?filepath=%{name}/%{name}/%{version}/%{name}-%{version}.pom
+Source2:        junit-OSGi-MANIFEST.MF
 Patch0:         %{name}-removed-test.patch
 
 BuildRequires:  ant
@@ -106,6 +107,11 @@ ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
 %build
 ant dist
 
+# inject OSGi manifest
+mkdir -p META-INF
+cp -p %{SOURCE2} META-INF/MANIFEST.MF
+touch META-INF/MANIFEST.MF
+zip -u %{name}%{version}/%{name}-%{version}.jar META-INF/MANIFEST.MF
 
 %install
 # jars
@@ -149,6 +155,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu Jan 26 2012 Roland Grunberg <rgrunber@redhat.com> 0:4.8.2-3
+- Add OSGi metadata to junit.jar manifest.
+
 * Thu Jan 26 2012 Tomas Radej <tradej@redhat.com> - 0:4.10-2
 - Fixed versioning
 
