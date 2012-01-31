@@ -40,59 +40,61 @@ Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 
 
+BuildRequires:  aether >= 1.13.1
+BuildRequires:  animal-sniffer >= 1.6-5
+BuildRequires:  apache-commons-parent
+BuildRequires:  async-http-client
+BuildRequires:  atinject
+BuildRequires:  buildnumber-maven-plugin
+BuildRequires:  google-guice >= 3.0
+BuildRequires:  hamcrest
 BuildRequires:  maven
 BuildRequires:  maven2-common-poms
-BuildRequires:  maven-parent
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-parent
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  buildnumber-maven-plugin
+BuildRequires:  mojo-parent
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
-BuildRequires:  animal-sniffer >= 1.6-5
-BuildRequires:  mojo-parent
-BuildRequires:  atinject
-BuildRequires:  aether >= 1.13.1
-BuildRequires:  async-http-client
-BuildRequires:  sonatype-oss-parent
 BuildRequires:  sisu >= 2.1.1-2
-BuildRequires:  google-guice >= 3.0
-BuildRequires:  hamcrest
-BuildRequires:  apache-commons-parent
+BuildRequires:  sonatype-oss-parent
+BuildRequires:  xmlunit
 
+Requires:       aether >= 1.13.1
+Requires:       animal-sniffer >= 1.6-5
+Requires:       apache-commons-cli
+Requires:       apache-commons-parent
+Requires:       async-http-client
+Requires:       atinject
+Requires:       google-guice >= 3.0
+Requires:       guava
+Requires:       hamcrest
+Requires:       hamcrest
 Requires:       java >= 1:1.6.0
 Requires:       maven2-common-poms
 Requires:       maven-parent
-Requires:       plexus-classworlds >= 2.4
-Requires:       apache-commons-cli
-Requires:       guava
-Requires:       hamcrest
+Requires:       maven-wagon
+Requires:       mojo-parent
 Requires:       nekohtml
 Requires:       plexus-cipher
+Requires:       plexus-classworlds >= 2.4
 Requires:       plexus-containers-component-annotations
 Requires:       plexus-containers-container-default
 Requires:       plexus-interpolation
 Requires:       plexus-sec-dispatcher
 Requires:       plexus-utils
+Requires:       sisu >= 2.1.1-2
+Requires:       sonatype-oss-parent
 Requires:       xbean
 Requires:       xerces-j2
-Requires:       maven-wagon
-Requires:       aether >= 1.13.1
-Requires:       async-http-client
-Requires:       sonatype-oss-parent
-Requires:       sisu >= 2.1.1-2
-Requires:       google-guice >= 3.0
-Requires:       atinject
-Requires:       animal-sniffer >= 1.6-5
-Requires:       mojo-parent
-Requires:       hamcrest
-Requires:       apache-commons-parent
+
 
 # for noarch->arch change
 Obsoletes:      %{name} < 0:3.0.3-11
