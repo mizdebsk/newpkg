@@ -1,0 +1,40 @@
+From 88ce9b79cc96d44df4eaaecb6565d67d7f75faed Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Tue, 31 Jan 2012 12:52:01 +0100
+Subject: [PATCH 3/3] Remove some test deps for skipped tests
+
+---
+ aether-connector-wagon/pom.xml |   17 -----------------
+ 1 files changed, 0 insertions(+), 17 deletions(-)
+
+diff --git a/aether-connector-wagon/pom.xml b/aether-connector-wagon/pom.xml
+index 465e811..dfd9f60 100644
+--- a/aether-connector-wagon/pom.xml
++++ b/aether-connector-wagon/pom.xml
+@@ -65,23 +65,6 @@
+       <groupId>org.sonatype.sisu</groupId>
+       <artifactId>sisu-inject-plexus</artifactId>
+     </dependency>
+-    <dependency>
+-      <groupId>org.sonatype.aether</groupId>
+-      <artifactId>aether-test-util</artifactId>
+-      <scope>test</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.apache.maven.wagon</groupId>
+-      <artifactId>wagon-http-lightweight</artifactId>
+-      <version>${wagonVersion}</version>
+-      <scope>test</scope>
+-    </dependency>
+-    <dependency>
+-      <groupId>org.sonatype.http-testing-harness</groupId>
+-      <artifactId>server-provider</artifactId>
+-      <version>0.4.1</version>
+-      <scope>test</scope>
+-    </dependency>
+   </dependencies>
+ 
+   <build>
+-- 
+1.7.7.6
+

@@ -1,21 +1,25 @@
-From 960a03beb37d00534156154ae0dfafe981e6e1da Mon Sep 17 00:00:00 2001
+From d03b97292c144260f824c4918174b153b632aa02 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Fri, 25 Feb 2011 14:52:23 +0100
-Subject: [PATCH] Remove sonatype test dependencies
+Subject: [PATCH 1/3] Remove sonatype test dependencies
 
 ---
- aether-connector-asynchttpclient/pom.xml |   18 ------------------
- aether-connector-wagon/pom.xml           |    6 ------
- 2 files changed, 0 insertions(+), 24 deletions(-)
+ aether-connector-asynchttpclient/pom.xml |   23 -----------------------
+ 1 files changed, 0 insertions(+), 23 deletions(-)
 
 diff --git a/aether-connector-asynchttpclient/pom.xml b/aether-connector-asynchttpclient/pom.xml
-index 069655b..b242494 100644
+index f9ee05d..2dd2849 100644
 --- a/aether-connector-asynchttpclient/pom.xml
 +++ b/aether-connector-asynchttpclient/pom.xml
-@@ -56,24 +56,6 @@
+@@ -52,29 +52,6 @@
        <artifactId>aether-test-util</artifactId>
        <scope>test</scope>
      </dependency>
+-    <dependency>
+-      <groupId>org.sonatype.sisu</groupId>
+-      <artifactId>sisu-inject-plexus</artifactId>
+-      <scope>test</scope>
+-    </dependency>
 -    <dependency>
 -      <groupId>org.mortbay.jetty</groupId>
 -      <artifactId>jetty</artifactId>
@@ -37,23 +41,6 @@ index 069655b..b242494 100644
    </dependencies>
  
    <build>
-diff --git a/aether-connector-wagon/pom.xml b/aether-connector-wagon/pom.xml
-index 572e6b0..0b50db3 100644
---- a/aether-connector-wagon/pom.xml
-+++ b/aether-connector-wagon/pom.xml
-@@ -80,12 +80,6 @@
-     	<version>${wagonVersion}</version>
-     	<scope>test</scope>
-     </dependency>
--    <dependency>
--    	<groupId>org.sonatype.http-testing-harness</groupId>
--    	<artifactId>server-provider</artifactId>
--    	<version>0.4.1</version>
--    	<scope>test</scope>
--    </dependency>
-   </dependencies>
- 
-   <build>
 -- 
-1.7.4
+1.7.7.6
 

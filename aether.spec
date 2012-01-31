@@ -1,6 +1,6 @@
 Name:           aether
-Version:        1.11
-Release:        4%{?dist}
+Version:        1.13.1
+Release:        1%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -11,7 +11,8 @@ URL:            https://docs.sonatype.org/display/AETHER/Home
 Source0:        %{name}-%{version}.tar.bz2
 
 Patch0:         0001-Remove-sonatype-test-dependencies.patch
-
+Patch1:         0002-Remove-clirr-plugin.patch
+Patch2:         0003-Remove-some-test-deps-for-skipped-tests.patch
 BuildArch:      noarch
 
 BuildRequires:  maven
@@ -29,11 +30,12 @@ BuildRequires:  mojo-parent
 BuildRequires:  async-http-client >= 1.6.1
 BuildRequires:  sonatype-oss-parent
 
+# required by netty really, but we push this dep on level higer
+BuildRequires:  jboss-parent
+Requires:       jboss-parent
 
 Requires:       async-http-client >= 1.6.1
 Requires:       java >= 1:1.6.0
-Requires(post): jpackage-utils
-Requires(postun): jpackage-utils
 
 
 %description
@@ -55,6 +57,9 @@ Requires:  jpackage-utils
 # we'd need org.sonatype.http-testing-harness so let's remove async
 # and wagon http tests (leave others enabled)
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+
 rm -rf aether-connector-asynchttpclient/src/test
 rm -rf aether-connector-wagon/src/test
 
@@ -73,7 +78,7 @@ pushd $module
       install -m 644 target/$module-*.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$jarname.jar
 
       install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$jarname.pom
-      %add_to_maven_depmap org.sonatype.aether $module %{version} JPP/%{name} $jarname
+      %add_maven_depmap JPP.%{name}-$jarname.pom %{name}/$jarname.jar
 popd
 done
 
@@ -81,13 +86,7 @@ install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
-%add_to_maven_depmap  org.sonatype.aether %{name}-parent %{version} JPP/%{name} parent
-
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
+%add_maven_depmap JPP.%{name}-parent.pom
 
 %files
 %doc README.md
@@ -99,6 +98,10 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Tue Jan 31 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.13.1-1
+- Update to latest upstream
+- Update spec to latest guidelines
+
 * Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.11-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
