@@ -81,7 +81,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
 
     public List<String> findVersions(Artifact artifact) {
         List<String> ret = new LinkedList<String>();
-        ret.add("latest");
+        ret.add("LATEST");
         return ret;
     }
 

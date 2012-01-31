@@ -1,7 +1,7 @@
-From d3c8d75d197ac8494c87f26ea63733d4f5163c7f Mon Sep 17 00:00:00 2001
+From c626f99ce509b9a505d2ced39efd7ae7c748d71e Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 30 Aug 2011 11:44:42 +0200
-Subject: [PATCH 4/4] Fix text scope skipping with maven.test.skip
+Subject: [PATCH 4/5] Fix text scope skipping with maven.test.skip
 
 Previously maven put test dependencies into dependency graph even when
 "maven.test.skip" was true, therefore. This patch fixes that with few
@@ -25,7 +25,7 @@ literally referencing "test" scope is probably not 100% clean.
  create mode 100644 maven-core/src/main/java/org/apache/maven/SkipTestScopeDependencySelector.java
 
 diff --git a/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java b/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
-index 2e65979..601ace7 100644
+index 9c8364d..6b3af89 100644
 --- a/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
 +++ b/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
 @@ -460,6 +460,23 @@ public class DefaultArtifactResolver
@@ -53,7 +53,7 @@ index 2e65979..601ace7 100644
          result =
              artifactCollector.collect( artifacts, rootArtifact, managedVersions, collectionRequest, source,
 diff --git a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
-index 8fdb6ed..75d1e37 100644
+index 7bff4a0..9b0da93 100644
 --- a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 +++ b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 @@ -31,6 +31,7 @@ import java.util.List;
@@ -64,7 +64,7 @@ index 8fdb6ed..75d1e37 100644
  import org.apache.maven.artifact.ArtifactUtils;
  import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
  import org.apache.maven.eventspy.internal.EventSpyDispatcher;
-@@ -437,7 +438,7 @@ public class DefaultMaven
+@@ -449,7 +450,7 @@ public class DefaultMaven
  
          DependencySelector depFilter =
              new AndDependencySelector( new ScopeDependencySelector( "test", "provided" ), new OptionalDependencySelector(),
@@ -152,5 +152,5 @@ index 0000000..60be724
 +
 +}
 -- 
-1.7.6
+1.7.7.6
 

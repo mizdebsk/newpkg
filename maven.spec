@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           maven
-Version:        3.0.3
-Release:        17%{?dist}
+Version:        3.0.4
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -10,7 +10,7 @@ License:        ASL 2.0 and MIT and BSD
 URL:            http://maven.apache.org/
 # Source URL is for testing only, final version will be in different place:
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
-Source0:        http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
+Source0:        http://www.apache.org/dist//maven/source/apache-%{name}-%{version}-src.tar.gz
 Source1:        maven-bash-completion
 
 # custom resolver java files
@@ -31,12 +31,14 @@ Source202:    %{name}-script-rpmbuild
 Source250:    repo-metadata.tar.xz
 
 # Patch1XX could be upstreamed probably
+Patch100:       0005-Use-generics-in-modello-generated-code.patch
 # Patch15X are already upstream
 Patch150:         0001-Add-plugin-api-deps.patch
 Patch151:         0003-Use-utf-8-source-encoding.patch
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
+
 
 BuildRequires:  maven
 BuildRequires:  maven2-common-poms
@@ -56,7 +58,7 @@ BuildRequires:  plexus-containers-container-default
 BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  mojo-parent
 BuildRequires:  atinject
-BuildRequires:  aether >= 1.11
+BuildRequires:  aether >= 1.13.1
 BuildRequires:  async-http-client
 BuildRequires:  sonatype-oss-parent
 BuildRequires:  sisu >= 2.1.1-2
@@ -81,7 +83,7 @@ Requires:       plexus-utils
 Requires:       xbean
 Requires:       xerces-j2
 Requires:       maven-wagon
-Requires:       aether >= 1.11
+Requires:       aether >= 1.13.1
 Requires:       async-http-client
 Requires:       sonatype-oss-parent
 Requires:       sisu >= 2.1.1-2
@@ -113,6 +115,7 @@ Requires:       jpackage-utils
 
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
+%patch100 -p1
 %patch150 -p1
 %patch151 -p1
 %patch200 -p1
@@ -335,6 +338,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Tue Jan 31 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-1
+- Update to latest upstream version
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.3-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
