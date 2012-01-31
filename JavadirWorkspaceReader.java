@@ -35,6 +35,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
 
         MavenJPackageDepmap.debug("Wanted GROUPID=" + groupId);
         MavenJPackageDepmap.debug("Wanted ARTIFACTID=" + artifactId);
+        MavenJPackageDepmap.debug("Wanted VERSION=" + version);
 
         if (!groupId.startsWith("JPP")) {
             MavenJPackageDepmap map = MavenJPackageDepmap.getInstance();
@@ -43,20 +44,32 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
 
             groupId = (String) newInfo.get("group");
             artifactId = (String) newInfo.get("artifact");
+            version = (String) newInfo.get("version");
         }
         MavenJPackageDepmap.debug("Resolved GROUPID=" + groupId);
         MavenJPackageDepmap.debug("Resolved ARTIFACTID=" + artifactId);
+        MavenJPackageDepmap.debug("Resolved VERSION=" + version);
 
         if (artifact.getExtension().equals("pom")) {
-            path = getPOMPath(groupId, artifactId);
+            path = getPOMPath(groupId, artifactId, version);
             ret = new File(path.toString());
         } else {
             String repos[] = { "/usr/share/maven/repository/",
                     "/usr/share/maven/repository-java-jni/",
                     "/usr/share/maven/repository-jni/" };
+            String verRelativeArtifactPath = groupId + "/" + artifactId + "-"
+                    + version + "." + artifact.getExtension();
             String relativeArtifactPath = groupId + "/" + artifactId + "."
                     + artifact.getExtension();
             for (String repo : repos) {
+                path = new StringBuffer(repo + verRelativeArtifactPath);
+                ret = new File(path.toString());
+                if (ret.isFile()) {
+                    MavenJPackageDepmap.debug("Returning " + repo
+                            + verRelativeArtifactPath);
+                    return ret;
+                }
+
                 path = new StringBuffer(repo + relativeArtifactPath);
                 ret = new File(path.toString());
                 if (ret.isFile()) {
@@ -85,14 +98,21 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         return ret;
     }
 
-    private StringBuffer getPOMPath(String groupId, String artifactId) {
+    private StringBuffer getPOMPath(String groupId, String artifactId, String version) {
         String fName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-"
                 + artifactId + ".pom";
+        String verfName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR) + "-"
+                + artifactId + "-" + version + ".pom";
         File f;
         String[] pomRepos = { "/usr/share/maven2/poms/",
                 "/usr/share/maven/poms/", "/usr/share/maven-poms/" };
 
         for (String pomRepo : pomRepos) {
+            f = new File(pomRepo + verfName);
+            if (f.exists()) {
+                return new StringBuffer(f.getPath());
+            }
+
             f = new File(pomRepo + fName);
             if (f.exists()) {
                 return new StringBuffer(f.getPath());
