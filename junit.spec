@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -154,7 +154,7 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
-* Thu Feb 09 2012 Harald Hoyer <harald@redhat.com> 4.10-3
+* Thu Feb 09 2012 Harald Hoyer <harald@redhat.com> 4.10-4
 - removed Conflicts with itsself
 
 * Thu Jan 26 2012 Roland Grunberg <rgrunber@redhat.com> 0:4.8.2-3
