@@ -59,7 +59,6 @@ Requires:       java >= 1:1.6.0
 
 Provides:       junit4 = %{epoch}:%{version}-%{release}
 Obsoletes:      junit4 < %{epoch}:%{version}-%{release}
-Conflicts:      junit4
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
