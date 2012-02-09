@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.5.rc2%{?dist}
+Release:        0.6.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -39,6 +39,9 @@ BuildRequires:  jpackage-utils
 Requires:       cglib
 Requires:       atinject
 Requires:       java >= 1:1.6.0
+
+# extreme hack to fix maven buildroots
+Provides:       netbeans-cvsclient = 7.0.0-1
 
 %description
 Put simply, Guice alleviates the need for factories and the use of new
@@ -162,6 +165,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Thu Feb  9 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.6.rc2
+- Temporary fix for maven buildroots
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.5.rc2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
