@@ -1,7 +1,7 @@
 From c626f99ce509b9a505d2ced39efd7ae7c748d71e Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 30 Aug 2011 11:44:42 +0200
-Subject: [PATCH 4/5] Fix text scope skipping with maven.test.skip
+Subject: [PATCH 4/6] Fix text scope skipping with maven.test.skip
 
 Previously maven put test dependencies into dependency graph even when
 "maven.test.skip" was true, therefore. This patch fixes that with few

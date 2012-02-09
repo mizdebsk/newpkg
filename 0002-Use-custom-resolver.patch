@@ -1,7 +1,7 @@
 From 46e6dbc205065a670fa3b6e7c41e02e30b2fdb7a Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 18 Jan 2011 11:09:32 +0100
-Subject: [PATCH 2/5] Use custom resolver
+Subject: [PATCH 2/6] Use custom resolver
 
 WorkspaceReader is used to resolve main dependencies, but we had to
 add this resolve to ProjectModelResolver and DefaultModelResolver as

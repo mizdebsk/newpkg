@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -32,6 +32,8 @@ Source250:    repo-metadata.tar.xz
 
 # Patch1XX could be upstreamed probably
 Patch100:       0005-Use-generics-in-modello-generated-code.patch
+Patch101:       0006-Make-compiler-plugin-default-to-source-1.5.patch
+
 # Patch15X are already upstream
 Patch150:         0001-Add-plugin-api-deps.patch
 Patch151:         0003-Use-utf-8-source-encoding.patch
@@ -111,17 +113,19 @@ reporting and documentation from a central piece of information.
 Summary:        API documentation for %{name}
 Group:          Documentation
 Requires:       jpackage-utils
+BuildArch:      noarch
 
 %description    javadoc
 %{summary}.
 
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
-%patch100 -p1
 %patch150 -p1
 %patch151 -p1
 %patch200 -p1
 %patch201 -p1
+%patch100 -p1
+%patch101 -p1
 
 # get custom resolver in place
 mkdir -p maven-aether-provider/src/main/java/org/apache/maven/artifact/resolver \
@@ -156,7 +160,8 @@ mvn-rpmbuild -e install javadoc:aggregate
 
 mkdir m2home
 (cd m2home
-tar xvf ../apache-maven/target/*tar.gz
+tar --delay-directory-restore -xvf ../apache-maven/target/*tar.gz
+chmod -R +rwX apache-%{name}-%{version}%{?ver_add}
 chmod -x apache-%{name}-%{version}%{?ver_add}/conf/settings.xml
 )
 
@@ -340,6 +345,11 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Thu Feb  9 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-2
+- Make javadoc noarch
+- Make compilation source level 1.5
+- Fix borked tarball unpacking (reason unknown)
+
 * Tue Jan 31 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-1
 - Update to latest upstream version
 

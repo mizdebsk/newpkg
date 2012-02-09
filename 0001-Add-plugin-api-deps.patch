@@ -1,7 +1,7 @@
 From d0dbdcde31414336340a5089fecf4f93cb5125ad Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 12 Oct 2010 16:56:50 +0200
-Subject: [PATCH 1/5] Add plugin-api deps
+Subject: [PATCH 1/6] Add plugin-api deps
 
 ---
  maven-plugin-api/pom.xml |    5 +++++

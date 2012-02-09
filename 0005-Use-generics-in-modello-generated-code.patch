@@ -1,7 +1,7 @@
 From 1c572bcc5083b79307ab0c0e4ee9ba15e334c7d3 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 31 Jan 2012 13:12:32 +0100
-Subject: [PATCH 5/5] Use generics in modello generated code
+Subject: [PATCH 5/6] Use generics in modello generated code
 
 ---
  maven-model/pom.xml |    2 ++
