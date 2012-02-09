@@ -154,6 +154,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu Feb 09 2012 Harald Hoyer <harald@redhat.com> 4.10-3
+- removed Conflicts with itsself
+
 * Thu Jan 26 2012 Roland Grunberg <rgrunber@redhat.com> 0:4.8.2-3
 - Add OSGi metadata to junit.jar manifest.
 
