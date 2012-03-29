@@ -79,6 +79,6 @@ _m2_complete()
   COMPREPLY=($(compgen -W "${goals}" -- ${cur} | sed 's/\\\\//g') )
 }
 
-complete -F _m2_complete -o filenames mvn3
+complete -F _m2_complete -o filenames mvn
 complete -F _m2_complete -o filenames mvn-local
 complete -F _m2_complete -o filenames mvn-rpmbuild

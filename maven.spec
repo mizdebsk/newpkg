@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -41,6 +41,7 @@ Patch151:         0003-Use-utf-8-source-encoding.patch
 Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 
+BuildArch:      noarch
 
 BuildRequires:  aether >= 1.13.1
 BuildRequires:  animal-sniffer >= 1.6-5
@@ -99,7 +100,7 @@ Requires:       xerces-j2
 
 
 # for noarch->arch change
-Obsoletes:      %{name} < 0:3.0.3-11
+Obsoletes:      %{name} < 0:%{version}-%{release}
 
 # maven now provides "mvn" script and new maven2 mvn2
 Conflicts:      maven2 < 2.2.1-28
@@ -259,7 +260,7 @@ ln -s %{_javajnidir} $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-java-jni/JPP
 # _libdir/java repository #
 ##############################
 install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-jni
-ln -s %{_jnidir} $RPM_BUILD_ROOT%{_datadir}/%{name}/repository-jni/JPP
+# create symlink in post, remove in preun so we can stay noarch
 
 ##################
 # javadir/maven #
@@ -315,6 +316,17 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 # Install bash-completion
 install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
+%preun
+if [ $1 -eq 0 ] ; then
+   if [ -h %{_datadir}/%{name}/repository-jni/JPP ];then
+      rm %{_datadir}/%{name}/repository-jni/JPP
+   fi
+fi
+
+%posttrans
+# ugly as hell
+ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
+
 %files
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn
@@ -345,6 +357,9 @@ install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
 
 %changelog
+* Thu Mar 29 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-3
+- Make package noarch again to simplify bootstrapping
+
 * Thu Feb  9 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-2
 - Make javadoc noarch
 - Make compilation source level 1.5
