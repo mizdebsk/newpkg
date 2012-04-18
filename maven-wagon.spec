@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -77,7 +77,7 @@ BuildRequires:  jtidy
 BuildRequires:  plexus-container-default
 BuildRequires:  plexus-interactivity
 BuildRequires:  plexus-utils
-BuildRequires:  servletapi5
+BuildRequires:  servlet3
 BuildRequires:  xml-commons-apis
 BuildRequires:  easymock
 BuildRequires:  jsoup
@@ -125,6 +125,8 @@ Documents for %{name}.
 
 #FIXME: have to drop wagon-webdav-jackrabbit until jackrabbit is available
 sed -i "s|<module>wagon-webdav-jackrabbit</module>|<!-- <module>wagon-webdav-jackrabbit</module> -->|" wagon-providers/pom.xml
+sed -i "s|org.mortbay.jetty|org.eclipse.jetty|g" wagon-provider-test/pom.xml
+sed -i "s|>jetty<|>jetty-server<|g" wagon-provider-test/pom.xml
 
 %patch1
 %patch2 -p1
@@ -275,6 +277,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Wed Apr 18 2012 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-4
+- Fix build against jetty 8 and servlet 3.
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
