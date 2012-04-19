@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.13.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -71,7 +71,7 @@ mvn-rpmbuild install javadoc:aggregate
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
-for module in aether-api aether-connector-file aether-connector-wagon \
+for module in aether-api aether-connector-file aether-connector-wagon aether-connector-asynchttpclient\
          aether-impl aether-spi aether-test-util aether-util;do
 pushd $module
       jarname=`echo $module | sed s:aether-::`
@@ -98,6 +98,9 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Apr 19 2012 Alexander Kurtakov <akurtako@redhat.com> 1.13.1-2
+- Install aether-connector-asynchttpclient - it was build but not installed.
+
 * Tue Jan 31 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.13.1-1
 - Update to latest upstream
 - Update spec to latest guidelines
