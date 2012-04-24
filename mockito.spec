@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -52,6 +52,7 @@ ant jar javadoc
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
+sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
 cp -p target/mockito-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
@@ -61,7 +62,13 @@ install -pm 644 maven/mockito-core.pom  \
 mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-%add_maven_depmap JPP-%{name}.pom %{name}.jar
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.mockito:mockito-all"
+
+%post
+%update_maven_depmap
+
+%postun
+%update_maven_depmap
 
 %files
 %{_javadir}/%{name}.jar
@@ -76,6 +83,12 @@ cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Tue Apr 24 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-4
+- Fix groupId of cglib dependency
+- Add additional depmap for mockito-all
+- Update depmap on post and postun
+- Fix version in pom
+
 * Wed Feb 22 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-3
 - Added cglib dependency to pom
 
