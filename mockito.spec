@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -64,12 +64,6 @@ cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.mockito:mockito-all"
 
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
-
 %files
 %{_javadir}/%{name}.jar
 %{_mavenpomdir}/JPP-%{name}.pom
@@ -83,6 +77,9 @@ cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Wed Apr 25 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-5
+- Removed post/postun hook for update_maven_depmap
+
 * Tue Apr 24 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-4
 - Fix groupId of cglib dependency
 - Add additional depmap for mockito-all
