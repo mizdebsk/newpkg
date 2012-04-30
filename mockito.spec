@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -60,7 +60,7 @@ install -pm 644 maven/mockito-core.pom  \
         $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
 
 mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.mockito:mockito-all"
 
@@ -77,6 +77,10 @@ cp -rp target/javadoc $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Mon Apr 30 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-6
+- Place JavaDoc in directly under %{_javadocdir}/%{name} instead
+  of %{_javadocdir}/%{name}/javadoc
+
 * Wed Apr 25 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-5
 - Removed post/postun hook for update_maven_depmap
 
