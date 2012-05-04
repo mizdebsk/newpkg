@@ -1,0 +1,22 @@
+--- logback-1.0.1/logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java.orig	2012-03-21 10:49:50.680828668 +0000
++++ logback-1.0.1/logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java	2012-03-21 10:50:07.103764436 +0000
+@@ -20,9 +20,7 @@
+ 
+ import ch.qos.logback.core.spi.PropertyContainer;
+ import org.codehaus.janino.ClassBodyEvaluator;
+-import org.codehaus.janino.CompileException;
+-import org.codehaus.janino.Parser.ParseException;
+-import org.codehaus.janino.Scanner.ScanException;
++import org.codehaus.commons.compiler.CompileException;
+ 
+ import ch.qos.logback.core.spi.ContextAwareBase;
+ 
+@@ -41,7 +39,7 @@
+   Map<String, String> map = new HashMap<String, String>();
+ 
+   public Condition build(String script) throws IllegalAccessException,
+-          CompileException, ParseException, ScanException, InstantiationException,
++          CompileException, InstantiationException,
+           SecurityException, NoSuchMethodException, IllegalArgumentException,
+           InvocationTargetException {
+ 

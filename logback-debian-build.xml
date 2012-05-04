@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<project name="logback">
+
+<taskdef name="groovyc"
+         classname="org.codehaus.groovy.ant.Groovyc"/>
+
+<target name="init">
+	<property name="build.dir" value="build"/>
+	<property name="dist.dir" value="dist"/>
+	
+	<property name="core.src.dir" value="logback-core/src/main"/>
+	<property name="core.build.dir" value="${build.dir}/core"/>
+	<property name="core.jar" value="${dist.dir}/${deb.package}-${deb.version}-core.jar"/>
+	
+	<property name="classic.src.dir" value="logback-classic/src/main"/>
+	<property name="classic.build.dir" value="${build.dir}/classic"/>
+	<property name="classic.jar" value="${dist.dir}/${deb.package}-${deb.version}-classic.jar"/>
+	
+	<property name="access.src.dir" value="logback-access/src/main"/>
+	<property name="access.build.dir" value="${build.dir}/access"/>
+	<property name="access.jar" value="${dist.dir}/${deb.package}-${deb.version}-access.jar"/>
+</target>
+
+<target name="compile.core" depends="init">
+	<mkdir dir="${core.build.dir}"/>
+	<javac srcdir="${core.src.dir}"
+			destdir="${core.build.dir}"
+			classpath="${fam.build.dir}"
+			source="1.5" target="1.5"
+			debug="on">
+	</javac>
+</target>
+
+<target name="compile.classic" depends="compile.core">
+	<mkdir dir="${classic.build.dir}"/>
+	<groovyc srcdir="${classic.src.dir}" destdir="${classic.build.dir}">
+	<javac classpath="${core.build.dir}"
+			source="1.5" target="1.5"
+			debug="on">
+	</javac>
+	</groovyc>
+</target>
+
+<target name="compile.access" depends="compile.core">
+	<mkdir dir="${access.build.dir}"/>
+	<javac srcdir="${access.src.dir}"
+			destdir="${access.build.dir}"
+			classpath="${core.build.dir}"
+			source="1.5" target="1.5"
+			debug="on">
+	</javac>
+</target>
+
+<target name="jar.core" depends="compile.core">
+	<jar jarfile="${core.jar}"
+			basedir="${core.build.dir}" />
+</target>
+
+<target name="jar.classic" depends="compile.classic">
+	<jar jarfile="${classic.jar}"
+			basedir="${classic.build.dir}" />
+</target>
+
+<target name="jar.access" depends="compile.access">
+	<jar jarfile="${access.jar}"
+			basedir="${access.build.dir}" />
+</target>
+
+<target name="jar.all" depends="jar.core, jar.classic"> <!-- , jar.access -->
+</target>
+
+<target name="javadoc">
+
+	<javadoc
+		packagenames="*"
+		destdir="${dist.dir}/api"
+		access="protected"
+		old="false"
+		verbose="false"
+		version="true"
+		use="true"
+		author="true"
+		>
+		<fileset dir=".">
+			<include name="${core.src.dir}/**/*.java"/>
+			<include name="${classic.src.dir}/**/*.java"/>
+			<!--<include name="${access.src.dir}/**/*.java"/>-->
+		</fileset>
+	</javadoc>
+
+</target>
+
+
+
+<target name="clean" depends="init">
+	<delete dir="${build.dir}"/>
+	<delete dir="${dist.dir}"/>
+
+	<mkdir dir="${build.dir}"/>
+	<mkdir dir="${dist.dir}"/>
+</target>
+
+
+
+</project>
