@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -104,7 +104,7 @@ Obsoletes:      %{name} < 0:%{version}-%{release}
 
 # maven2 bin package no longer exists. Replace it
 # these should be around until F20
-Conflicts:      maven2 < 2.2.1-99
+Obsoletes:      maven2 < 2.2.1-99
 Provides:       maven2 = %{version}-%{release}
 
 %description
@@ -359,6 +359,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon May 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-5
+- Use Obsoletes instead of Conflicts
+
 * Mon May 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-4
 - Obsolete and provide maven2
 
