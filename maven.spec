@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -102,8 +102,10 @@ Requires:       xerces-j2
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
 
-# maven now provides "mvn" script and new maven2 mvn2
-Conflicts:      maven2 < 2.2.1-28
+# maven2 bin package no longer exists. Replace it
+# these should be around until F20
+Conflicts:      maven2 < 2.2.1-99
+Provides:       maven2 = %{version}-%{release}
 
 %description
 Maven is a software project management and comprehension tool. Based on the
@@ -357,6 +359,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon May 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-4
+- Obsolete and provide maven2
+
 * Thu Mar 29 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-3
 - Make package noarch again to simplify bootstrapping
 
