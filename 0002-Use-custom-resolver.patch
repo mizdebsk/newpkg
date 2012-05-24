@@ -62,7 +62,7 @@ index 8efc45c..df7d4e9 100644
          }
  
 -        return groupId + ":" + artifactId + ":" + version;
-+        if( System.getProperty("maven.local.mode") == null ) {
++        if( System.getProperty("maven.local.mode") == null || version != null) {
 +            return groupId + ":" + artifactId + ":" + version;
 +        } else {
 +            return versionlessKey(groupId, artifactId);

@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -359,6 +359,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu May 24 2012 Krzysztof Daniel <kdaniel@redhat.com> 3.0.4-6
+- Bug 824789 -Use the version if it is possible.
+
 * Mon May 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-5
 - Use Obsoletes instead of Conflicts
 
