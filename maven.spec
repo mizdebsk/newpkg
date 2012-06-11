@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -97,6 +97,7 @@ Requires:       sisu >= 2.1.1-2
 Requires:       sonatype-oss-parent
 Requires:       xbean
 Requires:       xerces-j2
+Requires:       yum-utils
 
 
 # for noarch->arch change
@@ -359,6 +360,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Jun 11 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-7
+- Implement redundant dependency checks
+
 * Thu May 24 2012 Krzysztof Daniel <kdaniel@redhat.com> 3.0.4-6
 - Bug 824789 -Use the version if it is possible.
 

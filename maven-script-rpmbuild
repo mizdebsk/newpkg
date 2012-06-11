@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 if [ -f /usr/share/java-utils/java-functions ] ; then
   . /usr/share/java-utils/java-functions
   set_jvm
@@ -32,6 +33,9 @@ function help()
 # add maven.repo.local if it's not defined already
 local_add="-Dmaven.repo.local=$(pwd)/.m2/"
 
+log_file="$(umask 2 && mktemp -t mvn-rpmbuild.$$.XXXXXXXXXX)"
+logfile_add="-Dmaven.resolver.logfile=$log_file"
+
 function process_args()
 {
 while [ $# != 0 ]; do
@@ -62,6 +66,21 @@ echo $JAVA_HOME
 export JAVA_HOME
 # can't put it on command line due to
 # http://jira.codehaus.org/browse/SUREFIRE-121
-export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.local.mode ${local_add}"
+export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.local.mode ${local_add} ${logfile_add}"
 
-$M2_HOME/bin/mvn -o "$@"
+$M2_HOME/bin/mvn -o "$@" || exit $?
+
+
+sanitize() {
+    for obj in $1; do
+	echo -n 'mvn-rpmbuild: possibly redundant dependency: '
+	rpm -qf "$(readlink -f $obj)" | sed 's/-[^-]*-[^-]*$//'
+    done | sort -u
+}
+
+installed=$(sanitize "$(rpm -ql `package-cleanup --all --leaves | xargs` | egrep '\.(jar|pom)$')")
+used=$(sanitize "$(cat $log_file 2>/dev/null)")
+
+diff - /dev/fd/3 <<<"$installed" 3<<<"$used" | grep '^< ' | sed s/..//
+
+:
