@@ -24,7 +24,29 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         return workspaceRepository;
     }
 
+    private static final String LOG_FILE = System.getProperty("maven.resolver.logfile");
+    private static final java.util.concurrent.Semaphore LOG_SEMAPHORE = new java.util.concurrent.Semaphore(1);
+
     public File findArtifact(Artifact artifact) {
+       File f = findArtifactImpl(artifact);
+
+       LOG_SEMAPHORE.acquireUninterruptibly();
+       try {
+           if (LOG_FILE != null && f != null) {
+               java.io.FileOutputStream fos = new java.io.FileOutputStream(LOG_FILE, true);
+               java.io.PrintStream ps = new java.io.PrintStream(fos);
+               ps.println(f.getAbsolutePath());
+               ps.close();
+           }
+       }
+       catch (Exception _) {}
+       finally {
+           LOG_SEMAPHORE.release();
+           return f;
+       }
+    }
+
+    private File findArtifactImpl(Artifact artifact) {
         MavenJPackageDepmap.debug("=============JAVADIRREADER-FIND_ARTIFACT: "
                 + artifact.getArtifactId());
         StringBuffer path = new StringBuffer();
