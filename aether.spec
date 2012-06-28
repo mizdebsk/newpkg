@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.13.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -10,9 +10,6 @@ URL:            https://docs.sonatype.org/display/AETHER/Home
 # git archive --prefix="aether-1.11/" --format=tar aether-1.11 | bzip2 > aether-1.11.tar.bz2
 Source0:        %{name}-%{version}.tar.bz2
 
-Patch0:         0001-Remove-sonatype-test-dependencies.patch
-Patch1:         0002-Remove-clirr-plugin.patch
-Patch2:         0003-Remove-some-test-deps-for-skipped-tests.patch
 BuildArch:      noarch
 
 BuildRequires:  maven
@@ -56,12 +53,17 @@ Requires:  jpackage-utils
 
 # we'd need org.sonatype.http-testing-harness so let's remove async
 # and wagon http tests (leave others enabled)
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+for module in asynchttpclient wagon; do (
+    cd ./aether-connector-$module
+    rm -rf src/test
+    # Removes all dependencies with test scope
+    %pom_xpath_remove "pom:dependency[pom:scope[text()='test']]"
+) done
 
-rm -rf aether-connector-asynchttpclient/src/test
-rm -rf aether-connector-wagon/src/test
+# Remove clirr plugin
+%pom_remove_plugin :clirr-maven-plugin
+%pom_remove_plugin :clirr-maven-plugin aether-api
+%pom_remove_plugin :clirr-maven-plugin aether-spi
 
 %build
 mvn-rpmbuild install javadoc:aggregate
@@ -98,6 +100,9 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Jun 28 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-3
+- Replace pom.xml patches with pom macros
+
 * Thu Apr 19 2012 Alexander Kurtakov <akurtako@redhat.com> 1.13.1-2
 - Install aether-connector-asynchttpclient - it was build but not installed.
 
