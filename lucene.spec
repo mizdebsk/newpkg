@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -209,6 +209,9 @@ cp -pr build/docs/api/* \
 %doc contrib/CHANGES.txt
 
 %changelog
+* Wed Jul 4 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-2
+- Remove duplicated manifest entries.
+
 * Tue Jul 3 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-1
 - Update to upstream 3.6.0.
 
