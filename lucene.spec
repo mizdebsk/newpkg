@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -143,11 +143,11 @@ ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
 # add missing OSGi metadata to manifests
 mkdir META-INF
 unzip -o build/core/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-cat %{SOURCE1} >> META-INF/MANIFEST.MF
+cp %{SOURCE1} META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/core/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
-cat %{SOURCE2} >> META-INF/MANIFEST.MF
+cp %{SOURCE2} META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
 cp dev-tools/maven/lucene/contrib/analyzers/common/pom.xml.template contrib/analyzers/
@@ -209,6 +209,9 @@ cp -pr build/docs/api/* \
 %doc contrib/CHANGES.txt
 
 %changelog
+* Wed Jul 4 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-3
+- Really fix manifests.
+
 * Wed Jul 4 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-2
 - Remove duplicated manifest entries.
 
