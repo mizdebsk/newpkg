@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -150,8 +150,9 @@ unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF
 cp %{SOURCE2} META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
-cp dev-tools/maven/lucene/contrib/analyzers/common/pom.xml.template contrib/analyzers/
-cp build/contrib/analyzers/common/lucene-analyzers-%{version}.jar build/contrib/analyzers/
+
+mv build/contrib/analyzers/common build/contrib/analyzers/analyzers
+mv dev-tools/maven/lucene/contrib/analyzers/common dev-tools/maven/lucene/contrib/analyzers/analyzers
 
 %install
 
@@ -166,13 +167,23 @@ ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-core.jar
 
 # contrib jars
 install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
-for c in analyzers benchmark demo facet grouping highlighter \
+for c in benchmark demo facet grouping highlighter \
          icu instantiated join memory misc pruning queries queryparser remote \
          spatial spellchecker xml-query-parser; do
     install -m 0644 build/contrib/$c/%{name}-${c}-%{version}.jar \
         $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
 
     install -m 0644 dev-tools/maven/lucene/contrib/$c/pom.xml.template \
+               $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.lucene-contrib-lucene-$c.pom
+    %add_maven_depmap JPP.lucene-contrib-lucene-$c.pom %{name}-contrib/%{name}-${c}.jar
+done
+
+# contrib analyzers
+for c in analyzers kuromoji phonetic smartcn stempel; do
+    install -m 0644 build/contrib/analyzers/$c/%{name}-${c}-%{version}.jar \
+        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
+
+    install -m 0644 dev-tools/maven/lucene/contrib/analyzers/$c/pom.xml.template \
                $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.lucene-contrib-lucene-$c.pom
     %add_maven_depmap JPP.lucene-contrib-lucene-$c.pom %{name}-contrib/%{name}-${c}.jar
 done
@@ -209,6 +220,9 @@ cp -pr build/docs/api/* \
 %doc contrib/CHANGES.txt
 
 %changelog
+* Thu Jul 5 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-4
+- Properly install analyzers.
+
 * Wed Jul 4 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-3
 - Really fix manifests.
 
