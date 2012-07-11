@@ -1,5 +1,5 @@
---- logback-1.0.1/logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java.orig	2012-03-21 10:49:50.680828668 +0000
-+++ logback-1.0.1/logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java	2012-03-21 10:50:07.103764436 +0000
+--- logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java	2011-10-28 15:12:33.000000000 +0200
++++ logback-core/src/main/java/ch/qos/logback/core/joran/conditional/PropertyEvalScriptBuilder.java-gil	2012-07-11 13:21:25.250779454 +0200
 @@ -20,9 +20,7 @@
  
  import ch.qos.logback.core.spi.PropertyContainer;

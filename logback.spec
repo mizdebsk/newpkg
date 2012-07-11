@@ -1,5 +1,5 @@
 Name:		logback
-Version:	1.0.1
+Version:	1.0.6
 Release:	1%{?dist}
 Summary:	A Java logging library
 
@@ -7,11 +7,12 @@ Group:		Development/Tools
 License:	LGPLv2 or EPL
 URL:		http://logback.qos.ch/
 Source0:	http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
-# http://anonscm.debian.org/viewvc/pkg-java/trunk/logback/debian/build.xml?revision=13384&view=co
-Source1:	%{name}-debian-build.xml
-
+Source1:        %{name}-%{version}-00-build.xml
+Source2:        %{name}-%{version}-core-osgi.bnd
+Source3:        %{name}-%{version}-classic-osgi.bnd
+Source4:        %{name}-%{version}-access-osgi.bnd
 # Use Janino 2.6 API
-Patch0:		%{name}-janino-2_6.patch
+Patch0:		%{name}-%{version}-janino-2_6.patch
 
 # Java dependencies
 BuildRequires:	jpackage-utils
@@ -20,6 +21,8 @@ BuildRequires:	java-devel >= 1:1.6.0
 # Required libraries
 BuildRequires:	jms
 BuildRequires:	janino
+# require jansi 1.8
+BuildRequires:	jansi
 # Using the version of jetty in the pom.xml file
 BuildRequires:	jetty >= 7.5.1
 BuildRequires:	slf4j
@@ -31,6 +34,7 @@ BuildRequires:	antlr-tool
 
 # Build tools -- build with ant for now because of circular dependencies
 BuildRequires:	ant
+BuildRequires:	aqute-bnd
 BuildRequires:	groovy
 
 BuildArch:	noarch
@@ -40,6 +44,7 @@ Requires:	java >= 1:1.6.0
 Requires:	jpackage-utils
 
 # Java library dependencies
+Requires:	jansi
 Requires:	jms
 Requires:	janino
 Requires:	jetty >= 7.5.1
@@ -81,22 +86,25 @@ Sample code for the Logback library
 %prep
 %setup -q
 %{__cp} %{SOURCE1} ./build.xml
-%{__sed} -i 's/basedir=".."//' build.xml
-%{__sed} -i 's/\${deb.package}/%{name}/' build.xml
-%{__sed} -i 's/-\${deb.version}//' build.xml
-%patch0 -p1
+%patch0 -p0
 
 find . -name "*.jar" -delete
 
 # Clean up the documentation
 sed -i 's/\r//' LICENSE.txt README.txt docs/*.* docs/*/*.* docs/*/*/*.*
-sed -i 's#"apidocs#"%{_javadocdir}/%{name}-%{version}#g' docs/*.html
+sed -i 's#"apidocs#"%{_javadocdir}/%{name}#g' docs/*.html
 rm -rf docs/apidocs docs/project-reports docs/testapidocs docs/project-reports.html
 rm -f docs/manual/.htaccess docs/css/site.css # Zero-length file
 
+cp -p %{SOURCE2} osgi-core.bnd
+cp -p %{SOURCE3} osgi-classic.bnd
+cp -p %{SOURCE4} osgi-access.bnd
+
+sed -i 's/<artifactId>groovy-all</artifactId/<artifactId>groovy</artifactId/' $(find . -name "pom.xml")
+
 %build
 export CLASSPATH=`build-classpath antlr groovy janino javamail commons-compiler commons-cli tomcat6-servlet-api objectweb-asm jms slf4j jetty tomcat/catalina`
-ant jar.all jar.access javadoc
+ant dist javadoc
 
 %install
 install -d -m 755 p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
@@ -109,7 +117,7 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-%{name}-pare
 %add_maven_depmap JPP.%{name}-%{name}-parent.pom
 
 for sub in logback-access logback-classic logback-core; do
-	install -m 644 dist/$sub.jar \
+	install -m 644 dist/$sub-%{version}.jar \
 		$RPM_BUILD_ROOT%{_javadir}/%{name}/$sub.jar
 	install -m 644 $sub/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$sub.pom
     %add_maven_depmap JPP.%{name}-$sub.pom %{name}/$sub.jar
@@ -133,6 +141,9 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Wed Jul 11 2012 gil cattaneo <puntogil@libero.it> - 1.0.6-1
+- Update to 1.0.6
+
 * Tue Mar 20 2012 Mary Ellen Foster <mefoster at gmail.com> - 1.0.1-1
 - Update to 1.0.1
 - Prepare for re-review
