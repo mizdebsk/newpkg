@@ -123,6 +123,13 @@ for sub in logback-access logback-classic logback-core; do
     %add_maven_depmap JPP.%{name}-$sub.pom %{name}/$sub.jar
 done
 
+
+install -m 644 dist/logback-examples-%{version}.jar \
+        $RPM_BUILD_ROOT%{_javadir}/%{name}/logback-examples.jar
+install -m 644 logback-examples/pom.xml \
+        $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-logback-examples.pom
+%add_maven_depmap JPP.%{name}-logback-examples.pom %{name}/logback-examples.jar -f examples
+
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}/examples
 cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}/examples
 
@@ -131,6 +138,8 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 %{_javadir}/%{name}
 %{_mavendepmapfragdir}/%{name}
 %{_mavenpomdir}/*.pom
+%exclude %{_javadir}/%{name}/%{name}-examples.jar
+%exclude %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %files javadoc
 %doc LICENSE.txt
@@ -139,6 +148,9 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 %files examples
 %doc LICENSE.txt
 %{_datadir}/%{name}-%{version}
+%{_javadir}/%{name}/%{name}-examples.jar
+%{_mavendepmapfragdir}/%{name}-examples
+%{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
 * Wed Jul 11 2012 gil cattaneo <puntogil@libero.it> - 1.0.6-1
