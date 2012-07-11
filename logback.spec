@@ -100,7 +100,7 @@ cp -p %{SOURCE2} osgi-core.bnd
 cp -p %{SOURCE3} osgi-classic.bnd
 cp -p %{SOURCE4} osgi-access.bnd
 
-sed -i 's/<artifactId>groovy-all</artifactId/<artifactId>groovy</artifactId/' $(find . -name "pom.xml")
+sed -i 's#<artifactId>groovy-all</artifactId#<artifactId>groovy</artifactId#' $(find . -name "pom.xml")
 
 %build
 export CLASSPATH=`build-classpath antlr groovy janino javamail commons-compiler commons-cli tomcat6-servlet-api objectweb-asm jms slf4j jetty tomcat/catalina`
