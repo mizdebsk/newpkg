@@ -31,6 +31,7 @@ BuildRequires:	tomcat-lib
 BuildRequires:	javamail
 BuildRequires:	apache-commons-cli
 BuildRequires:	antlr-tool
+BuildRequires:  log4j
 
 # Build tools -- build with ant for now because of circular dependencies
 BuildRequires:	ant
