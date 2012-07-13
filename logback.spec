@@ -1,16 +1,16 @@
 Name:		logback
 Version:	1.0.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A Java logging library
 
 Group:		Development/Tools
 License:	LGPLv2 or EPL
 URL:		http://logback.qos.ch/
 Source0:	http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
-Source1:        %{name}-%{version}-00-build.xml
-Source2:        %{name}-%{version}-core-osgi.bnd
-Source3:        %{name}-%{version}-classic-osgi.bnd
-Source4:        %{name}-%{version}-access-osgi.bnd
+Source1:	%{name}-%{version}-00-build.xml
+Source2:	%{name}-%{version}-core-osgi.bnd
+Source3:	%{name}-%{version}-classic-osgi.bnd
+Source4:	%{name}-%{version}-access-osgi.bnd
 # Use Janino 2.6 API
 Patch0:		%{name}-%{version}-janino-2_6.patch
 
@@ -26,12 +26,12 @@ BuildRequires:	jansi
 # Using the version of jetty in the pom.xml file
 BuildRequires:	jetty >= 7.5.1
 BuildRequires:	slf4j
-BuildRequires:	servlet25
+BuildRequires:	tomcat-servlet-3.0-api
 BuildRequires:	tomcat-lib
 BuildRequires:	javamail
 BuildRequires:	apache-commons-cli
 BuildRequires:	antlr-tool
-BuildRequires:  log4j
+BuildRequires:	log4j
 
 # Build tools -- build with ant for now because of circular dependencies
 BuildRequires:	ant
@@ -48,10 +48,7 @@ Requires:	jpackage-utils
 Requires:	jansi
 Requires:	jms
 Requires:	janino
-Requires:	jetty >= 7.5.1
 Requires:	slf4j
-Requires:	tomcat-lib
-Requires:	servlet25
 
 %description
 Logback is intended as a successor to the popular log4j project. At present
@@ -75,6 +72,19 @@ Requires:	jpackage-utils
 
 %description javadoc
 API documentation for the Logback library
+
+%package access
+Summary:	Logback-access module for Servlet integration
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
+Requires:	jetty >= 7.5.1
+Requires:	tomcat-lib
+Requires:	tomcat-servlet-3.0-api
+
+%description access
+The logback-access module integrates with Servlet containers, such as Tomcat
+and Jetty, to provide HTTP-access log functionality. Note that you could
+easily build your own module on top of logback-core. 
 
 %package examples
 Summary:	Sample code for %{name}
@@ -104,7 +114,6 @@ cp -p %{SOURCE4} osgi-access.bnd
 sed -i 's#<artifactId>groovy-all</artifactId#<artifactId>groovy</artifactId#' $(find . -name "pom.xml")
 
 %build
-export CLASSPATH=`build-classpath antlr groovy janino javamail commons-compiler commons-cli tomcat6-servlet-api objectweb-asm jms slf4j jetty tomcat/catalina`
 ant dist javadoc
 
 %install
@@ -126,9 +135,9 @@ done
 
 
 install -m 644 dist/logback-examples-%{version}.jar \
-        $RPM_BUILD_ROOT%{_javadir}/%{name}/logback-examples.jar
+	$RPM_BUILD_ROOT%{_javadir}/%{name}/logback-examples.jar
 install -m 644 logback-examples/pom.xml \
-        $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-logback-examples.pom
+	$RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-logback-examples.pom
 %add_maven_depmap JPP.%{name}-logback-examples.pom %{name}/logback-examples.jar -f examples
 
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}-%{version}/examples
@@ -136,15 +145,23 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 
 %files
 %doc LICENSE.txt README.txt docs/*
-%{_javadir}/%{name}
+%dir %{_javadir}/%{name}
+%{_javadir}/%{name}/logback-classic.jar
+%{_javadir}/%{name}/logback-core.jar
 %{_mavendepmapfragdir}/%{name}
-%{_mavenpomdir}/*.pom
+%{_mavenpomdir}/JPP.logback-logback-classic.pom
+%{_mavenpomdir}/JPP.logback-logback-core.pom
+%{_mavenpomdir}/JPP.logback-logback-parent.pom
 %exclude %{_javadir}/%{name}/%{name}-examples.jar
 %exclude %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %files javadoc
 %doc LICENSE.txt
 %{_javadocdir}/%{name}
+
+%files access
+%{_javadir}/%{name}/logback-access.jar
+%{_mavenpomdir}/JPP.logback-logback-access.pom
 
 %files examples
 %doc LICENSE.txt
@@ -154,6 +171,11 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
+* Fri Jul 13 2012 Orion Poplawski <orion@nwra.com> - 1.0.6-2
+- Split off access module into sub-package (bug 663198)
+- Change BR/R from servlet25 to tomcat-servlet-3.0-api (bug 819552)
+- Update build.xml to include jetty jars, drop setting CLASSPATH
+
 * Wed Jul 11 2012 gil cattaneo <puntogil@libero.it> - 1.0.6-1
 - Update to 1.0.6
 

@@ -77,6 +77,10 @@
     <pathelement location="${core.build.dir}/**"/>
     <fileset dir="${dist.dir}" includes="logback-core-${version}.jar"/>
     <fileset dir="/usr/share/java" includes="tomcat/catalina.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-http.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-server.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-util.jar"/>
    </path>
       
    <path id="examples.classpath">
