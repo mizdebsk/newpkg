@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -12,6 +12,7 @@ URL:            http://maven.apache.org/
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
 Source0:        http://www.apache.org/dist//maven/source/apache-%{name}-%{version}-src.tar.gz
 Source1:        maven-bash-completion
+Source2:        mvn.1
 
 # custom resolver java files
 # source: git clone git://fedorapeople.org/~sochotni/maven-javadir-resolver/
@@ -319,6 +320,11 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 # Install bash-completion
 install -Dm 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 
+# Manual page
+install -dm 755 $RPM_BUILD_ROOT%{_mandir}/man1
+install -pm 644 %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man1
+gzip -9 $RPM_BUILD_ROOT%{_mandir}/man1/*
+
 %preun
 if [ $1 -eq 0 ] ; then
    if [ -h %{_datadir}/%{name}/repository-jni/JPP ];then
@@ -353,6 +359,7 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 %{_javadir}/%{name}
 %{_datadir}/%{name}/repo-metadata.tar.xz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/%{name}
+%{_mandir}/man1/mvn.1.gz
 
 %files javadoc
 %doc LICENSE.txt
@@ -360,6 +367,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Tue Jul 17 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-8
+- Add manual page
+
 * Mon Jun 11 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-7
 - Implement redundant dependency checks
 
