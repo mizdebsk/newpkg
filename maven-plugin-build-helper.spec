@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
 Version:        1.5
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Build Helper Maven Plugin
 
 Group:          Development/Libraries
@@ -83,6 +83,9 @@ cp -pr target/site/api*/* %{buildroot}%{_javadocdir}/%{name}/
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
