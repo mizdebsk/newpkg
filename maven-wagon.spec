@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -277,6 +277,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Wed Apr 18 2012 Alexander Kurtakov <akurtako@redhat.com> 0:1.0-4
 - Fix build against jetty 8 and servlet 3.
 
