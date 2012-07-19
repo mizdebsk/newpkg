@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -220,6 +220,9 @@ cp -pr build/docs/api/* \
 %doc contrib/CHANGES.txt
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.6.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Jul 5 2012 Alexander Kurtakov <akurtako@redhat.com> 0:3.6.0-4
 - Properly install analyzers.
 
