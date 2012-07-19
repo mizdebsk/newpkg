@@ -1,6 +1,6 @@
 Name:		logback
 Version:	1.0.6
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A Java logging library
 
 Group:		Development/Tools
@@ -171,6 +171,9 @@ cp -r logback-examples/pom.xml logback-examples/src $RPM_BUILD_ROOT%{_datadir}/%
 %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.6-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Fri Jul 13 2012 Orion Poplawski <orion@nwra.com> - 1.0.6-2
 - Split off access module into sub-package (bug 663198)
 - Change BR/R from servlet25 to tomcat-servlet-3.0-api (bug 819552)
