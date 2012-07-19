@@ -2,7 +2,7 @@
 
 Name:           google-%{short_name}
 Version:        3.0
-Release:        0.6.rc2%{?dist}
+Release:        0.7.rc2%{?dist}
 Summary:        Lightweight dependency injection framework
 
 
@@ -165,6 +165,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.7.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Feb  9 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0-0.6.rc2
 - Temporary fix for maven buildroots
 
