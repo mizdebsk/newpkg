@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -154,6 +154,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.10-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Mon Apr 30 2012 Krzysztof Daniel <kdaniel@redhat.com> 0:4.10-5
 - Update OSGi metadata to match 4.10.0 release.
 
