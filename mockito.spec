@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -77,6 +77,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Mon Apr 30 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-6
 - Place JavaDoc in directly under %{_javadocdir}/%{name} instead
   of %{_javadocdir}/%{name}/javadoc
