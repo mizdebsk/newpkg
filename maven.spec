@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -367,6 +367,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Jul 23 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-9
+- Run redundant dependency checks only in mock
+
 * Tue Jul 17 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-8
 - Add manual page
 
