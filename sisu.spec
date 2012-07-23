@@ -1,11 +1,11 @@
 Name:           sisu
 Version:        2.2.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
 Group:          Development/Tools
-License:        ASL 2.0 and EPL
+License:        ASL 2.0 and EPL and MIT
 URL:            http://github.com/sonatype/sisu
 
 # git clone git://github.com/sonatype/sisu
@@ -173,6 +173,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Mon Jul 23 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2.3-5
+- Fix license tag
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
