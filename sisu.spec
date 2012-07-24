@@ -1,6 +1,6 @@
 Name:           sisu
 Version:        2.2.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Sonatype dependency injection framework
 
 
@@ -12,9 +12,6 @@ URL:            http://github.com/sonatype/sisu
 # git archive --prefix="sisu-2.2.3/" --format=tar sisu-2.1.1 | xz > sisu-2.2.3.tar.xz
 Source0:        %{name}-%{version}.tar.xz
 Source1:        %{name}-depmap.xml
-Patch0:         0001-Remove-test-deps.patch
-Patch1:         0002-Fix-plexus-bundling.patch
-
 
 BuildArch:      noarch
 
@@ -61,8 +58,18 @@ Requires:       jpackage-utils
 %prep
 %setup -q
 
-%patch0 -p1
-%patch1 -p1
+for module in . sisu-inject/containers/guice-bean/guice-bean-containers; do
+    %pom_xpath_remove "pom:dependency[pom:scope[text()='test']]" $module; done
+
+# Fix plexus bundling
+sed -i -e '/provide these APIs as a convenience/,+2d' \
+    sisu-inject/containers/guice-bean/sisu-inject-bean/pom.xml
+%pom_xpath_inject "pom:project/pom:dependencies" "
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>latest</version>
+    </dependency>" sisu-inject/containers/guice-plexus/sisu-inject-plexus
 
 # add backward compatible location
 cp sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/sonatype/guice/plexus/lifecycles/*java \
@@ -173,6 +180,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Tue Jul 24 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2.3-6
+- Convert patches to POM macros
+
 * Mon Jul 23 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2.3-5
 - Fix license tag
 
