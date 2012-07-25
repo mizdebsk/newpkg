@@ -76,7 +76,7 @@ export JAVA_HOME
 export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.local.mode ${local_add} ${logfile_add}"
 
 $M2_HOME/bin/mvn -o "$@" || exit $?
-$mock || exit
+$mock || exit 0
 
 sanitize() {
     for obj in $1; do

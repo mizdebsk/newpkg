@@ -54,6 +54,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         String artifactId = artifact.getArtifactId();
         String groupId = artifact.getGroupId();
         String version = artifact.getVersion();
+        String wantedVersion = new String(version);
 
         MavenJPackageDepmap.debug("Wanted GROUPID=" + groupId);
         MavenJPackageDepmap.debug("Wanted ARTIFACTID=" + artifactId);
@@ -80,7 +81,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
                     "/usr/share/maven/repository-java-jni/",
                     "/usr/share/maven/repository-jni/" };
             String verRelativeArtifactPath = groupId + "/" + artifactId + "-"
-                    + version + "." + artifact.getExtension();
+                    + wantedVersion + "." + artifact.getExtension();
             String relativeArtifactPath = groupId + "/" + artifactId + "."
                     + artifact.getExtension();
             for (String repo : repos) {
