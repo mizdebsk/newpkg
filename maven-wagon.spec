@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -61,11 +61,9 @@ BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-enforcer-plugin
 #BuildRequires:  maven2-default-skin
 BuildRequires:  plexus-containers-component-metadata
-BuildRequires:  maven-scm-test
 BuildRequires:  xerces-j2
 BuildRequires:  classworlds
 BuildRequires:  nekohtml
-BuildRequires:  ganymed-ssh2
 BuildRequires:  apache-commons-codec
 BuildRequires:  apache-commons-collections
 BuildRequires:  apache-commons-net
@@ -82,7 +80,6 @@ BuildRequires:  xml-commons-apis
 BuildRequires:  easymock
 BuildRequires:  jsoup
 
-Requires:       ganymed-ssh2
 Requires:       jakarta-commons-httpclient
 Requires:       apache-commons-net
 #Requires:       jakarta-slide-webdavclient
@@ -277,6 +274,9 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Tue Aug  7 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.0-6
+- Remove BR: ganymed-ssh2
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
