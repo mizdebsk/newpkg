@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.13.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -22,10 +22,12 @@ BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
-BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  mojo-parent
 BuildRequires:  async-http-client >= 1.6.1
 BuildRequires:  sonatype-oss-parent
+%if 0%{?fedora}
+BuildRequires:  animal-sniffer >= 1.6-5
+%endif
 
 # required by netty really, but we push this dep on level higer
 BuildRequires:  jboss-parent
@@ -65,6 +67,14 @@ for module in asynchttpclient wagon; do (
 %pom_remove_plugin :clirr-maven-plugin aether-api
 %pom_remove_plugin :clirr-maven-plugin aether-spi
 
+if [ %{?rhel} ]; then
+    for module in . aether-connector-wagon aether-util aether-api   \
+                  aether-impl aether-connector-asynchttpclient      \
+                  aether-connector-file aether-demo aether-test-util; do
+        %pom_remove_plugin :animal-sniffer-maven-plugin $module
+    done
+fi
+
 %build
 mvn-rpmbuild install javadoc:aggregate
 
@@ -100,6 +110,9 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Mon Aug 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-5
+- Disable animal-sniffer on RHEL
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.13.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
