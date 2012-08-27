@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -45,7 +45,6 @@ Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 BuildArch:      noarch
 
 BuildRequires:  aether >= 1.13.1
-BuildRequires:  animal-sniffer >= 1.6-5
 BuildRequires:  apache-commons-parent
 BuildRequires:  async-http-client
 BuildRequires:  atinject
@@ -70,9 +69,11 @@ BuildRequires:  plexus-containers-container-default
 BuildRequires:  sisu >= 2.1.1-2
 BuildRequires:  sonatype-oss-parent
 BuildRequires:  xmlunit
+%if 0%{?fedora}
+BuildRequires:  animal-sniffer >= 1.6-5
+%endif
 
 Requires:       aether >= 1.13.1
-Requires:       animal-sniffer >= 1.6-5
 Requires:       apache-commons-cli
 Requires:       apache-commons-parent
 Requires:       async-http-client
@@ -99,6 +100,9 @@ Requires:       sonatype-oss-parent
 Requires:       xbean
 Requires:       xerces-j2
 Requires:       yum-utils
+%if 0%{?fedora}
+Requires:       animal-sniffer >= 1.6-5
+%endif
 
 
 # for noarch->arch change
@@ -159,6 +163,11 @@ sed -i 's:\r::' src/conf/settings.xml
 sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath "${M2_HOME}"/boot/plexus-classworlds.jar':g \
         src/bin/mvn*
 popd
+
+# Disable animal-sniffer on RHEL
+if [ %{?rhel} ]; then
+    %pom_remove_plugin :animal-sniffer-maven-plugin
+fi
 
 %build
 mvn-rpmbuild -e install javadoc:aggregate
@@ -367,6 +376,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Aug 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-11
+- Disable animal-sniffer on RHEL
+
 * Wed Jul 25 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-10
 - Fix exit code of mvn-rpmbuild outside of mock
 - Fix bug in compatibility jar handling
