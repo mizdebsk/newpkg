@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -10,6 +10,7 @@ Source1:        make-mockito-sourcetarball.sh
 Patch0:         fixup-ant-script.patch
 Patch1:         fix-cglib-refs.patch
 Patch2:         maven-cglib-dependency.patch
+Patch3:         fix-bnd-config.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils
@@ -46,14 +47,21 @@ This package contains the API documentation for %{name}.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+# Set Bundle-Version properly
+sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
+%patch3
 
 %build
 ant jar javadoc
+# Convert to OSGi bundle
+pushd target
+java -jar $(build-classpath aqute-bnd) wrap -output mockito-core-%{version}.bar -properties ../conf/mockito-core.bnd mockito-core-%{version}.jar
+popd
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_javadir}
 sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
-cp -p target/mockito-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -p target/mockito-core-%{version}.bar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 install -pm 644 maven/mockito-core.pom  \
@@ -77,6 +85,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Mon Aug 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-8
+- Add aqute bnd instructions for OSGi metadata
+
 * Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
