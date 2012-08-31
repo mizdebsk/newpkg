@@ -20,6 +20,7 @@ BuildRequires:  objenesis
 BuildRequires:  cglib
 BuildRequires:  junit4
 BuildRequires:  hamcrest
+BuildRequires:  aqute-bnd
 
 Requires:       jpackage-utils
 Requires:       java
