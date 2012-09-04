@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -86,6 +86,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Tue Sep 4 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-9
+- Fix missing Import-Package in manifest.
+
 * Mon Aug 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-8
 - Add aqute bnd instructions for OSGi metadata
 
