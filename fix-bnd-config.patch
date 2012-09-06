@@ -1,5 +1,5 @@
---- conf/mockito-core.bnd.orig	2012-09-04 15:08:36.953346883 +0200
-+++ conf/mockito-core.bnd	2012-09-04 15:09:49.221919598 +0200
+--- conf/mockito-core.bnd.orig	2012-09-06 14:42:08.417103606 +0200
++++ conf/mockito-core.bnd	2012-09-06 14:43:41.391834567 +0200
 @@ -1,8 +1,3 @@
 --classpath= lib/run/com.springsource.org.junit-4.5.0.jar, \
 -            lib/run/com.springsource.org.hamcrest.core-1.1.0.jar, \
@@ -23,7 +23,7 @@
                  org.objenesis;version="[1.0,2.0)", \
 -                org.mockito.*
 +                org.mockito.*, \
-+                net.sf.cglib.proxy
++                net.sf.cglib*
  
  Private-Package: org.mockito.*
  

@@ -1,4 +1,5 @@
 #!/bin/sh
+#set -x
 
 VERSION=1.9.0
 SRCDIR=mockito-${VERSION}

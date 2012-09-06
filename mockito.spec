@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -86,6 +86,11 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Thu Sep 6 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-10
+- More Import-Package fixes. Note that fix-cglib-refs.patch is
+  not suitable for upstream:
+  http://code.google.com/p/mockito/issues/detail?id=373
+
 * Tue Sep 4 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-9
 - Fix missing Import-Package in manifest.
 
