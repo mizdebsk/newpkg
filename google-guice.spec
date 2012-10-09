@@ -1,47 +1,50 @@
 %global short_name guice
+%global tag     bd0d620
 
 Name:           google-%{short_name}
-Version:        3.0
-Release:        0.7.rc2%{?dist}
-Summary:        Lightweight dependency injection framework
-
-
-Group:          Development/Tools
+Version:        3.1.2
+Release:        1%{?dist}
+Summary:        Lightweight dependency injection framework for Java 5 and above
+Group:          Development/Libraries
 License:        ASL 2.0
-URL:            http://code.google.com/p/%{name}
-
-# svn export -r1219 http://google-guice.googlecode.com/svn/trunk/ guice-2.0-1219
-# tar caf guice-2.0-1219.tar.xz guice-2.0-1219
-Source0:        https://%{name}.googlecode.com/files/%{short_name}-%{version}-rc2-src.zip
-
-# patch from http://github.com/sonatype/sisu-guice
-# excluded changes to pom.xml files that changed groupIds
-# needed for maven 3 to work
-Patch0:         sisu-custom.patch
-
-# bz#704222
-Patch1:         0001-Remove-test-and-missing-deps-from-core-pom.xml.patch
-
+URL:            https://github.com/sonatype/sisu-%{short_name}
+Source:         https://github.com/sonatype/sisu-%{short_name}/tarball/sisu-%{short_name}-%{version}#/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  java-devel >= 1:1.6.0
-BuildRequires:  ant
-BuildRequires:  jarjar => 1.0
-BuildRequires:  cglib
-BuildRequires:  aqute-bnd
-BuildRequires:  objectweb-asm
-BuildRequires:  junit
-BuildRequires:  atinject
-BuildRequires:  zip
-BuildRequires:  slf4j
+BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
+BuildRequires:  maven
+BuildRequires:  maven-remote-resources-plugin
+BuildRequires:  apache-resource-bundles
+BuildRequires:  aopalliance
+BuildRequires:  atinject
+BuildRequires:  cglib
+BuildRequires:  guava
+BuildRequires:  hibernate-jpa-2.0-api
+BuildRequires:  slf4j
+BuildRequires:  springframework-beans
+BuildRequires:  tomcat-servlet-3.0-api
+# Test dependencies:
+%if 0
+BuildRequires:  maven-surefire-provider-testng
+BuildRequires:  aqute-bnd
+BuildRequires:  atinject-tck
+BuildRequires:  easymock2
+BuildRequires:  felix-framework
+BuildRequires:  hibernate3-entitymanager
+BuildRequires:  mvn(org.hsqldb:hsqldb-j5)
+BuildRequires:  testng
+%endif
 
-Requires:       cglib
+Requires:       java
+Requires:       jpackage-utils
+Requires:       aopalliance
 Requires:       atinject
-Requires:       java >= 1:1.6.0
-
-# extreme hack to fix maven buildroots
-Provides:       netbeans-cvsclient = 7.0.0-1
+Requires:       cglib
+Requires:       guava
+Requires:       slf4j
+Requires:       %{short_name}-parent = %{version}-%{release}
+Provides:       %{short_name} = %{version}-%{release}
 
 %description
 Put simply, Guice alleviates the need for factories and the use of new
@@ -62,109 +65,273 @@ with at least three use cases. When in doubt, we leave it out. We
 build general functionality which enables you to extend Guice rather
 than adding every feature to the core framework.
 
-%package        javadoc
-Summary:        API documentation for %{name}
-Group:          Documentation
+%package -n %{short_name}-assistedinject
+Summary:        AssistedInject extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-assistedinject
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides AssistedInject module for Guice.
+
+%package -n %{short_name}-extensions
+Summary:        Extensions for Guice
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-extensions
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides extensions POM for Guice.
+
+%package -n %{short_name}-grapher
+Summary:        Grapher extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+Requires:       %{short_name}-assistedinject = %{version}-%{release}
+Requires:       %{short_name}-multibindings = %{version}-%{release}
+
+%description -n %{short_name}-grapher
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Grapher module for Guice.
+
+%package -n %{short_name}-jmx
+Summary:        JMX extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-jmx
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides JMX module for Guice.
+
+%package -n %{short_name}-jndi
+Summary:        JNDI extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-jndi
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides JNDI module for Guice.
+
+%package -n %{short_name}-multibindings
+Summary:        MultiBindings extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-multibindings
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides MultiBindings module for Guice.
+
+%package -n %{short_name}-parent
+Summary:        Guice parent POM
 Requires:       jpackage-utils
 
-%description    javadoc
-%{summary}.
+%description -n %{short_name}-parent
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides parent POM for Guice modules.
+
+%package -n %{short_name}-persist
+Summary:        Persist extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       hibernate-jpa-2.0-api
+Requires:       tomcat-servlet-3.0-api
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-persist
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Persist module for Guice.
+
+%package -n %{short_name}-servlet
+Summary:        Servlet extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       tomcat-servlet-3.0-api
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-servlet
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Servlet module for Guice.
+
+%package -n %{short_name}-spring
+Summary:        Spring extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       springframework-beans
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-spring
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Spring module for Guice.
+
+%package -n %{short_name}-throwingproviders
+Summary:        ThrowingProviders extension module for Guice
+Requires:       java
+Requires:       jpackage-utils
+Requires:       %{short_name} = %{version}-%{release}
+
+%description -n %{short_name}-throwingproviders
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides ThrowingProviders module for Guice.
+
+%package javadoc
+Summary:        API documentation for Guice
+Group:          Documentation
+Requires:       jpackage-utils
+Provides:       %{short_name}-javadoc = %{version}-%{release}
+
+%description javadoc
+This package provides %{summary}.
+
 
 %prep
-%setup -q -n %{short_name}-%{version}-rc2-src
-%patch0
-%patch1 -p1
+%setup -q -n sonatype-sisu-%{short_name}-%{tag}
+find -name '*.jar' -delete
 
-# remove parent definition referencing google-parent
-sed -ie '/<parent>/,/<\/parent/ {d}' pom.xml
+# We don't have struts2 in Fedora yet.
+%pom_disable_module struts2 extensions
 
-# remove bundled libraries
-find . -name '*.class' -delete
-find . -name '*.bar' -delete
-# we'll repack munge.jar so don't delete it just yet
-find . -name '*.jar' -not -name 'munge.jar' -delete
+# Remove additional build profiles, which we don't use anyways
+# and which are only pulling additional dependencies.
+%pom_xpath_remove pom:project/pom:profiles core
 
-# re-create symlinks
-pushd lib/build
-build-jar-repository -s -p . aqute-bnd cglib slf4j \
-                     jarjar junit objectweb-asm \
+# Animal sniffer is only causing problems. Disable it for now.
+%pom_remove_plugin :animal-sniffer-maven-plugin core
+%pom_remove_plugin :animal-sniffer-maven-plugin extensions
 
-mv aqute-bnd*.jar bnd-0.0.384.jar
-mv cglib*.jar cglib-2.2.1-snapshot.jar
-mv jarjar*.jar jarjar-snapshot.jar
-mv objectweb-asmasm-all.jar asm-3.1.jar
-
-popd
-ln -sf `build-classpath atinject` lib/javax.inject.jar
-
-# there is munge.jar defining ant task it's a mixture of files, but
-# there are sources in jar so we re-compile the jar to verify it
-# builds
-mkdir munge-repack
-unzip lib/build/munge.jar -d munge-repack
-rm lib/build/munge.jar
-
-pushd munge-repack
-rm *.class
-javac -cp `build-classpath ant junit` *.java
-zip -r ../lib/build/munge.jar .
-popd
-
-rm -rf munge-repack
-#end munge.jar repack
+# We don't have the custom doclet used by upstream. Remove
+# maven-javadoc-plugin to generate javadocs with default style.
+%pom_remove_plugin :maven-javadoc-plugin
 
 %build
-# create no-aop build environment
-ant no_aop
-
-pushd build/no_aop/
-# javadoc fails without this directory
-mkdir -p servlet/lib/build
-
-ant -Dversion=%{version} jar
-popd
+# Skip tests because of missing dependency (hsqldb-j5).
+mvn-rpmbuild -e -Dmaven.test.skip=true verify javadoc:aggregate
 
 %install
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}
-pushd build/no_aop
-install -pm 644 build/dist/%{short_name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
-ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{short_name}.jar
-
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}-parent.pom
-%add_maven_depmap JPP-%{name}-parent.pom
-
-install -pm 644 core/pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
-# provide sisu group/artifact (should be just mavenized google-guice
-%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.sonatype.sisu:sisu-guice"
-popd
-
+# directories
+install -d -m 755 %{buildroot}%{_javadir}/%{short_name}
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
+# JARs
+install -p -m 644 extensions/assistedinject/target/%{short_name}-assistedinject-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-assistedinject.jar
+install -p -m 644 extensions/grapher/target/%{short_name}-grapher-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-grapher.jar
+install -p -m 644 extensions/jmx/target/%{short_name}-jmx-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-jmx.jar
+install -p -m 644 extensions/jndi/target/%{short_name}-jndi-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-jndi.jar
+install -p -m 644 extensions/multibindings/target/%{short_name}-multibindings-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-multibindings.jar
+install -p -m 644 extensions/persist/target/%{short_name}-persist-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-persist.jar
+install -p -m 644 extensions/servlet/target/%{short_name}-servlet-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-servlet.jar
+install -p -m 644 extensions/spring/target/%{short_name}-spring-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-spring.jar
+install -p -m 644 extensions/throwingproviders/target/%{short_name}-throwingproviders-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-throwingproviders.jar
+install -p -m 644 core/target/sisu-%{short_name}-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{name}.jar
+# POMs
+install -p -m 644 extensions/assistedinject/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-assistedinject.pom
+install -p -m 644 extensions/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-extensions.pom
+install -p -m 644 extensions/grapher/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-grapher.pom
+install -p -m 644 extensions/jmx/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jmx.pom
+install -p -m 644 extensions/jndi/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jndi.pom
+install -p -m 644 extensions/multibindings/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-multibindings.pom
+install -p -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-parent.pom
+install -p -m 644 extensions/persist/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-persist.pom
+install -p -m 644 extensions/servlet/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-servlet.pom
+install -p -m 644 extensions/spring/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-spring.pom
+install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-throwingproviders.pom
+install -p -m 644 core/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{name}.pom
+# depmaps
+%add_maven_depmap JPP.%{short_name}-%{short_name}-assistedinject.pom %{short_name}/%{short_name}-assistedinject.jar -f assistedinject -a com.google.inject.extensions:guice-assistedinject
+%add_maven_depmap JPP.%{short_name}-%{short_name}-extensions.pom -f extensions
+%add_maven_depmap JPP.%{short_name}-%{short_name}-grapher.pom %{short_name}/%{short_name}-grapher.jar -f grapher -a com.google.inject.extensions:guice-grapher
+%add_maven_depmap JPP.%{short_name}-%{short_name}-jmx.pom %{short_name}/%{short_name}-jmx.jar -f jmx -a com.google.inject.extensions:guice-jmx
+%add_maven_depmap JPP.%{short_name}-%{short_name}-jndi.pom %{short_name}/%{short_name}-jndi.jar -f jndi -a com.google.inject.extensions:guice-jndi
+%add_maven_depmap JPP.%{short_name}-%{short_name}-multibindings.pom %{short_name}/%{short_name}-multibindings.jar -f multibindings -a com.google.inject.extensions:guice-multibindings
+%add_maven_depmap JPP.%{short_name}-%{short_name}-parent.pom -f parent
+%add_maven_depmap JPP.%{short_name}-%{short_name}-persist.pom %{short_name}/%{short_name}-persist.jar -f persist -a com.google.inject.extensions:guice-persist
+%add_maven_depmap JPP.%{short_name}-%{short_name}-servlet.pom %{short_name}/%{short_name}-servlet.jar -f servlet -a com.google.inject.extensions:guice-servlet
+%add_maven_depmap JPP.%{short_name}-%{short_name}-spring.pom %{short_name}/%{short_name}-spring.jar -f spring -a com.google.inject.extensions:guice-spring
+%add_maven_depmap JPP.%{short_name}-%{short_name}-throwingproviders.pom %{short_name}/%{short_name}-throwingproviders.jar -f throwingproviders -a com.google.inject.extensions:guice-throwingproviders
+%add_maven_depmap JPP.%{short_name}-%{name}.pom %{short_name}/%{name}.jar -a com.google.inject:guice
 # javadoc
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -r javadoc/* %{buildroot}%{_javadocdir}/%{name}
-
-%pre javadoc
-# workaround for rpm bug, can be removed in F-17
-[ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
-rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
+cp -pr target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
+# compat symlink
+ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 
 
 %files
-%doc COPYING
+%doc README
 %{_javadir}/%{name}.jar
-%{_javadir}/%{short_name}.jar
-%{_mavenpomdir}/JPP-%{name}-parent.pom
-%{_mavenpomdir}/JPP-%{name}.pom
+%{_javadir}/%{short_name}/%{name}.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{name}.pom
 %{_mavendepmapfragdir}/%{name}
 
+%files -n %{short_name}-assistedinject
+%{_javadir}/%{short_name}/%{short_name}-assistedinject.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-assistedinject.pom
+%{_mavendepmapfragdir}/%{name}-assistedinject
+
+%files -n %{short_name}-extensions
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-extensions.pom
+%{_mavendepmapfragdir}/%{name}-extensions
+
+%files -n %{short_name}-grapher
+%{_javadir}/%{short_name}/%{short_name}-grapher.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-grapher.pom
+%{_mavendepmapfragdir}/%{name}-grapher
+
+%files -n %{short_name}-jmx
+%{_javadir}/%{short_name}/%{short_name}-jmx.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jmx.pom
+%{_mavendepmapfragdir}/%{name}-jmx
+
+%files -n %{short_name}-jndi
+%{_javadir}/%{short_name}/%{short_name}-jndi.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jndi.pom
+%{_mavendepmapfragdir}/%{name}-jndi
+
+%files -n %{short_name}-multibindings
+%{_javadir}/%{short_name}/%{short_name}-multibindings.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-multibindings.pom
+%{_mavendepmapfragdir}/%{name}-multibindings
+
+%files -n %{short_name}-parent
+%doc COPYING
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-parent.pom
+%{_mavendepmapfragdir}/%{name}-parent
+
+%files -n %{short_name}-persist
+%{_javadir}/%{short_name}/%{short_name}-persist.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-persist.pom
+%{_mavendepmapfragdir}/%{name}-persist
+
+%files -n %{short_name}-servlet
+%{_javadir}/%{short_name}/%{short_name}-servlet.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-servlet.pom
+%{_mavendepmapfragdir}/%{name}-servlet
+
+%files -n %{short_name}-spring
+%{_javadir}/%{short_name}/%{short_name}-spring.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-spring.pom
+%{_mavendepmapfragdir}/%{name}-spring
+
+%files -n %{short_name}-throwingproviders
+%{_javadir}/%{short_name}/%{short_name}-throwingproviders.jar
+%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-throwingproviders.pom
+%{_mavendepmapfragdir}/%{name}-throwingproviders
 
 %files javadoc
 %doc COPYING
-%doc %{_javadocdir}/%{name}
-
+%{_javadocdir}/%{name}
 
 
 %changelog
+* Fri Oct  5 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-1
+- Complete rewrite of the spec file
+- New upstream, to ease future maintenance
+- Build with maven instead of ant
+- Split into multiple subpackages
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0-0.7.rc2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
