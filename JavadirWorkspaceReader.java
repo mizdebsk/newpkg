@@ -56,6 +56,19 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         String version = artifact.getVersion();
         String wantedVersion = new String(version);
 
+        // let's check out local repo first
+        String m2_path = System.getProperty("maven.repo.local");
+        String gid_path = groupId.replace(".", File.separator);
+        String art_path = m2_path + File.separator + gid_path + File.separator + artifactId +
+                        File.separator + version + File.separator + artifactId + "-" +
+                        version + "." + artifact.getExtension();
+
+        ret = new File(art_path);
+        if (ret.isFile()) {
+            MavenJPackageDepmap.debug("Returning " + art_path.toString());
+            return ret;
+        }
+
         MavenJPackageDepmap.debug("Wanted GROUPID=" + groupId);
         MavenJPackageDepmap.debug("Wanted ARTIFACTID=" + artifactId);
         MavenJPackageDepmap.debug("Wanted VERSION=" + version);
