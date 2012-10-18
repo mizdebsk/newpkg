@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -71,9 +73,11 @@ public class MavenJPackageDepmap {
 
     private static MavenJPackageDepmap instance;
     private static Hashtable<String, String> jppArtifactMap;
+    private static Hashtable<String, ArrayList<String>> jppUnversionedArtifactMap;
 
     private MavenJPackageDepmap() {
         jppArtifactMap = new Hashtable<String, String>();
+        jppUnversionedArtifactMap = new Hashtable<String, ArrayList<String>>();
         buildJppArtifactMap();
     }
 
@@ -85,71 +89,78 @@ public class MavenJPackageDepmap {
         return instance;
     }
 
-    public Hashtable<String, String> getMappedInfo(
-            Hashtable<String, String> mavenDep) {
-        return getMappedInfo((String) mavenDep.get("group"),
-                (String) mavenDep.get("artifact"),
-                (String) mavenDep.get("version"));
-    }
-
+    /**
+     * This function can be used to query exact version of an artifact.
+     * 
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @return Hashtable mapping for groupId, artifactId and version or null if
+     *         exact mapping not found
+     */
     public Hashtable<String, String> getMappedInfo(String groupId,
             String artifactId, String version) {
 
         Hashtable<String, String> jppDep;
         String idToCheck, jppCombination;
 
-        if (System.getProperty("maven.ignore.versions") == null
-                && System.getProperty("maven.local.mode") == null) {
-            idToCheck = groupId + "," + artifactId + "," + version;
-        } else {
-            idToCheck = groupId + "," + artifactId;
-        }
+        idToCheck = groupId + "," + artifactId + "," + version;
 
         jppCombination = (String) jppArtifactMap.get(idToCheck);
-        jppDep = new Hashtable<String, String>();
+        jppDep = null;
         if (jppCombination != null && jppCombination != "") {
-
             StringTokenizer st = new StringTokenizer(jppCombination, ",");
-
+            jppDep = new Hashtable<String, String>();
             jppDep.put("group", st.nextToken());
             jppDep.put("artifact", st.nextToken());
             jppDep.put("version", st.nextToken());
 
-        } else {
-            jppDep.put("group", groupId);
-            jppDep.put("artifact", artifactId);
-            jppDep.put("version", version);
         }
 
         return jppDep;
     }
 
     /**
-     * Returns whether or not the given dependency should be dropped.
+     * This function can be used to query for all possible artifact resolutions.
+     * It works with multiple duplicate gid:aid mappings, but only one should
+     * have unversioned files (default version) to work properly later
+     * 
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @return
      */
-    public boolean shouldEliminate(String groupId, String artifactId,
-            String version) {
+    public ArrayList<Hashtable<String, String>> getUnversionedMappedInfo(
+            String groupId, String artifactId, String version) {
+
+        Hashtable<String, String> jppDep;
         String idToCheck;
+        List<String> maps;
 
-        if (System.getProperty("maven.ignore.versions") == null
-                && System.getProperty("maven.local.mode") == null) {
-            idToCheck = groupId + "," + artifactId + "," + version;
-        } else {
-            idToCheck = groupId + "," + artifactId;
+        idToCheck = groupId + "," + artifactId;
+
+        maps = jppUnversionedArtifactMap.get(idToCheck);
+        ArrayList<Hashtable<String, String>> ret = new ArrayList<Hashtable<String, String>>();
+        if (maps != null) {
+            for (String jppPart : maps) {
+                jppDep = new Hashtable<String, String>();
+                StringTokenizer st = new StringTokenizer(jppPart, ",");
+
+                jppDep.put("group", st.nextToken());
+                jppDep.put("artifact", st.nextToken());
+                jppDep.put("version", st.nextToken());
+
+                // we add to index 0 to make it reversed order for compatibility
+                // with older code
+                ret.add(0, jppDep);
+            }
         }
-
-        return jppArtifactMap.get(idToCheck) != null
-                && jppArtifactMap.get(idToCheck).equals("");
-
+        return ret;
     }
 
     private static void buildJppArtifactMap() {
 
-        if (System.getProperty("maven.ignore.versions") != null
-                || System.getProperty("maven.local.mode") != null) {
-            debug("Processing file: /usr/share/java-utils/xml/maven2-versionless-depmap.xml");
-            processDepmapFile("/etc/maven/maven2-versionless-depmap.xml");
-        }
+        processDepmapFile("/etc/maven/maven2-versionless-depmap.xml");
 
         // process fragments in etc
         File fragmentDir = new File("/etc/maven/fragments");
@@ -173,7 +184,6 @@ public class MavenJPackageDepmap {
         String customFileName = System.getProperty("maven.local.depmap.file",
                 null);
         if (customFileName != null) {
-            debug("Processing file: " + customFileName);
             processDepmapFile(customFileName);
         }
 
@@ -233,32 +243,34 @@ public class MavenJPackageDepmap {
 
             if (jppNodeList.getLength() == 1) {
                 jppAD = getArtifactDefinition((Element) jppNodeList.item(0));
-                if (System.getProperty("maven.ignore.versions") == null
-                        && System.getProperty("maven.local.mode") == null) {
-                    debug("*** Adding: " + mavenAD.groupId + ","
-                            + mavenAD.artifactId + "," + mavenAD.version
-                            + " => " + jppAD.groupId + "," + jppAD.artifactId
-                            + "," + jppAD.version + " to map...");
+                debug("*** Adding: " + mavenAD.groupId + ","
+                        + mavenAD.artifactId + " => " + jppAD.groupId + ","
+                        + jppAD.artifactId + "," + jppAD.version + " to map...");
 
-                    jppArtifactMap.put(mavenAD.groupId + ","
-                            + mavenAD.artifactId + "," + mavenAD.version,
-                            jppAD.groupId + "," + jppAD.artifactId + ","
-                                    + jppAD.version);
-                } else {
-                    debug("*** Adding: " + mavenAD.groupId + ","
-                            + mavenAD.artifactId + " => " + jppAD.groupId + ","
-                            + jppAD.artifactId + "," + jppAD.version
-                            + " to map...");
-
-                    jppArtifactMap.put(mavenAD.groupId + ","
-                            + mavenAD.artifactId, jppAD.groupId + ","
-                            + jppAD.artifactId + "," + jppAD.version);
+                jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId
+                        + "," + mavenAD.version, jppAD.groupId + ","
+                        + jppAD.artifactId + "," + jppAD.version);
+                ArrayList<String> maps = jppUnversionedArtifactMap
+                        .get(mavenAD.groupId + "," + mavenAD.artifactId);
+                if (maps == null) {
+                    maps = new ArrayList<String>();
                 }
+
+                maps.add(jppAD.groupId + "," + jppAD.artifactId + ","
+                        + jppAD.version);
+
+                jppUnversionedArtifactMap.put(mavenAD.groupId + ","
+                        + mavenAD.artifactId, maps);
             } else {
                 debug("Number of jpp sub-elements is not 1. Dropping dependency for "
                         + mavenAD.groupId + ":" + mavenAD.artifactId);
-                jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId,
-                        "JPP/maven,empty-dep," + mavenAD.version);
+                jppArtifactMap.put(mavenAD.groupId + "," + mavenAD.artifactId
+                        + "," + mavenAD.version, "JPP/maven,empty-dep,"
+                        + mavenAD.version);
+                ArrayList<String> maps = new ArrayList<String>();
+                maps.add("JPP/maven,empty-dep," + mavenAD.version);
+                jppUnversionedArtifactMap.put(mavenAD.groupId + ","
+                        + mavenAD.artifactId, maps);
             }
         }
     }
