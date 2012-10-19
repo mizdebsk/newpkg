@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -377,6 +377,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Fri Oct 19 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-13
+- Make sure we look for requested pom file and not resolved
+
 * Thu Oct 18 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-12
 - Look into maven.repo.local first to handle corner-case packages (#865599)
 - Finish handling of compatibility packages

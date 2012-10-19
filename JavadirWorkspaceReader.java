@@ -107,7 +107,7 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
             MavenJPackageDepmap.debug("Resolved VERSION=" + version);
 
             if (artifact.getExtension().equals("pom")) {
-                path = getPOMPath(groupId, artifactId, version);
+                path = getPOMPath(groupId, artifactId, wantedVersion);
                 ret = new File(path.toString());
                 if (ret.isFile()) {
                     MavenJPackageDepmap.debug("Returning " + path.toString());
