@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -377,6 +377,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Wed Oct 24 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-14
+- Enable test skipping patch only for local mode (#869399)
+
 * Fri Oct 19 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-13
 - Make sure we look for requested pom file and not resolved
 

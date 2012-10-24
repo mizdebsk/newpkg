@@ -1,4 +1,4 @@
-From c626f99ce509b9a505d2ced39efd7ae7c748d71e Mon Sep 17 00:00:00 2001
+From ed8122f5538d9000cd8a8579be8a107249e7b022 Mon Sep 17 00:00:00 2001
 From: Stanislav Ochotnicky <sochotnicky@redhat.com>
 Date: Tue, 30 Aug 2011 11:44:42 +0200
 Subject: [PATCH 4/6] Fix text scope skipping with maven.test.skip
@@ -18,17 +18,17 @@ this). But as a hack this works OK.
 Main problem: Is using "maven.test.skip" string literally OK? Also,
 literally referencing "test" scope is probably not 100% clean.
 ---
- .../artifact/resolver/DefaultArtifactResolver.java |   17 +++++
- .../main/java/org/apache/maven/DefaultMaven.java   |    3 +-
- .../maven/SkipTestScopeDependencySelector.java     |   72 ++++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletions(-)
+ .../artifact/resolver/DefaultArtifactResolver.java | 18 ++++++
+ .../main/java/org/apache/maven/DefaultMaven.java   |  6 +-
+ .../maven/SkipTestScopeDependencySelector.java     | 72 ++++++++++++++++++++++
+ 3 files changed, 95 insertions(+), 1 deletion(-)
  create mode 100644 maven-core/src/main/java/org/apache/maven/SkipTestScopeDependencySelector.java
 
 diff --git a/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java b/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
-index 9c8364d..6b3af89 100644
+index 9c8364d..761ff92 100644
 --- a/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
 +++ b/maven-compat/src/main/java/org/apache/maven/artifact/resolver/DefaultArtifactResolver.java
-@@ -460,6 +460,23 @@ public class DefaultArtifactResolver
+@@ -460,6 +460,24 @@ public class DefaultArtifactResolver
              return result;
          } 
  
@@ -36,7 +36,8 @@ index 9c8364d..6b3af89 100644
 +        // with scope "test" from artifact set. Current implementation
 +        // of artifacts doesn't implement "remove" method so create a
 +        // new object and copy non-test artifacts there
-+        if (System.getProperty("maven.test.skip") != null) {
++        if (System.getProperty("maven.local.mode") != null &&
++                System.getProperty("maven.test.skip") != null) {
 +            Set<Artifact> newArtifacts = new LinkedHashSet<Artifact>();
 +            for (Artifact artifact: artifacts)
 +            {
@@ -53,7 +54,7 @@ index 9c8364d..6b3af89 100644
          result =
              artifactCollector.collect( artifacts, rootArtifact, managedVersions, collectionRequest, source,
 diff --git a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
-index 7bff4a0..9b0da93 100644
+index 7bff4a0..71bbd29 100644
 --- a/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 +++ b/maven-core/src/main/java/org/apache/maven/DefaultMaven.java
 @@ -31,6 +31,7 @@ import java.util.List;
@@ -64,12 +65,15 @@ index 7bff4a0..9b0da93 100644
  import org.apache.maven.artifact.ArtifactUtils;
  import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
  import org.apache.maven.eventspy.internal.EventSpyDispatcher;
-@@ -449,7 +450,7 @@ public class DefaultMaven
+@@ -449,7 +450,10 @@ public class DefaultMaven
  
          DependencySelector depFilter =
              new AndDependencySelector( new ScopeDependencySelector( "test", "provided" ), new OptionalDependencySelector(),
 -                                     new ExclusionDependencySelector() );
-+                                     new ExclusionDependencySelector(), new SkipTestScopeDependencySelector() );
++                                     new ExclusionDependencySelector());
++        if ( System.getProperty("maven.local.mode") != null) {
++            depFilter = new AndDependencySelector(depFilter, new SkipTestScopeDependencySelector() );
++        }
          session.setDependencySelector( depFilter );
  
          DependencyGraphTransformer transformer =
@@ -152,5 +156,5 @@ index 0000000..60be724
 +
 +}
 -- 
-1.7.7.6
+1.7.11.7
 
