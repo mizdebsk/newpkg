@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -377,6 +377,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Oct 29 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-15
+- Add a few bash completion goals
+
 * Wed Oct 24 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-14
 - Enable test skipping patch only for local mode (#869399)
 

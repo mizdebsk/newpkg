@@ -25,7 +25,7 @@ _m2_complete()
   esac
 
 
-  goals='clean compile test install package deploy site'
+  goals='clean compile test install package deploy site verify'
   if [[ ${cur} == -* ]] ; then
      goals="$goals -am --also-make
                    -amd --also-make-dependents
@@ -61,6 +61,13 @@ _m2_complete()
                    -V --show-version
                    -v --version
                    -X --debug
+                   -Dmaven.test.skip=true
+                   -Dmaven.compiler.source=1.5
+                   -Dmaven.compiler.source=1.6
+                   -Dmaven.compiler.source=1.7
+                   -Dmaven.compiler.target=1.5
+                   -Dmaven.compiler.target=1.6
+                   -Dmaven.compiler.target=1.7
                    -Dmaven.repo.local=
                    -Dmaven.local.depmap.file=
                    -Dmaven.local.debug=true
