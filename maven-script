@@ -6,5 +6,4 @@ if [ -f /usr/share/java-utils/java-functions ] ; then
 fi
 
 export M2_HOME=/usr/share/maven
-echo $JAVA_HOME
 export JAVA_HOME; $M2_HOME/bin/mvn "$@"

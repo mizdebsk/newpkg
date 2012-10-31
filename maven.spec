@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -377,6 +377,10 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Wed Oct 31 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-16
+- Don't exho  in maven-script
+- Add bash completion for -Dproject.build.sourceEncoding
+
 * Mon Oct 29 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-15
 - Add a few bash completion goals
 
