@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        18%{?dist}
+Release:        19%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -173,6 +173,9 @@ popd
 #if [ %{?rhel} ]; then
 %pom_remove_plugin :animal-sniffer-maven-plugin
 #fi
+
+%pom_add_dep aopalliance:aopalliance:any:test maven-model-builder
+%pom_add_dep cglib:cglib:any:test maven-model-builder
 
 %build
 mvn-rpmbuild -e install javadoc:aggregate
@@ -381,6 +384,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-19
+- Add aopalliance and cglib to maven-model-builder test dependencies
+
 * Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-18
 - Add objectweb-asm to classpath
 
