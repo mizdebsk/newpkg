@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -45,10 +45,12 @@ Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
 BuildArch:      noarch
 
 BuildRequires:  aether >= 1.13.1
+BuildRequires:  aopalliance
 BuildRequires:  apache-commons-parent
 BuildRequires:  async-http-client
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
+BuildRequires:  cglib
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  maven
@@ -67,6 +69,7 @@ BuildRequires:  mojo-parent
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  sisu >= 2.1.1-2
+BuildRequires:  slf4j
 BuildRequires:  sonatype-oss-parent
 BuildRequires:  xmlunit
 %if 0%{?fedora}
@@ -242,7 +245,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 atinject
+                               xbean/xbean-reflect xerces-j2 atinject aopalliance cglib slf4j
   # dependency of our resolver
   mkdir ext/
   build-jar-repository -s -p ext/ xml-commons-apis
@@ -377,8 +380,11 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-17
+- Add aopalliance, cglib, slf4j to classpath
+
 * Wed Oct 31 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-16
-- Don't exho  in maven-script
+- Don't echo JAVA_HOME in maven-script
 - Add bash completion for -Dproject.build.sourceEncoding
 
 * Mon Oct 29 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-15
