@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -66,6 +66,7 @@ BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  mojo-parent
+BuildRequires:  objectweb-asm
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  sisu >= 2.1.1-2
@@ -245,7 +246,7 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 atinject aopalliance cglib slf4j
+                               xbean/xbean-reflect xerces-j2 atinject aopalliance cglib slf4j objectweb-asm
   # dependency of our resolver
   mkdir ext/
   build-jar-repository -s -p ext/ xml-commons-apis
@@ -380,6 +381,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-18
+- Add objectweb-asm to classpath
+
 * Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-17
 - Add aopalliance, cglib, slf4j to classpath
 
