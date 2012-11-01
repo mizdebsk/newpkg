@@ -3,7 +3,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -260,32 +260,32 @@ cp -pr target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
 ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 
 
-%files -f maven-files-%{name}
+%files -f .mfiles
 %doc README
 %{_javadir}/%{name}.jar
 
-%files -n %{short_name}-assistedinject -f maven-files-%{name}-assistedinject
+%files -n %{short_name}-assistedinject -f .mfiles-assistedinject
 
-%files -n %{short_name}-extensions -f maven-files-%{name}-extensions
+%files -n %{short_name}-extensions -f .mfiles-extensions
 
-%files -n %{short_name}-grapher -f maven-files-%{name}-grapher
+%files -n %{short_name}-grapher -f .mfiles-grapher
 
-%files -n %{short_name}-jmx -f maven-files-%{name}-jmx
+%files -n %{short_name}-jmx -f .mfiles-jmx
 
-%files -n %{short_name}-jndi -f maven-files-%{name}-jndi
+%files -n %{short_name}-jndi -f .mfiles-jndi
 
-%files -n %{short_name}-multibindings -f maven-files-%{name}-multibindings
+%files -n %{short_name}-multibindings -f .mfiles-multibindings
 
-%files -n %{short_name}-parent -f maven-files-%{name}-parent
+%files -n %{short_name}-parent -f .mfiles-parent
 %doc COPYING
 
-%files -n %{short_name}-persist -f maven-files-%{name}-persist
+%files -n %{short_name}-persist -f .mfiles-persist
 
-%files -n %{short_name}-servlet -f maven-files-%{name}-servlet
+%files -n %{short_name}-servlet -f .mfiles-servlet
 
-%files -n %{short_name}-spring -f maven-files-%{name}-spring
+%files -n %{short_name}-spring -f .mfiles-spring
 
-%files -n %{short_name}-throwingproviders -f maven-files-%{name}-throwingproviders
+%files -n %{short_name}-throwingproviders -f .mfiles-throwingproviders
 
 %files javadoc
 %doc COPYING
@@ -293,6 +293,9 @@ ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 
 
 %changelog
+* Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-3
+- Update to new add_maven_depmap macro
+
 * Wed Oct 31 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.1.2-2
 - Use new generated maven filelist feature from javapackages-tools
 
