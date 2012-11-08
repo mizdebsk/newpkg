@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        19%{?dist}
+Release:        20%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -249,7 +249,8 @@ install -dm 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/lib
                                plexus/interpolation plexus/plexus-sec-dispatcher plexus/utils \
                                sisu/sisu-inject-bean sisu/sisu-inject-plexus maven-wagon/file \
                                maven-wagon/http-lightweight maven-wagon/http-shared maven-wagon/provider-api \
-                               xbean/xbean-reflect xerces-j2 atinject aopalliance cglib slf4j objectweb-asm
+                               xbean/xbean-reflect xerces-j2 atinject aopalliance cglib \
+                               slf4j/api slf4j/nop objectweb-asm
   # dependency of our resolver
   mkdir ext/
   build-jar-repository -s -p ext/ xml-commons-apis
@@ -384,6 +385,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu Nov  8 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-20
+- Remove all slf4j providers except nop from maven realm
+
 * Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-19
 - Add aopalliance and cglib to maven-model-builder test dependencies
 
