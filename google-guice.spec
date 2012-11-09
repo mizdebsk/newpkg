@@ -1,9 +1,13 @@
+%if 0%{?fedora}
+%bcond_without extensions
+%endif
+
 %global short_name guice
 %global tag     bd0d620
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -66,6 +70,16 @@ with at least three use cases. When in doubt, we leave it out. We
 build general functionality which enables you to extend Guice rather
 than adding every feature to the core framework.
 
+%package -n %{short_name}-parent
+Summary:        Guice parent POM
+Requires:       jpackage-utils
+
+%description -n %{short_name}-parent
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides parent POM for Guice modules.
+
+%if %{with extensions}
+
 %package -n %{short_name}-assistedinject
 Summary:        AssistedInject extension module for Guice
 Requires:       java
@@ -127,14 +141,6 @@ Requires:       %{short_name} = %{version}-%{release}
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides MultiBindings module for Guice.
 
-%package -n %{short_name}-parent
-Summary:        Guice parent POM
-Requires:       jpackage-utils
-
-%description -n %{short_name}-parent
-Guice is a lightweight dependency injection framework for Java 5
-and above. This package provides parent POM for Guice modules.
-
 %package -n %{short_name}-persist
 Summary:        Persist extension module for Guice
 Requires:       java
@@ -178,6 +184,8 @@ Requires:       %{short_name} = %{version}-%{release}
 %description -n %{short_name}-throwingproviders
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides ThrowingProviders module for Guice.
+
+%endif # with extensions
 
 %package javadoc
 Summary:        API documentation for Guice
@@ -264,28 +272,21 @@ ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 %doc README
 %{_javadir}/%{name}.jar
 
-%files -n %{short_name}-assistedinject -f .mfiles-assistedinject
-
-%files -n %{short_name}-extensions -f .mfiles-extensions
-
-%files -n %{short_name}-grapher -f .mfiles-grapher
-
-%files -n %{short_name}-jmx -f .mfiles-jmx
-
-%files -n %{short_name}-jndi -f .mfiles-jndi
-
-%files -n %{short_name}-multibindings -f .mfiles-multibindings
-
 %files -n %{short_name}-parent -f .mfiles-parent
 %doc COPYING
 
+%if %{with extensions}
+%files -n %{short_name}-assistedinject -f .mfiles-assistedinject
+%files -n %{short_name}-extensions -f .mfiles-extensions
+%files -n %{short_name}-grapher -f .mfiles-grapher
+%files -n %{short_name}-jmx -f .mfiles-jmx
+%files -n %{short_name}-jndi -f .mfiles-jndi
+%files -n %{short_name}-multibindings -f .mfiles-multibindings
 %files -n %{short_name}-persist -f .mfiles-persist
-
 %files -n %{short_name}-servlet -f .mfiles-servlet
-
 %files -n %{short_name}-spring -f .mfiles-spring
-
 %files -n %{short_name}-throwingproviders -f .mfiles-throwingproviders
+%endif # with extensions
 
 %files javadoc
 %doc COPYING
@@ -293,6 +294,9 @@ ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 
 
 %changelog
+* Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-4
+- Conditionally disable extensions
+
 * Thu Nov  1 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-3
 - Update to new add_maven_depmap macro
 
