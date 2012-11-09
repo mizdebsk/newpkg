@@ -7,7 +7,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -25,10 +25,14 @@ BuildRequires:  aopalliance
 BuildRequires:  atinject
 BuildRequires:  cglib
 BuildRequires:  guava
-BuildRequires:  hibernate-jpa-2.0-api
 BuildRequires:  slf4j
+
+%if %{with extensions}
+BuildRequires:  hibernate-jpa-2.0-api
 BuildRequires:  springframework-beans
 BuildRequires:  tomcat-servlet-3.0-api
+%endif
+
 # Test dependencies:
 %if 0
 BuildRequires:  maven-surefire-provider-testng
@@ -216,6 +220,11 @@ find -name '*.jar' -delete
 # maven-javadoc-plugin to generate javadocs with default style.
 %pom_remove_plugin :maven-javadoc-plugin
 
+# Don't try to build extension modules unless they are needed
+%if %{without extensions}
+%pom_disable_module extensions
+%endif
+
 %build
 # Skip tests because of missing dependency (hsqldb-j5).
 mvn-rpmbuild -e -Dmaven.test.skip=true verify javadoc:aggregate
@@ -300,6 +309,9 @@ install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdi
 
 
 %changelog
+* Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-6
+- Don't try to build extension modules unless they are needed
+
 * Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-5
 - Conditionalize %%install section too
 
