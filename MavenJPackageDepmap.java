@@ -181,6 +181,19 @@ public class MavenJPackageDepmap {
                 processDepmapFile("/usr/share/maven-fragments/" + fragFilename);
         }
 
+        String customDepmapDir = System.getProperty("maven.local.depmap.dir",
+                null);
+        if (customDepmapDir != null) {
+            fragmentDir = new File(customDepmapDir);
+            flist = fragmentDir.list();
+            if (flist != null) {
+                java.util.Arrays.sort(flist);
+                for (String fragFilename : flist)
+                    processDepmapFile(customDepmapDir + File.separator
+                            + fragFilename);
+            }
+        }
+
         String customFileName = System.getProperty("maven.local.depmap.file",
                 null);
         if (customFileName != null) {

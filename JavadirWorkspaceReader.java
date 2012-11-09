@@ -2,6 +2,7 @@ package org.apache.maven.artifact.resolver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -114,27 +115,33 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
                     return ret;
                 }
             } else {
-                String repos[] = { "/usr/share/maven/repository/",
-                        "/usr/share/maven/repository-java-jni/",
-                        "/usr/share/maven/repository-jni/" };
+                ArrayList<String> repos = new ArrayList<String>();
+                String custom_paths = System.getProperty(
+                        "maven.local.jar.paths", null);
+                if (custom_paths != null) {
+                    repos.addAll(Arrays.asList(custom_paths.split(":")));
+                }
+                repos.add("/usr/share/maven/repository/");
+                repos.add("/usr/share/maven/repository-java-jni/");
+                repos.add("/usr/share/maven/repository-jni/");
+
                 String verRelativeArtifactPath = groupId + "/" + artifactId
                         + "-" + wantedVersion + "." + artifact.getExtension();
                 String relativeArtifactPath = groupId + "/" + artifactId + "."
                         + artifact.getExtension();
                 for (String repo : repos) {
-                    path = new StringBuffer(repo + verRelativeArtifactPath);
-                    ret = new File(path.toString());
+
+                    ret = new File(repo, verRelativeArtifactPath);
+                    MavenJPackageDepmap.debug("Looking for " + ret.getPath());
                     if (ret.isFile()) {
-                        MavenJPackageDepmap.debug("Returning " + repo
-                                + verRelativeArtifactPath);
+                        MavenJPackageDepmap.debug("Returning " + ret.getPath());
                         return ret;
                     }
 
-                    path = new StringBuffer(repo + relativeArtifactPath);
-                    ret = new File(path.toString());
+                    ret = new File(repo, relativeArtifactPath);
+                    MavenJPackageDepmap.debug("Looking for " + ret.getPath());
                     if (ret.isFile()) {
-                        MavenJPackageDepmap.debug("Returning " + repo
-                                + relativeArtifactPath);
+                        MavenJPackageDepmap.debug("Returning " + ret.getPath());
                         return ret;
                     }
                 }
@@ -161,16 +168,25 @@ public class JavadirWorkspaceReader implements WorkspaceReader {
         String verfName = groupId.replace(PATH_SEPARATOR, GROUP_SEPARATOR)
                 + "-" + artifactId + "-" + version + ".pom";
         File f;
-        String[] pomRepos = { "/usr/share/maven2/poms/",
-                "/usr/share/maven/poms/", "/usr/share/maven-poms/" };
+        String custom_paths = System.getProperty("maven.local.pom.paths", null);
+
+        ArrayList<String> pomRepos = new ArrayList<String>();
+        if (custom_paths != null) {
+            pomRepos.addAll(Arrays.asList(custom_paths.split(":")));
+        }
+        pomRepos.add("/usr/share/maven2/poms/");
+        pomRepos.add("/usr/share/maven/poms/");
+        pomRepos.add("/usr/share/maven-poms/");
 
         for (String pomRepo : pomRepos) {
-            f = new File(pomRepo + verfName);
+            f = new File(pomRepo, verfName);
+            MavenJPackageDepmap.debug("Looking for " + f.getPath());
             if (f.exists()) {
                 return new StringBuffer(f.getPath());
             }
 
-            f = new File(pomRepo + fName);
+            f = new File(pomRepo, fName);
+            MavenJPackageDepmap.debug("Looking for " + f.getPath());
             if (f.exists()) {
                 return new StringBuffer(f.getPath());
             }
