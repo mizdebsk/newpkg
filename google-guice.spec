@@ -7,7 +7,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -226,6 +226,21 @@ install -d -m 755 %{buildroot}%{_javadir}/%{short_name}
 install -d -m 755 %{buildroot}%{_mavenpomdir}
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
 # JARs
+install -p -m 644 core/target/sisu-%{short_name}-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{name}.jar
+# POMs
+install -p -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-parent.pom
+install -p -m 644 core/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{name}.pom
+# depmaps
+%add_maven_depmap JPP.%{short_name}-%{short_name}-parent.pom -f parent
+%add_maven_depmap JPP.%{short_name}-%{name}.pom %{short_name}/%{name}.jar -a com.google.inject:guice
+# javadoc
+cp -pr target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
+# compat symlink
+ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
+
+# Extensions
+%if %{with extensions}
+# JARs
 install -p -m 644 extensions/assistedinject/target/%{short_name}-assistedinject-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-assistedinject.jar
 install -p -m 644 extensions/grapher/target/%{short_name}-grapher-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-grapher.jar
 install -p -m 644 extensions/jmx/target/%{short_name}-jmx-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-jmx.jar
@@ -235,7 +250,6 @@ install -p -m 644 extensions/persist/target/%{short_name}-persist-%{version}.jar
 install -p -m 644 extensions/servlet/target/%{short_name}-servlet-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-servlet.jar
 install -p -m 644 extensions/spring/target/%{short_name}-spring-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-spring.jar
 install -p -m 644 extensions/throwingproviders/target/%{short_name}-throwingproviders-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{short_name}-throwingproviders.jar
-install -p -m 644 core/target/sisu-%{short_name}-%{version}.jar %{buildroot}%{_javadir}/%{short_name}/%{name}.jar
 # POMs
 install -p -m 644 extensions/assistedinject/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-assistedinject.pom
 install -p -m 644 extensions/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-extensions.pom
@@ -243,12 +257,10 @@ install -p -m 644 extensions/grapher/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{s
 install -p -m 644 extensions/jmx/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jmx.pom
 install -p -m 644 extensions/jndi/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-jndi.pom
 install -p -m 644 extensions/multibindings/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-multibindings.pom
-install -p -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-parent.pom
 install -p -m 644 extensions/persist/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-persist.pom
 install -p -m 644 extensions/servlet/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-servlet.pom
 install -p -m 644 extensions/spring/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-spring.pom
 install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{short_name}-throwingproviders.pom
-install -p -m 644 core/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{name}.pom
 # depmaps
 %add_maven_depmap JPP.%{short_name}-%{short_name}-assistedinject.pom %{short_name}/%{short_name}-assistedinject.jar -f assistedinject -a com.google.inject.extensions:guice-assistedinject
 %add_maven_depmap JPP.%{short_name}-%{short_name}-extensions.pom -f extensions
@@ -256,17 +268,11 @@ install -p -m 644 core/pom.xml %{buildroot}%{_mavenpomdir}/JPP.%{short_name}-%{n
 %add_maven_depmap JPP.%{short_name}-%{short_name}-jmx.pom %{short_name}/%{short_name}-jmx.jar -f jmx -a com.google.inject.extensions:guice-jmx
 %add_maven_depmap JPP.%{short_name}-%{short_name}-jndi.pom %{short_name}/%{short_name}-jndi.jar -f jndi -a com.google.inject.extensions:guice-jndi
 %add_maven_depmap JPP.%{short_name}-%{short_name}-multibindings.pom %{short_name}/%{short_name}-multibindings.jar -f multibindings -a com.google.inject.extensions:guice-multibindings
-%add_maven_depmap JPP.%{short_name}-%{short_name}-parent.pom -f parent
 %add_maven_depmap JPP.%{short_name}-%{short_name}-persist.pom %{short_name}/%{short_name}-persist.jar -f persist -a com.google.inject.extensions:guice-persist
 %add_maven_depmap JPP.%{short_name}-%{short_name}-servlet.pom %{short_name}/%{short_name}-servlet.jar -f servlet -a com.google.inject.extensions:guice-servlet
 %add_maven_depmap JPP.%{short_name}-%{short_name}-spring.pom %{short_name}/%{short_name}-spring.jar -f spring -a com.google.inject.extensions:guice-spring
 %add_maven_depmap JPP.%{short_name}-%{short_name}-throwingproviders.pom %{short_name}/%{short_name}-throwingproviders.jar -f throwingproviders -a com.google.inject.extensions:guice-throwingproviders
-%add_maven_depmap JPP.%{short_name}-%{name}.pom %{short_name}/%{name}.jar -a com.google.inject:guice
-# javadoc
-cp -pr target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
-# compat symlink
-ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
-
+%endif # with extensions
 
 %files -f .mfiles
 %doc README
@@ -294,6 +300,9 @@ ln -sf %{short_name}/%{name}.jar %{buildroot}%{_javadir}
 
 
 %changelog
+* Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-5
+- Conditionalize %%install section too
+
 * Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-4
 - Conditionally disable extensions
 
