@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        21%{?dist}
+Release:        22%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -47,6 +47,8 @@ BuildArch:      noarch
 BuildRequires:  aether >= 1.13.1
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-parent
+BuildRequires:  apache-parent
+BuildRequires:  apache-resource-bundles
 BuildRequires:  async-http-client
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
@@ -54,13 +56,14 @@ BuildRequires:  cglib
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  maven
-BuildRequires:  maven2-common-poms
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
 BuildRequires:  maven-parent
+BuildRequires:  maven-plugins-pom
+BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
@@ -77,9 +80,16 @@ BuildRequires:  xmlunit
 BuildRequires:  animal-sniffer >= 1.6-5
 %endif
 
+# FIXME temporarly require plexus POMs until plexus packages are fixed
+BuildRequires:  plexus-pom
+BuildRequires:  plexus-components-pom
+BuildRequires:  plexus-tools-pom
+
 Requires:       aether >= 1.13.1
 Requires:       apache-commons-cli
 Requires:       apache-commons-parent
+Requires:       apache-parent
+Requires:       apache-resource-bundles
 Requires:       async-http-client
 Requires:       atinject
 Requires:       google-guice >= 3.0
@@ -87,8 +97,9 @@ Requires:       guava
 Requires:       hamcrest
 Requires:       hamcrest
 Requires:       java >= 1:1.6.0
-Requires:       maven2-common-poms
 Requires:       maven-parent
+Requires:       maven-plugins-pom
+Requires:       maven-remote-resources-plugin
 Requires:       maven-wagon
 Requires:       mojo-parent
 Requires:       nekohtml
@@ -299,6 +310,12 @@ ln -s %{_datadir}/%{name}/poms $RPM_BUILD_ROOT%{_javadir}/%{name}/poms
 install -m 644 %{SOURCE104} $RPM_BUILD_ROOT%{_datadir}/%{name}/poms/JPP.maven-empty-dep.pom
 install -m 644 %{SOURCE105} $RPM_BUILD_ROOT%{_javadir}/%{name}/empty-dep.jar
 
+# Dependencies that should be ignored.
+%add_to_maven_depmap javax.activation activation any JPP/%{name} empty-dep
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.activation any JPP/%{name} empty-dep
+%add_to_maven_depmap org.apache.maven.wagon wagon-webdav any JPP/%{name} empty-dep
+%add_to_maven_depmap org.apache.maven.wagon wagon-webdav-jackrabbit any JPP/%{name} empty-dep
+
 ############
 # /usr/bin #
 ############
@@ -343,6 +360,25 @@ install -dm 755 $RPM_BUILD_ROOT%{_mandir}/man1
 install -pm 644 %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man1
 gzip -9 $RPM_BUILD_ROOT%{_mandir}/man1/*
 
+
+# Ugly as hell, but Eclipse relocated various artifacts under
+# their own groupId. We need to fix this globally.
+# FIXME: this should be moved to respective packages
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet any JPP tomcat-servlet-3.0-api
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.security.auth.message any JPP geronimo-jaspic-spec
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.mail.glassfish any JPP/javamail mail
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.transaction any JPP geronimo-jta
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.annotation any JPP geronimo-annotation
+%add_to_maven_depmap org.eclipse.jetty.orbit org.objectweb.asm any JPP/objectweb-asm asm-all
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet.jsp any JPP tomcat-jsp-api
+%add_to_maven_depmap org.eclipse.jetty.orbit org.apache.jasper.glassfish any JPP glassfish-jsp
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet.jsp.jstl any JPP taglibs-core
+%add_to_maven_depmap org.eclipse.jetty.orbit org.apache.taglibs.standard.glassfish any JPP taglibs-standard
+%add_to_maven_depmap org.eclipse.jetty.orbit javax.el any JPP tomcat-el-2.2-api
+%add_to_maven_depmap org.eclipse.jetty.orbit com.sun.el any JPP tomcat-el-2.2-api
+%add_to_maven_depmap org.eclipse.jetty.orbit org.eclipse.jdt.core any JPP/eclipse jdt.core
+
+
 %preun
 if [ $1 -eq 0 ] ; then
    if [ -h %{_datadir}/%{name}/repository-jni/JPP ];then
@@ -373,7 +409,7 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 %{_datadir}/%{name}/repository
 %{_datadir}/%{name}/repository-jni
 %{_datadir}/%{name}/repository-java-jni
-%config %{_mavendepmapfragdir}/%{name}
+%{_mavendepmapfragdir}/%{name}
 %{_javadir}/%{name}
 %{_datadir}/%{name}/repo-metadata.tar.xz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/%{name}
@@ -385,6 +421,10 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Nov 12 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-22
+- Drop dependency on maven2-common-poms
+- Drop support for /etc/maven/fragments
+
 * Thu Nov 08 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.0.4-21
 - Add support for custom jar/pom/fragment directories
 
