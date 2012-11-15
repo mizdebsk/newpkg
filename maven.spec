@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        23%{?dist}
+Release:        24%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -419,11 +419,14 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 %{_mandir}/man1/mvn.1.gz
 
 %files javadoc
-%doc LICENSE.txt
+%doc LICENSE.txt NOTICE.txt
 %{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Nov 15 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-24
+- Install NOTICE file with javadoc package
+
 * Tue Nov 13 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-23
 - Temporarly require Plexus POMs as a workaround
 
