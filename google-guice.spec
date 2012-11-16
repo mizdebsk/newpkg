@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -283,7 +283,6 @@ install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdi
 %endif # with extensions
 
 %files -f .mfiles
-%doc README
 %{_javadir}/%{name}.jar
 
 %files -n %{short_name}-parent -f .mfiles-parent
@@ -308,6 +307,9 @@ install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdi
 
 
 %changelog
+* Fri Nov 16 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-8
+- Remove README
+
 * Fri Nov 16 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-7
 - Repackage tarball
 
