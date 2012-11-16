@@ -3,16 +3,16 @@
 %endif
 
 %global short_name guice
-%global tag     bd0d620
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
-Source:         https://github.com/sonatype/sisu-%{short_name}/tarball/sisu-%{short_name}-%{version}#/%{name}-%{version}.tar.gz
+# ./create-tarball.sh %{version}
+Source:         %{name}-%{version}.tar.xz
 BuildArch:      noarch
 
 BuildRequires:  java-devel
@@ -202,8 +202,7 @@ This package provides %{summary}.
 
 
 %prep
-%setup -q -n sonatype-sisu-%{short_name}-%{tag}
-find -name '*.jar' -delete
+%setup -q
 
 # We don't have struts2 in Fedora yet.
 %pom_disable_module struts2 extensions
@@ -309,6 +308,9 @@ install -p -m 644 extensions/throwingproviders/pom.xml %{buildroot}%{_mavenpomdi
 
 
 %changelog
+* Fri Nov 16 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-7
+- Repackage tarball
+
 * Fri Nov  9 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.2-6
 - Don't try to build extension modules unless they are needed
 
