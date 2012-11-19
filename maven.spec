@@ -2,11 +2,11 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        24%{?dist}
+Release:        25%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
-License:        ASL 2.0 and MIT and BSD
+License:        ASL 2.0
 URL:            http://maven.apache.org/
 # Source URL is for testing only, final version will be in different place:
 # http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
@@ -424,6 +424,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Mon Nov 19 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-25
+- Fix license tag
+
 * Thu Nov 15 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-24
 - Install NOTICE file with javadoc package
 
