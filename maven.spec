@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        25%{?dist}
+Release:        26%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -41,6 +41,7 @@ Patch151:         0003-Use-utf-8-source-encoding.patch
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
+Patch202:       0001-Customize-compiler-plugin.patch
 
 BuildArch:      noarch
 
@@ -151,6 +152,7 @@ BuildArch:      noarch
 %patch151 -p1
 %patch200 -p1
 %patch201 -p1
+%patch202 -p1
 %patch100 -p1
 %patch101 -p1
 
@@ -424,6 +426,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Thu Nov 22 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-26
+- Force source >= 1.5 and target >= source
+
 * Mon Nov 19 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-25
 - Fix license tag
 
