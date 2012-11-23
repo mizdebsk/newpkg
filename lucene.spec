@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -220,6 +220,13 @@ cp -pr build/docs/api/* \
 %doc contrib/CHANGES.txt
 
 %changelog
+* Fri Nov 23 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-6
+- Fix OSGi medatada. In particular:
+- Missing import javax.management (lucene-core)
+- Missing import javax.xml.parsers and org.xml.sax.helpers
+  (lucene-analysis)
+- BundleVersion updated to 3.6.0 (lucene-core & lucene-analysis)
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.6.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
