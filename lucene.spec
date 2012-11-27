@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -184,13 +184,16 @@ install -d -m 0755 $RPM_BUILD_ROOT%{_mavenpomdir}
 install -m 0644 build/core/%{name}-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-core.jar
 
-# core poms
+# core pom + parents
 install -m 0644 dev-tools/maven/lucene/core/pom.xml.template \
            $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-core.pom
 %add_maven_depmap JPP-lucene-core.pom %{name}-core.jar
 install -m 0644 dev-tools/maven/lucene/pom.xml.template \
        $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-parent.pom
 %add_maven_depmap JPP-lucene-parent.pom
+install -m 0644 dev-tools/maven/pom.xml.template \
+       $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-solr-grandparent.pom
+%add_maven_depmap JPP-lucene-solr-grandparent.pom
 
 %if 0%{?fedora}
 # contrib jars
@@ -216,13 +219,10 @@ for c in analyzers kuromoji phonetic smartcn stempel; do
     %add_maven_depmap JPP.lucene-contrib-lucene-$c.pom %{name}-contrib/%{name}-${c}.jar
 done
 
-# contrib poms
+# contrib pom
 install -m 0644 dev-tools/maven/lucene/contrib/pom.xml.template \
        $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-contrib.pom
 %add_maven_depmap JPP-lucene-contrib.pom
-install -m 0644 dev-tools/maven/pom.xml.template \
-       $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-solr-grandparent.pom
-%add_maven_depmap JPP-lucene-solr-grandparent.pom
 %endif
 
 # javadoc
@@ -248,6 +248,9 @@ cp -pr build/docs/api/* \
 %endif
 
 %changelog
+* Tue Nov 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-9
+- Always install grand-parent pom as well.
+
 * Tue Nov 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-8
 - Always install lucene-parent pom.
 
