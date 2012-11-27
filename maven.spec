@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        26%{?dist}
+Release:        27%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -36,8 +36,9 @@ Patch100:       0005-Use-generics-in-modello-generated-code.patch
 Patch101:       0006-Make-compiler-plugin-default-to-source-1.5.patch
 
 # Patch15X are already upstream
-Patch150:         0001-Add-plugin-api-deps.patch
-Patch151:         0003-Use-utf-8-source-encoding.patch
+Patch150:       0001-Add-plugin-api-deps.patch
+Patch151:       0003-Use-utf-8-source-encoding.patch
+
 # Patch2XX for non-upstreamable patches
 Patch200:       0002-Use-custom-resolver.patch
 Patch201:       0004-Fix-text-scope-skipping-with-maven.test.skip.patch
@@ -47,8 +48,6 @@ BuildArch:      noarch
 
 BuildRequires:  aether >= 1.13.1
 BuildRequires:  aopalliance
-BuildRequires:  apache-commons-parent
-BuildRequires:  apache-parent
 BuildRequires:  apache-resource-bundles
 BuildRequires:  async-http-client
 BuildRequires:  atinject
@@ -56,43 +55,29 @@ BuildRequires:  buildnumber-maven-plugin
 BuildRequires:  cglib
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
-BuildRequires:  maven
+BuildRequires:  maven-local
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-parent
-BuildRequires:  maven-plugins-pom
 BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  mojo-parent
 BuildRequires:  objectweb-asm
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  sisu >= 2.1.1-2
 BuildRequires:  slf4j
-BuildRequires:  sonatype-oss-parent
 BuildRequires:  xmlunit
 %if 0%{?fedora}
 BuildRequires:  animal-sniffer >= 1.6-5
 %endif
 
-# FIXME temporarly require plexus POMs until plexus packages are fixed
-BuildRequires:  plexus-pom
-BuildRequires:  plexus-components-pom
-BuildRequires:  plexus-tools-pom
-Requires:       plexus-pom
-Requires:       plexus-components-pom
-Requires:       plexus-tools-pom
-
 Requires:       aether >= 1.13.1
 Requires:       apache-commons-cli
-Requires:       apache-commons-parent
-Requires:       apache-parent
 Requires:       apache-resource-bundles
 Requires:       async-http-client
 Requires:       atinject
@@ -101,11 +86,7 @@ Requires:       guava
 Requires:       hamcrest
 Requires:       hamcrest
 Requires:       java >= 1:1.6.0
-Requires:       maven-parent
-Requires:       maven-plugins-pom
-Requires:       maven-remote-resources-plugin
 Requires:       maven-wagon
-Requires:       mojo-parent
 Requires:       nekohtml
 Requires:       plexus-cipher
 Requires:       plexus-classworlds >= 2.4
@@ -115,7 +96,6 @@ Requires:       plexus-interpolation
 Requires:       plexus-sec-dispatcher
 Requires:       plexus-utils
 Requires:       sisu >= 2.1.1-2
-Requires:       sonatype-oss-parent
 Requires:       xbean
 Requires:       xerces-j2
 Requires:       yum-utils
@@ -123,6 +103,10 @@ Requires:       yum-utils
 Requires:       animal-sniffer >= 1.6-5
 %endif
 
+# Require maven-local for now to allow a smooth transition from maven
+# to maven-local. Once packages start requiring maven-local directly
+# the Requires below should be removed.
+Requires:       maven-local
 
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
@@ -366,24 +350,6 @@ install -pm 644 %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man1
 gzip -9 $RPM_BUILD_ROOT%{_mandir}/man1/*
 
 
-# Ugly as hell, but Eclipse relocated various artifacts under
-# their own groupId. We need to fix this globally.
-# FIXME: this should be moved to respective packages
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet any JPP tomcat-servlet-3.0-api
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.security.auth.message any JPP geronimo-jaspic-spec
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.mail.glassfish any JPP/javamail mail
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.transaction any JPP geronimo-jta
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.annotation any JPP geronimo-annotation
-%add_to_maven_depmap org.eclipse.jetty.orbit org.objectweb.asm any JPP/objectweb-asm asm-all
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet.jsp any JPP tomcat-jsp-api
-%add_to_maven_depmap org.eclipse.jetty.orbit org.apache.jasper.glassfish any JPP glassfish-jsp
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.servlet.jsp.jstl any JPP taglibs-core
-%add_to_maven_depmap org.eclipse.jetty.orbit org.apache.taglibs.standard.glassfish any JPP taglibs-standard
-%add_to_maven_depmap org.eclipse.jetty.orbit javax.el any JPP tomcat-el-2.2-api
-%add_to_maven_depmap org.eclipse.jetty.orbit com.sun.el any JPP tomcat-el-2.2-api
-%add_to_maven_depmap org.eclipse.jetty.orbit org.eclipse.jdt.core any JPP/eclipse jdt.core
-
-
 %preun
 if [ $1 -eq 0 ] ; then
    if [ -h %{_datadir}/%{name}/repository-jni/JPP ];then
@@ -426,6 +392,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Tue Nov 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-27
+- Move some parts to maven-local package
+
 * Thu Nov 22 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-26
 - Force source >= 1.5 and target >= source
 
