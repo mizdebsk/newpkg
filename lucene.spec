@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -40,7 +40,7 @@ Source0:        http://www.apache.org/dist/lucene/java/%{version}/%{name}-%{vers
 Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
 Source3:        ivy-conf.xml
-#svn checkout http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_6_0/dev-tools
+#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_6_0/dev-tools@r1416452
 #tar caf dev-tools.tar.xz dev-tools/
 Source4:        dev-tools.tar.xz
 Patch1:         0001-Remove-bdb-packageset.patch
@@ -248,6 +248,10 @@ cp -pr build/docs/api/* \
 %endif
 
 %changelog
+* Mon Dec 3 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-10
+- Upload new tarball for dev-tools as checksum could not be
+  reproduced with given commands listed in comment.
+
 * Tue Nov 27 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-9
 - Always install grand-parent pom as well.
 
