@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -43,9 +43,6 @@ Source3:        ivy-conf.xml
 #svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_6_0/dev-tools@r1416452
 #tar caf dev-tools.tar.xz dev-tools/
 Source4:        dev-tools.tar.xz
-Patch1:         0001-Remove-bdb-packageset.patch
-Patch2:         0002-Fix-version-string.patch
-Patch3:         0003-Remove-classpath.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  ant-junit >= 0:1.6
@@ -110,10 +107,6 @@ tar xfs %{SOURCE4}
 pushd dev-tools
 find . -name "pom.xml.template" -exec sed -i "s/@version@/%{version}/g" '{}' \;
 popd
-
-#%patch1 -p1 -b .db-javadoc
-#%patch2 -p1 -b .fixmanifests
-#%patch3 -p1 -b .removeclasspath
 
 iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new
 
@@ -248,6 +241,9 @@ cp -pr build/docs/api/* \
 %endif
 
 %changelog
+* Wed Dec 5 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-11
+- Remove patches which weren't applied (rpmlint warnings).
+
 * Mon Dec 3 2012 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.0-10
 - Upload new tarball for dev-tools as checksum could not be
   reproduced with given commands listed in comment.
