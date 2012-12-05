@@ -1,6 +1,8 @@
+%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^osgi(org.sonatype.sisu.guava)$
+
 Name:           sisu
 Version:        2.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
@@ -91,6 +93,9 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Wed Dec  5 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-2
+- Disable OSGi auto-requires: org.sonatype.sisu.guava
+
 * Mon Dec  3 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-1
 - Update to upstream version 2.3.0
 
