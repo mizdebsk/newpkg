@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -52,7 +52,7 @@ BuildRequires:  ant-contrib
 BuildRequires:  jpackage-utils >= 0:1.7.4
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  hamcrest
-BuildRequires:  perl-MD5
+BuildRequires:  perl(Digest::MD5)
 
 Requires:       hamcrest
 Requires:       java >= 1:1.6.0
@@ -64,8 +64,7 @@ Obsoletes:      junit4 < %{epoch}:%{version}-%{release}
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
 It is used by the developer who implements unit tests in Java. JUnit is Open
 Source Software, released under the Common Public License Version 1.0 and 
-JUnit is Open Source Software, released under the IBM Public License and
-hosted on SourceForge.
+hosted on GitHub.
 
 %package manual
 Group:          Documentation
@@ -154,6 +153,10 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Tue Dec 18 2012 Michal Srb <msrb@redhat.com> - 0:4.10-7
+- Build-time dependency perl-MD5 replaced with perl(Digest::MD5)
+- Description cleanup (Resolves: #888389)
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.10-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
