@@ -1,7 +1,7 @@
 %global with_maven 0
 Name:           logback
 Version:        1.0.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A Java logging library
 
 Group:          Development/Tools
@@ -12,9 +12,6 @@ Source1:        %{name}-%{version}-00-build.xml
 Source2:        %{name}-%{version}-core-osgi.bnd
 Source3:        %{name}-%{version}-classic-osgi.bnd
 Source4:        %{name}-%{version}-access-osgi.bnd
-
-Patch0:         %{name}-1.0.6-access-exclude-unavailable-tomcat-apis.patch
-Patch1:         %{name}-1.0.9-jetty6.patch
 
 # Java dependencies
 BuildRequires: jpackage-utils
@@ -131,22 +128,8 @@ logback-examples module.
 
 %prep
 %setup -q
-%if %{?fedora}<=16
-%patch0 -p0
-# Use old Jetty API on F16
-%patch1 -p0
-find logback-access/src/main/java/ch/qos/logback/access/jetty -name "*.java" -exec sed -i 's/org.eclipse.jetty.http/org.mortbay.jetty/g' '{}' \;
-find logback-access/src/main/java/ch/qos/logback/access/jetty -name "*.java" -exec sed -i 's/org.eclipse.jetty.server/org.mortbay.jetty/g' '{}' \;
 %if !%with_maven
 cp -p %{SOURCE4} osgi-access.bnd
-sed -i "s|org.eclipse.jetty.http|org.mortbay.jetty|" osgi-access.bnd
-sed -i "s|org.eclipse.jetty.server|org.mortbay.jetty|" osgi-access.bnd
-sed -i "s|org.eclipse.jetty.util.component|org.mortbay.component|" osgi-access.bnd
-%endif
-%else
-%if !%with_maven
-cp -p %{SOURCE4} osgi-access.bnd
-%endif
 %endif
 
 %pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core
@@ -242,6 +225,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
+* Fri Dec 21 2012 Mary Ellen Foster <mefoster@gmail.com> - 1.0.9-2
+- Remove F16 backward compatibility since it's EOL soon
+
 * Sat Dec 08 2012 gil cattaneo <puntogil@libero.it> - 1.0.9-1
 - Update to 1.0.9
 - Preserved timestamp in pom files
