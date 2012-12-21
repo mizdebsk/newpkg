@@ -1,0 +1,28 @@
+--- logback-access/pom.xml	2012-12-09 05:22:34.870765401 +0100
++++ logback-access/pom.xml-gil	2012-12-09 05:25:54.125322004 +0100
+@@ -60,17 +60,17 @@
+       </exclusions>
+     </dependency>
+ 
+-    <!--<dependency>-->
+-    <!--<groupId>org.mortbay.jetty</groupId>-->
+-    <!--<artifactId>jetty</artifactId>-->
+-    <!--<scope>compile</scope>-->
+-    <!--<optional>true</optional>-->
+-    <!--</dependency>-->
++    <dependency>
++      <groupId>org.mortbay.jetty</groupId>
++      <artifactId>jetty</artifactId>
++      <scope>compile</scope>
++      <optional>true</optional>
++    </dependency>
+ 
+ 
+     <dependency>
+-      <groupId>org.eclipse.jetty</groupId>
+-      <artifactId>jetty-server</artifactId>
++      <groupId>org.mortbay.jetty</groupId>
++      <artifactId>jetty-util</artifactId>
+       <scope>compile</scope>
+       <optional>true</optional>
+     </dependency>

@@ -1,0 +1,255 @@
+<?xml version="1.0"?>
+<!-- Logback 1.0.1 build file by gil -->
+<!-- Logback 1.0.6 build file by gil -->
+<!-- Logback 1.0.7 build file by gil -->
+<!-- Logback 1.0.8 build file by gil -->
+<!-- Logback 1.0.9 build file by gil -->
+<project name="logback" basedir=".">
+      
+   <!--property name="build.dir"            value="build"/-->
+   <property name="apidocs.dir"          value="${basedir}/target/site/apidocs"/>
+      
+   <property name="version"              value="1.0.9"/>
+      
+   <property name="core.dir"             value="${basedir}/logback-core"/>
+   <property name="core.src.dir"         value="${core.dir}/src/main/java"/>
+   <property name="core.build.dir"       value="${core.dir}/target/classes"/>
+   <property name="core.jar"             value="${core.dir}/target/logback-core-${version}.jar"/>
+      
+   <property name="classic.dir"          value="${basedir}/logback-classic"/>
+   <property name="classic.src.dir"      value="${classic.dir}/src/main"/>
+   <property name="classic.doc.src.dir"  value="${classic.dir}/src/main/java"/>
+   <property name="classic.build.dir"    value="${classic.dir}/target/classes"/>
+   <property name="classic.jar"          value="${classic.dir}/target/logback-classic-${version}.jar"/>
+      
+   <property name="access.dir"           value="${basedir}/logback-access"/>
+   <property name="access.src.dir"       value="${access.dir}/src/main/java"/>
+   <property name="access.build.dir"     value="${access.dir}/target/classes"/>
+   <property name="access.jar"           value="${access.dir}/target/logback-access-${version}.jar"/>
+      
+   <property name="examples.dir"         value="${basedir}/logback-examples"/>
+   <property name="examples.src.dir"     value="${examples.dir}/src/main/java"/>
+   <property name="examples.build.dir"   value="${examples.dir}/target/classes"/>
+   <property name="examples.jar"         value="${examples.dir}/target/logback-examples-${version}.jar"/>
+      
+   <target name="build" 
+      depends="build.core,build.classic,build.access,build.examples" description="Compile the sources">
+   </target>
+      
+   <target name="dist" depends="build"
+      description="generate the distribution" >
+   </target>
+      
+   <path id="groovyc.classpath">
+    <fileset dir="/usr/share/java" includes="antlr.jar"/>
+    <fileset dir="/usr/share/java" includes="commons-cli.jar"/>
+    <fileset dir="/usr/share/java" includes="groovy.jar"/>
+    <fileset dir="/usr/share/java" includes="objectweb-asm/asm-all.jar"/>
+   </path>
+   
+   <path id="javadoc.classpath">
+    <path refid="access.classpath"/>
+    <path refid="classic.classpath"/>
+    <path refid="examples.classpath"/>
+    <fileset dir="${examples.dir}/target" includes="logback-examples-${version}.jar"/>
+   </path>
+      
+   <path id="core.classpath">
+    <path refid="groovyc.classpath"/>
+    <pathelement location="${core.build.dir}/**"/>
+    <fileset dir="/usr/share/java" includes="geronimo-jms.jar"/>
+    <fileset dir="/usr/share/java" includes="janino/janino.jar"/>
+    <fileset dir="/usr/share/java" includes="janino/commons-compiler.jar"/>
+    <fileset dir="/usr/share/java" includes="jansi.jar"/>
+    <fileset dir="/usr/share/java" includes="javamail/mail.jar"/>
+    <fileset dir="/usr/share/java" includes="slf4j/api.jar"/>
+    <fileset dir="/usr/share/java" includes="tomcat-servlet-3.0-api.jar"/>
+   </path>
+      
+   <path id="classic.classpath">
+    <path refid="core.classpath"/>
+    <pathelement location="${classic.build.dir}/**"/>
+    <pathelement location="${core.build.dir}/**"/>
+    <fileset dir="${core.dir}/target" includes="logback-core-${version}.jar"/>
+    <fileset dir="/usr/share/java" includes="tomcat/catalina.jar"/>
+   </path>
+      
+   <path id="access.classpath">
+    <path refid="core.classpath"/>
+    <pathelement location="${core.build.dir}/**"/>
+    <pathelement location="${core.build.dir}/**"/>
+    <fileset dir="${core.dir}/target" includes="logback-core-${version}.jar"/>
+    <fileset dir="/usr/share/java" includes="tomcat/catalina.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-util.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-http.jar"/>
+    <fileset dir="/usr/share/java" includes="jetty/jetty-server.jar"/>
+   </path>
+      
+   <path id="examples.classpath">
+    <path refid="core.classpath"/>
+    <pathelement location="${examples.build.dir}/**"/>
+    <pathelement location="${access.build.dir}/**"/>
+    <pathelement location="${classic.build.dir}/**"/>
+    <pathelement location="${core.build.dir}/**"/>
+    <fileset dir="${access.dir}/target" includes="logback-access-${version}.jar"/>
+    <fileset dir="${classic.dir}/target" includes="logback-classic-${version}.jar"/>
+    <fileset dir="${core.dir}/target" includes="logback-core-${version}.jar"/>
+    <fileset dir="/usr/share/java" includes="log4j.jar"/>
+    <fileset dir="/usr/share/java" includes="slf4j/ext.jar"/>
+    <fileset dir="/usr/share/java" includes="tomcat-servlet-3.0-api.jar"/>
+   </path>
+      
+   <target name="build.core" description="Build Logback Core Module">
+    <compile-javac
+      buildclasspath="core.classpath"
+      dirsrc="${core.src.dir}"
+      destfile="${core.build.dir}"/>
+      
+    <osgi-jar
+      classesdir="${core.build.dir}"
+      jarosgi="${core.jar}"
+      bndfile="osgi-core.bnd"/>
+      
+   </target>
+      
+   <target name="build.classic" description="Build Logback Classic Module">
+    <compile-groovy
+      buildclasspath="classic.classpath"
+      dirsrc="${classic.src.dir}"
+      destfile="${classic.build.dir}"/>
+      
+    <osgi-jar
+      classesdir="${classic.build.dir}"
+      jarosgi="${classic.jar}"
+      bndfile="osgi-classic.bnd"/>
+   </target>
+      
+   <target name="build.access" description="Build Logback Access Module">
+    <compile-javac
+      buildclasspath="access.classpath"
+      dirsrc="${access.src.dir}"
+      destfile="${access.build.dir}"/>
+      
+    <osgi-jar
+      classesdir="${access.build.dir}:${core.build.dir}:/usr/share/java/janino/janino.jar:/usr/share/java/ant.jar"
+      jarosgi="${access.jar}"
+      bndfile="osgi-access.bnd"/>
+      
+   </target>
+      
+   <target name="build.examples" description="Build Logback Examples Module">
+    <compile-javac
+      buildclasspath="examples.classpath"
+      dirsrc="${examples.src.dir}"
+      destfile="${examples.build.dir}"/>
+      
+    <jar-simple
+      basedir="${examples.build.dir}"
+      destfile="${examples.jar}"/>
+      
+   </target>
+      
+   <macrodef name="compile-javac">
+    <attribute name="destfile"/>
+    <attribute name="dirsrc"/>
+    <attribute name="excludes" default=""/>
+    <attribute name="includes" default=""/>
+    <attribute name="buildclasspath" default=""/>
+    <sequential>
+    <mkdir dir="@{destfile}"/>
+      <javac
+        srcdir="@{dirsrc}"
+        destdir="@{destfile}"
+        classpathref="@{buildclasspath}"
+        source="1.5" target="1.5" debug="on">
+      </javac>
+    </sequential>
+   </macrodef>
+      
+   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="groovyc.classpath"/>
+   <macrodef name="compile-groovy">
+    <attribute name="destfile"/>
+    <attribute name="dirsrc"/>
+    <attribute name="excludes" default=""/>
+    <attribute name="includes" default=""/>
+    <attribute name="buildclasspath" default=""/>
+    <sequential>
+    <mkdir dir="@{destfile}"/>
+      <groovyc
+        srcdir="@{dirsrc}"
+        destdir="@{destfile}"
+        classpathref="@{buildclasspath}"
+        sourcepath="">
+        <javac source="1.5" target="1.5" debug="on"/>
+      </groovyc>
+    </sequential>
+   </macrodef>
+   
+  <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="/usr/share/java/aqute-bnd.jar"/>
+  <macrodef name="osgi-jar">
+    <attribute name="jarosgi"/>
+    <attribute name="classesdir"/>
+    <attribute name="bndfile"/>
+    <sequential>
+      <bnd
+        classpath="@{classesdir}"
+        failok="false"
+        exceptions="false"
+        files="@{bndfile}"
+        output="@{jarosgi}"/>
+    </sequential>
+  </macrodef>
+      
+   <macrodef name="jar-simple">
+    <attribute name="destfile"/>
+    <attribute name="basedir"/>
+    <attribute name="excludes" default=""/>
+    <attribute name="includes" default="**"/>
+    <attribute name="resources" default=""/>
+    <attribute name="paramvalue" default=""/>
+    <sequential>
+      <jar destfile="@{destfile}"
+        basedir="@{basedir}"
+        includes="@{includes}">
+      </jar>
+    </sequential>
+  </macrodef>
+      
+  <target name="javadoc">
+    <mkdir dir="${apidocs.dir}"/>
+    <tstamp>
+      <format property="year" pattern="yyyy" />
+    </tstamp>
+    <javadoc
+      destdir="${apidocs.dir}"
+      sourcepath="${core.src.dir}:${classic.doc.src.dir}:${access.src.dir}:${examples.src.dir}"
+      access="protected"
+      old="false"
+      verbose="false"
+      version="true"
+      use="true"
+      author="true"
+      windowtitle="Logback ${version}">
+      <classpath refid="javadoc.classpath"/>
+      <doctitle><![CDATA[<h2>Logback ${version}</h2>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 1999-${year} <a href="http://www.qos.ch/">QOS.ch</a>. All rights reserved</i>]]></bottom>
+      <group title="Logback Core" packages="ch.qos.logback.core,ch.qos.logback.core.*"/>
+      <group title="Logback Classic" packages="ch.qos.logback.classic,ch.qos.logback.classic.*, org.slf4j.impl"/>
+      <group title="Logback Access" packages="ch.qos.logback.access,ch.qos.logback.access.*"/>
+      <group title="Logback Examples" packages="chapters.*"/>
+    </javadoc>
+  </target>
+      
+  <!--taskdef name="groovydoc" classname="org.codehaus.groovy.ant.Groovydoc" classpath="/usr/share/java/groovy-all.jar"/>
+  <target name="groovydoc">
+    <mkdir dir="${dist.dir}/groovydoc"/>
+    <groovydoc
+      destdir="${dist.dir}/groovydoc"
+      sourcepath="${core.src.dir}:${classic.src.dir}/groovy:${classic.doc.src.dir}:${access.src.dir}:${examples.src.dir}"
+      packagenames="**.*"
+      use="true">
+    </groovydoc>
+  </target-->
+      
+</project>
