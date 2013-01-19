@@ -1,15 +1,15 @@
 Name:	SimplyHTML		
-Version:	0.13.1
-Release:	7%{?dist}
+Version:	0.16.5
+Release:	1%{?dist}
 Summary:	Application and a java component for rich text processing
 
 Group:		Development/Libraries
 License:	GPLv2 and BSD
 URL:		http://simplyhtml.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/simplyhtml/%{name}_src_0_13_1.tar.gz
+Source0:	http://downloads.sourceforge.net/simplyhtml/%{name}_src_0_16_05.tar.gz
 Source1:	simplyhtml.sh
 Patch0:	simplyhtml-build.xml-classpath.patch
-Patch1:	simplythml-manifest-classpath.patch
+Patch1:	simplyhtml-manifest-classpath.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -45,7 +45,7 @@ Requires:	jpackage-utils
 This package contains the API documentation for %{name}.
 
 %prep
-%setup -q -n simplyhtml-0_13_1
+%setup -q -n simplyhtml-0_16_05
 %patch0 -p1
 %patch1 -p1
 find -name '*.class' -exec rm -f '{}' \;
@@ -81,7 +81,7 @@ ln -s simplyhtmlhelp-%{version}.jar %{buildroot}%{_javadir}/%{name}/simplyhtmlhe
 install -pD -m755 -T %{SOURCE1} %{buildroot}%{_bindir}/%(basename %{SOURCE1})
 
 mkdir -p %{buildroot}%{_javadocdir}/%{name}-%{version}
-cp -a dist/api/* %{buildroot}%{_javadocdir}/%{name}-%{version}
+cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}-%{version}
 ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
 
 
@@ -106,6 +106,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Jan 19 2013 Johannes Lips <hannes@fedoraproject.org> 0.16.5-1
+- update to latest upstream version 
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.13.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
