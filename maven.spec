@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        27%{?dist}
+Release:        28%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -217,6 +217,10 @@ cp -a $M2_HOME/bin/* $RPM_BUILD_ROOT%{_datadir}/%{name}/bin
 
 ln -sf %{_sysconfdir}/m2.conf $RPM_BUILD_ROOT%{_datadir}/%{name}/bin/m2.conf
 
+# Fallback scripts
+cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_datadir}/%{name}/bin/mvn-local
+cp -af %{SOURCE202} $RPM_BUILD_ROOT%{_datadir}/%{name}/bin/mvn-rpmbuild
+
 
 ################
 # M2_HOME/boot #
@@ -310,10 +314,8 @@ install -m 644 %{SOURCE105} $RPM_BUILD_ROOT%{_javadir}/%{name}/empty-dep.jar
 ############
 install -dm 755 $RPM_BUILD_ROOT%{_bindir}
 
-# Wrappers
+# Wrapper
 cp -af %{SOURCE200} $RPM_BUILD_ROOT%{_bindir}/mvn
-cp -af %{SOURCE201} $RPM_BUILD_ROOT%{_bindir}/mvn-local
-cp -af %{SOURCE202} $RPM_BUILD_ROOT%{_bindir}/mvn-rpmbuild
 
 ###################
 # Individual jars #
@@ -364,13 +366,13 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 %files
 %doc LICENSE.txt NOTICE.txt README.txt
 %attr(0755,root,root) %{_bindir}/mvn
-%attr(0755,root,root) %{_bindir}/mvn-local
-%attr(0755,root,root) %{_bindir}/mvn-rpmbuild
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvn
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvnyjp
 %attr(0755,root,root) %{_datadir}/%{name}/bin/mvnDebug
+%attr(0755,root,root) %{_datadir}/%{name}/bin/mvn-local
+%attr(0755,root,root) %{_datadir}/%{name}/bin/mvn-rpmbuild
 %{_datadir}/%{name}/bin/*.conf
 %config(noreplace) %{_sysconfdir}/m2.conf
 %{_datadir}/%{name}/boot
@@ -392,6 +394,9 @@ ln -sf `rpm --eval '%%{_jnidir}'` %{_datadir}/%{name}/repository-jni/JPP
 
 
 %changelog
+* Wed Jan 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-28
+- Move mvn-local and mvn-rpmbuild out of %_bindir
+
 * Tue Nov 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-27
 - Move some parts to maven-local package
 
