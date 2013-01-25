@@ -88,5 +88,3 @@ _m2_complete()
 }
 
 complete -F _m2_complete -o filenames mvn
-complete -F _m2_complete -o filenames mvn-local
-complete -F _m2_complete -o filenames mvn-rpmbuild
