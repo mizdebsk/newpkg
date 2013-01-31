@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -45,7 +45,6 @@ BuildRequires:  mvn(org.hsqldb:hsqldb-j5)
 BuildRequires:  testng
 %endif
 
-Requires:       %{short_name}-parent = %{version}-%{release}
 Provides:       %{short_name} = %{version}-%{release}
 
 %description
@@ -78,8 +77,6 @@ and above. This package provides parent POM for Guice modules.
 
 %package -n %{short_name}-assistedinject
 Summary:        AssistedInject extension module for Guice
-Requires:       java
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-assistedinject
 Guice is a lightweight dependency injection framework for Java 5
@@ -87,7 +84,6 @@ and above. This package provides AssistedInject module for Guice.
 
 %package -n %{short_name}-extensions
 Summary:        Extensions for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-extensions
 Guice is a lightweight dependency injection framework for Java 5
@@ -95,9 +91,6 @@ and above. This package provides extensions POM for Guice.
 
 %package -n %{short_name}-grapher
 Summary:        Grapher extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
-Requires:       %{short_name}-assistedinject = %{version}-%{release}
-Requires:       %{short_name}-multibindings = %{version}-%{release}
 
 %description -n %{short_name}-grapher
 Guice is a lightweight dependency injection framework for Java 5
@@ -105,7 +98,6 @@ and above. This package provides Grapher module for Guice.
 
 %package -n %{short_name}-jmx
 Summary:        JMX extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-jmx
 Guice is a lightweight dependency injection framework for Java 5
@@ -113,7 +105,6 @@ and above. This package provides JMX module for Guice.
 
 %package -n %{short_name}-jndi
 Summary:        JNDI extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-jndi
 Guice is a lightweight dependency injection framework for Java 5
@@ -121,9 +112,6 @@ and above. This package provides JNDI module for Guice.
 
 %package -n %{short_name}-multibindings
 Summary:        MultiBindings extension module for Guice
-Requires:       java
-Requires:       jpackage-utils
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-multibindings
 Guice is a lightweight dependency injection framework for Java 5
@@ -131,7 +119,6 @@ and above. This package provides MultiBindings module for Guice.
 
 %package -n %{short_name}-persist
 Summary:        Persist extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-persist
 Guice is a lightweight dependency injection framework for Java 5
@@ -139,7 +126,6 @@ and above. This package provides Persist module for Guice.
 
 %package -n %{short_name}-servlet
 Summary:        Servlet extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-servlet
 Guice is a lightweight dependency injection framework for Java 5
@@ -147,7 +133,6 @@ and above. This package provides Servlet module for Guice.
 
 %package -n %{short_name}-spring
 Summary:        Spring extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-spring
 Guice is a lightweight dependency injection framework for Java 5
@@ -155,7 +140,6 @@ and above. This package provides Spring module for Guice.
 
 %package -n %{short_name}-throwingproviders
 Summary:        ThrowingProviders extension module for Guice
-Requires:       %{short_name} = %{version}-%{release}
 
 %description -n %{short_name}-throwingproviders
 Guice is a lightweight dependency injection framework for Java 5
@@ -198,13 +182,12 @@ This package provides %{summary}.
 
 %build
 %if %{with extensions}
-%mvn_alias ":guice-{assistedinject,grapher,jmx,jndi,multibindings,persist, \
-   servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
+%mvn_alias ":guice-{assistedinject,grapher,jmx,jndi,multibindings,persist,\
+servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %endif # with extensions
 
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
-%mvn_file  ":sisu-guice" %{short_name}/%{name}
-%mvn_file  ":sisu-guice" %{name}
+%mvn_file  ":sisu-guice" %{short_name}/%{name} %{name}
 %mvn_alias ":sisu-guice" "com.google.inject:guice"
 # Skip tests because of missing dependency (hsqldb-j5).
 %mvn_build -f -s
@@ -232,10 +215,13 @@ This package provides %{summary}.
 
 %files javadoc -f .mfiles-javadoc
 %doc COPYING
-%{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Jan 31 2013 Michal Srb <msrb@redhat.com> - 3.1.2-10
+- Remove all requires
+- Correct usage of xmvn's macros
+
 * Mon Jan 28 2013 Michal Srb <msrb@redhat.com> - 3.1.2-9
 - Build with xmvn
 
