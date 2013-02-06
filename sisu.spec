@@ -2,7 +2,7 @@
 
 Name:           sisu
 Version:        2.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
@@ -285,6 +285,10 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 2.3.0-6
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
 * Wed Feb 06 2013 Tomas Radej <tradej@redhat.com> - 2.3.0-5
 - Added BR on animal-sniffer
 
