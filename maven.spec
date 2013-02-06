@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        29%{?dist}
+Release:        30%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -51,11 +51,6 @@ BuildRequires:  xmlunit
 %if 0%{?fedora}
 BuildRequires:  animal-sniffer >= 1.6-5
 %endif
-
-# Require maven-local for now to allow a smooth transition from maven
-# to maven-local. Once packages start requiring maven-local directly
-# the Requires below should be removed.
-Requires:       maven-local
 
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
@@ -195,6 +190,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Feb  6 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-30
+- Remove unneeded R: maven-local
+
 * Fri Jan 25 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-29
 - Drop support for local mode
 - Build with xmvn, rely on auto-requires
