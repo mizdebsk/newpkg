@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -18,7 +18,7 @@ BuildArch:      noarch
 BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
 BuildRequires:  javapackages-tools >= 0.7.0
-BuildRequires:  xmvn
+BuildRequires:  maven-local
 BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  apache-resource-bundles
 BuildRequires:  aopalliance
@@ -218,6 +218,10 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 3.1.2-11
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
 * Thu Jan 31 2013 Michal Srb <msrb@redhat.com> - 3.1.2-10
 - Remove all requires
 - Correct usage of xmvn's macros
