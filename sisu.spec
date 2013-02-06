@@ -2,7 +2,7 @@
 
 Name:           sisu
 Version:        2.3.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
@@ -18,6 +18,7 @@ BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
 BuildRequires:  maven-local >= 0.11.1
 
+BuildRequires:  animal-sniffer
 BuildRequires:  aopalliance
 BuildRequires:  atinject
 BuildRequires:  cdi-api
@@ -284,6 +285,9 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Wed Feb 06 2013 Tomas Radej <tradej@redhat.com> - 2.3.0-5
+- Added BR on animal-sniffer
+
 * Tue Feb 05 2013 Tomas Radej <tradej@redhat.com> - 2.3.0-4
 - Split into subpackages
 - Build with new macros
