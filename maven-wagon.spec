@@ -32,7 +32,7 @@
 
 Name:           maven-%{bname}
 Version:        1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -48,7 +48,7 @@ BuildArch:      noarch
 BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  junit
-BuildRequires:  maven
+BuildRequires:  maven-local
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
@@ -274,6 +274,10 @@ install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %doc %{_docdir}/%{name}-%{version}
 
 %changelog
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 0:1.0-7
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
 * Tue Aug  7 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.0-6
 - Remove BR: ganymed-ssh2
 
