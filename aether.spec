@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.13.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
 Group:          Development/Libraries
@@ -12,7 +12,7 @@ Source0:        %{name}-%{version}.tar.bz2
 
 BuildArch:      noarch
 
-BuildRequires:  maven
+BuildRequires:  maven-local
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
@@ -110,6 +110,10 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
 %{_javadocdir}/%{name}
 
 %changelog
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 1.13.1-6
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
 * Mon Aug 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-5
 - Disable animal-sniffer on RHEL
 
