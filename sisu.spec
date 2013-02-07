@@ -2,7 +2,7 @@
 
 Name:           sisu
 Version:        2.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
@@ -217,9 +217,16 @@ This package contains %{summary}.
 %prep
 %setup -q
 
+# Animal sniffer is only causing problems
+%pom_remove_plugin :animal-sniffer-maven-plugin
+
+# Don't generate auto-requires for optional dependencies
+sed -i "s|<optional>true</optional>|<scope>provided</scope>|" \
+    $(grep -l "<optional>" $(find sisu-inject -name pom.xml))
+
 # Remove bundled objectweb-asm library
 rm -rf ./sisu-inject/containers/guice-bean/guice-bean-scanners/src/main/java/org/sonatype/guice/bean/scanners/asm
-%pom_add_dep asm:asm
+%pom_add_dep asm:asm sisu-inject/containers/guice-bean/guice-bean-scanners
 
 # Fix namespace of imported asm classes
 sed -i 's/org.sonatype.guice.bean.scanners.asm/org.objectweb.asm/g' \
@@ -285,6 +292,11 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-6
+- Add ASM dependency only to a single module, not all of them
+- Disable animal-sniffer plugin
+- Don't generate auto-requires for optional dependencies
+
 * Wed Feb 06 2013 Tomas Radej <tradej@redhat.com> - 2.3.0-5
 - Added BR on animal-sniffer
 
