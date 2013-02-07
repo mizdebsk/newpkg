@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        30%{?dist}
+Release:        31%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -45,7 +45,8 @@ BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  objectweb-asm
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
-BuildRequires:  sisu >= 2.1.1-2
+BuildRequires:  sisu-inject-bean
+BuildRequires:  sisu-inject-plexus
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
 %if 0%{?fedora}
@@ -190,6 +191,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-31
+- Migrate BR from sisu to sisu subpackages
+
 * Wed Feb  6 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-30
 - Remove unneeded R: maven-local
 
