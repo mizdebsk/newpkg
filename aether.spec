@@ -1,9 +1,8 @@
 Name:           aether
 Version:        1.13.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 
-Group:          Development/Libraries
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
 # git clone https://github.com/sonatype/sonatype-aether.git
@@ -13,28 +12,10 @@ Source0:        %{name}-%{version}.tar.bz2
 BuildArch:      noarch
 
 BuildRequires:  maven-local
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-resources-plugin
-BuildRequires:  maven-site-plugin
-BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
-BuildRequires:  mojo-parent
+BuildRequires:  forge-parent
 BuildRequires:  async-http-client >= 1.6.1
-BuildRequires:  sonatype-oss-parent
-%if 0%{?fedora}
-BuildRequires:  animal-sniffer >= 1.6-5
-%endif
-
-# required by netty really, but we push this dep on level higer
-BuildRequires:  jboss-parent
-Requires:       jboss-parent
-
-Requires:       async-http-client >= 1.6.1
-Requires:       java >= 1:1.6.0
 
 
 %description
@@ -43,8 +24,6 @@ the Maven way developed by Sonatype
 
 %package javadoc
 Summary:   API documentation for %{name}
-Group:     Documentation
-Requires:  jpackage-utils
 
 %description javadoc
 %{summary}.
@@ -67,49 +46,35 @@ for module in asynchttpclient wagon; do (
 %pom_remove_plugin :clirr-maven-plugin aether-api
 %pom_remove_plugin :clirr-maven-plugin aether-spi
 
-if [ %{?rhel} ]; then
-    for module in . aether-connector-wagon aether-util aether-api   \
-                  aether-impl aether-connector-asynchttpclient      \
-                  aether-connector-file aether-demo aether-test-util; do
-        %pom_remove_plugin :animal-sniffer-maven-plugin $module
-    done
-fi
-
-%build
-mvn-rpmbuild install javadoc:aggregate
-
-
-%install
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-
-for module in aether-api aether-connector-file aether-connector-wagon aether-connector-asynchttpclient\
-         aether-impl aether-spi aether-test-util aether-util;do
-pushd $module
-      jarname=`echo $module | sed s:aether-::`
-      install -m 644 target/$module-*.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$jarname.jar
-
-      install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$jarname.pom
-      %add_maven_depmap JPP.%{name}-$jarname.pom %{name}/$jarname.jar
-popd
+for module in . aether-connector-wagon aether-util aether-api   \
+              aether-impl aether-connector-asynchttpclient      \
+              aether-connector-file aether-demo aether-test-util; do
+    %pom_remove_plugin :animal-sniffer-maven-plugin $module
 done
 
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+# Tests would fail without cglib dependency
+%pom_xpath_inject pom:project "<dependencies/>"
+%pom_add_dep cglib:cglib:2.2:test
 
-install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
-%add_maven_depmap JPP.%{name}-parent.pom
+%build
+%mvn_file ":%{name}-{*}" %{name}/@1
+%mvn_build
 
-%files
+%install
+%mvn_install
+
+%files -f .mfiles
 %doc README.md
-%{_javadir}/%{name}
-%{_mavendepmapfragdir}/%{name}
-%{_mavenpomdir}/*.pom
+%dir %{_javadir}/%{name}
 
-%files javadoc
-%{_javadocdir}/%{name}
+%files javadoc -f .mfiles-javadoc
 
 %changelog
+* Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-7
+- Build with xmvn
+- Disable animal sniffer
+- Remove R on jboss-parent, resolves: rhbz#908583
+
 * Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 1.13.1-6
 - Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
 - Replace maven BuildRequires with maven-local
