@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.4
-Release:        31%{?dist}
+Release:        32%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -173,7 +173,6 @@ ln -sf $(build-classpath plexus/classworlds) \
         slf4j/api \
         slf4j/nop \
         xbean/xbean-reflect \
-        xerces-j2 \
 )
 
 
@@ -191,6 +190,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Feb 11 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-32
+- Remove xerces-j2 from plexus.core realm
+- Resolves: rhbz#784816
+
 * Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-31
 - Migrate BR from sisu to sisu subpackages
 
