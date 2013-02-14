@@ -1,7 +1,7 @@
 %global with_maven 0
 Name:           logback
 Version:        1.0.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Java logging library
 
 Group:          Development/Tools
@@ -225,6 +225,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.9-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Fri Dec 21 2012 Mary Ellen Foster <mefoster@gmail.com> - 1.0.9-2
 - Remove F16 backward compatibility since it's EOL soon
 
