@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -86,6 +86,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Thu Sep 6 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-10
 - More Import-Package fixes. Note that fix-cglib-refs.patch is
   not suitable for upstream:
