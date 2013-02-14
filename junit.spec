@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.10
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -153,6 +153,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.10-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Tue Dec 18 2012 Michal Srb <msrb@redhat.com> - 0:4.10-7
 - Build-time dependency perl-MD5 replaced with perl(Digest::MD5)
 - Description cleanup (Resolves: #888389)
