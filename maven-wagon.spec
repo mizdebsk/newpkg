@@ -31,8 +31,8 @@
 %global bname     wagon
 
 Name:           maven-%{bname}
-Version:        1.0
-Release:        8%{?dist}
+Version:        2.4
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -40,9 +40,7 @@ Group:          Development/Java
 URL:            http://maven.apache.org/wagon
 Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{version}/wagon-%{version}-source-release.zip
 
-Source1:        wagon-1.0-jpp-depmap.xml
-Patch1:         disable-tck.patch
-Patch2:         %{name}-migration-to-component-metadata.patch
+Patch0:         0001-Port-to-jetty-8.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils >= 0:1.7.2
@@ -59,7 +57,6 @@ BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-enforcer-plugin
-#BuildRequires:  maven2-default-skin
 BuildRequires:  plexus-containers-component-metadata
 BuildRequires:  xerces-j2
 BuildRequires:  classworlds
@@ -69,7 +66,6 @@ BuildRequires:  apache-commons-collections
 BuildRequires:  apache-commons-net
 BuildRequires:  jakarta-commons-httpclient
 BuildRequires:  apache-commons-logging
-#BuildRequires:  jakarta-slide-webdavclient
 BuildRequires:  jsch
 BuildRequires:  jtidy
 BuildRequires:  plexus-container-default
@@ -79,18 +75,16 @@ BuildRequires:  servlet3
 BuildRequires:  xml-commons-apis
 BuildRequires:  easymock
 BuildRequires:  jsoup
+BuildRequires:  animal-sniffer
+BuildRequires:  maven-shade-plugin
+BuildRequires:  log4j
+BuildRequires:  jetty-server
+BuildRequires:  jetty-client
+BuildRequires:  jetty-security
+BuildRequires:  jetty-util
+BuildRequires:  jetty-servlet
 
-Requires:       jakarta-commons-httpclient
-Requires:       apache-commons-net
-#Requires:       jakarta-slide-webdavclient
-Requires:       jsch
-Requires:       jtidy
-Requires:       jsoup
-Requires:       plexus-interactivity
-Requires:       plexus-utils
-Requires:       xml-commons-apis
-Requires:       nekohtml
-Requires:       xerces-j2
+Obsoletes:      maven-wagon-manual < %{epoch}:%{version}-%{release}
 
 %description
 Maven Wagon is a transport abstraction that is used in Maven's
@@ -100,180 +94,85 @@ following providers:
 * HTTP
 * FTP
 * SSH/SCP
-* WebDAV (in progress)
+* WebDAV
+* SCM (in progress)
+
+%package provider-test
+Summary:        provider-test module for %{name}
+
+%description provider-test
+provider-test module for %{name}.
+
+%package scm
+Summary:        scm module for %{name}
+
+%description scm
+scm module for %{name}.
 
 %package javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Documentation
-Requires:       jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
 
-%package manual
-Summary:        Documents for %{name}
-Group:          Development/Documentation
-
-%description manual
-Documents for %{name}.
-
 %prep
 %setup -q -n wagon-%{version}
 
-#FIXME: have to drop wagon-webdav-jackrabbit until jackrabbit is available
-sed -i "s|<module>wagon-webdav-jackrabbit</module>|<!-- <module>wagon-webdav-jackrabbit</module> -->|" wagon-providers/pom.xml
-sed -i "s|org.mortbay.jetty|org.eclipse.jetty|g" wagon-provider-test/pom.xml
-sed -i "s|>jetty<|>jetty-server<|g" wagon-provider-test/pom.xml
+%patch0 -p1
 
-%patch1
-%patch2 -p1
+%pom_remove_plugin :animal-sniffer-maven-plugin
+%pom_remove_dep :wagon-tck-http wagon-providers/wagon-http
 
-# To wire out jetty, plexus-avalon-personality and plexus-ftpd requirement
-rm -f wagon-providers/wagon-ftp/src/test/java/org/apache/maven/wagon/providers/ftp/FtpWagonTest.java
-rm -f wagon-providers/wagon-http-lightweight/src/test/java/org/apache/maven/wagon/providers/http/LightweightHttpWagonGzipTest.java
-rm -f wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpWagonGzipTest.java
-rm -f wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
+%pom_remove_dep :xercesMinimal wagon-providers/wagon-http-shared
+%pom_xpath_inject "pom:dependencies" \
+   "<dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>" wagon-providers/wagon-http-shared
+
+# correct groupId for jetty
+%pom_xpath_replace "pom:groupId[text()='org.mortbay.jetty']" "<groupId>org.eclipse.jetty</groupId>"
+
+# disable tests, missing dependencies
+%pom_disable_module wagon-tcks
+%pom_disable_module wagon-ssh-common-test wagon-providers/pom.xml
+
+# missing dependencies
+%pom_disable_module wagon-webdav-jackrabbit wagon-providers
 
 %build
-mvn-rpmbuild \
-        -e \
-        -Dmaven.local.depmap.file=%{SOURCE1} \
-        -Dmaven.test.skip=true \
-        install javadoc:aggregate
+%mvn_file ":wagon-{*}" %{name}/@1
+
+# wagon-provider-test has dependency on jetty
+%mvn_package ":wagon-provider-test" provider-test
+# scm module has a lot of dependencies
+%mvn_package ":wagon-scm" scm
+
+# tests are disabled because of missing dependencies
+%mvn_build -f
 
 %install
-# jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
-
-install -m 644 \
-  wagon-provider-api/target/wagon-provider-api-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-api.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-provider-api %{version} JPP/%{name} provider-api
-
-install -m 644 \
-  wagon-providers/wagon-file/target/wagon-file-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/file.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-file %{version} JPP/%{name} file
-
-install -m 644 \
-  wagon-providers/wagon-ftp/target/wagon-ftp-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ftp.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-ftp %{version} JPP/%{name} ftp
-
-install -m 644 \
-  wagon-providers/wagon-http/target/wagon-http-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http.jar
-
-%add_to_maven_depmap org.apache.maven.wagon wagon-http %{version} JPP/%{name} http
-
-install -m 644 \
-  wagon-providers/wagon-http-lightweight/target/wagon-http-lightweight-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-lightweight.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-http-lightweight %{version} JPP/%{name} http-lightweight
-
-install -m 644 \
-  wagon-providers/wagon-http-shared/target/wagon-http-shared-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/http-shared.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-http-shared %{version} JPP/%{name} http-shared
-
-install -m 644 \
-  wagon-providers/wagon-scm/target/wagon-scm-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/scm.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-scm %{version} JPP/%{name} scm
-
-install -m 644 \
-  wagon-providers/wagon-ssh/target/wagon-ssh-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-ssh %{version} JPP/%{name} ssh
-
-install -m 644 \
-  wagon-providers/wagon-ssh-common/target/wagon-ssh-common-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-ssh-common %{version} JPP/%{name} ssh-common
-
-install -m 644 \
-  wagon-providers/wagon-ssh-common-test/target/wagon-ssh-common-test-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-common-test.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-ssh-common-test %{version} JPP/%{name} ssh-common-test
-
-install -m 644 \
-  wagon-providers/wagon-ssh-external/target/wagon-ssh-external-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/ssh-external.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-ssh-external %{version} JPP/%{name} ssh-external
-
-#Until webdav is available, map it to an empty dep
-#install -m 644 \
-#  wagon-providers/wagon-webdav-jackrabbit/target/wagon-webdav-jackrabbit-%{version}-%{blevel}.jar \
-#  $RPM_BUILD_ROOT%{_javadir}/%{name}/web-jackrabbit-%{version}.jar
-#%%add_to_maven_depmap org.apache.maven.wagon wagon-webdav-jackrabbit %{version} JPP/%{name} webdav-jackrabbit
-
-#install -m 644 \
-#  wagon-providers/wagon-webdav/target/wagon-webdav-%{version}-%{blevel}.jar \
-#  $RPM_BUILD_ROOT%{_javadir}/%{name}/webdav-%{version}.jar
-#%%add_to_maven_depmap org.apache.maven.wagon wagon-webdav %{version} JPP/%{name} webdav
-
-install -m 644 \
-  wagon-provider-test/target/wagon-provider-test-%{version}.jar \
-  $RPM_BUILD_ROOT%{_javadir}/%{name}/provider-test.jar
-%add_to_maven_depmap org.apache.maven.wagon wagon-provider-test %{version} JPP/%{name} provider-test
-
-%add_to_maven_depmap org.apache.maven.wagon wagon %{version} JPP/%{name} wagon
-%add_to_maven_depmap org.apache.maven.wagon wagon-providers %{version} JPP/%{name} providers
-
-# poms
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -m 644 pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-wagon.pom
-install -m 644 wagon-provider-api/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-provider-api.pom
-install -m 644 wagon-provider-test/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-provider-test.pom
-install -m 644 wagon-providers/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-providers.pom
-install -m 644 wagon-providers/wagon-file/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-file.pom
-install -m 644 wagon-providers/wagon-ftp/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-ftp.pom
-install -m 644 wagon-providers/wagon-http-shared/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-http-shared.pom
-install -m 644 wagon-providers/wagon-http-lightweight/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-http-lightweight.pom
-install -m 644 wagon-providers/wagon-http/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-http.pom
-install -m 644 wagon-providers/wagon-scm/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-scm.pom
-install -m 644 wagon-providers/wagon-ssh-common/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-ssh-common.pom
-install -m 644 wagon-providers/wagon-ssh-common-test/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-ssh-common-test.pom
-install -m 644 wagon-providers/wagon-ssh-external/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-ssh-external.pom
-install -m 644 wagon-providers/wagon-ssh/pom.xml \
-    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-ssh.pom
-#install -m 644 wagon-providers/wagon-webdav/pom.xml \
-#    $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.maven-wagon-webdav.pom
+%mvn_install
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-# manual
-install -d -m 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-#install -m 644 wagon-provider-api/LICENSE.txt \
-#                $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 
-%files
-%{_javadir}/*
-%{_mavenpomdir}/*.pom
-%{_mavendepmapfragdir}/*
-
-%files javadoc
-%doc %{_javadocdir}/%{name}
-
-%files manual
-%doc %{_docdir}/%{name}-%{version}
+%files -f .mfiles
+%doc LICENSE NOTICE DEPENDENCIES
+%files provider-test -f .mfiles-provider-test
+%files scm -f .mfiles-scm
+%files javadoc -f .mfiles-javadoc
+%doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Feb 14 2013 Michal Srb <msrb@redhat.com> - 0:2.4-1
+- Update to latest upstream 2.4
+- Remove old depmap and patches
+- Build with xmvn
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
