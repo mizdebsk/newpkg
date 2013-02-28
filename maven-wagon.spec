@@ -1,33 +1,3 @@
-# Copyright (c) 2000-2007, JPackage Project
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the
-#    distribution.
-# 3. Neither the name of the JPackage Project nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-
 %global bname     wagon
 
 Name:           maven-%{bname}
@@ -36,53 +6,42 @@ Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
-Group:          Development/Java
 URL:            http://maven.apache.org/wagon
 Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{version}/wagon-%{version}-source-release.zip
 
 Patch0:         0001-Port-to-jetty-8.patch
 
 BuildArch:      noarch
-BuildRequires:  jpackage-utils >= 0:1.7.2
-BuildRequires:  ant >= 0:1.6
-BuildRequires:  junit
+
 BuildRequires:  maven-local
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-project-info-reports-plugin
-BuildRequires:  maven-resources-plugin
-BuildRequires:  maven-site-plugin
-BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit
-BuildRequires:  maven-enforcer-plugin
-BuildRequires:  plexus-containers-component-metadata
-BuildRequires:  xerces-j2
-BuildRequires:  classworlds
-BuildRequires:  nekohtml
-BuildRequires:  apache-commons-codec
-BuildRequires:  apache-commons-collections
-BuildRequires:  apache-commons-net
-BuildRequires:  jakarta-commons-httpclient
-BuildRequires:  apache-commons-logging
-BuildRequires:  jsch
-BuildRequires:  jtidy
-BuildRequires:  plexus-container-default
-BuildRequires:  plexus-interactivity
-BuildRequires:  plexus-utils
-BuildRequires:  servlet3
-BuildRequires:  xml-commons-apis
-BuildRequires:  easymock
-BuildRequires:  jsoup
-BuildRequires:  animal-sniffer
-BuildRequires:  maven-shade-plugin
-BuildRequires:  log4j
-BuildRequires:  jetty-server
-BuildRequires:  jetty-client
-BuildRequires:  jetty-security
-BuildRequires:  jetty-util
-BuildRequires:  jetty-servlet
+BuildRequires:  mvn(com.jcraft:jsch)
+BuildRequires:  mvn(commons-httpclient:commons-httpclient)
+BuildRequires:  mvn(commons-io:commons-io)
+BuildRequires:  mvn(commons-lang:commons-lang)
+BuildRequires:  mvn(commons-logging:commons-logging)
+BuildRequires:  mvn(commons-net:commons-net)
+BuildRequires:  mvn(easymock:easymock)
+BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(log4j:log4j)
+BuildRequires:  mvn(nekohtml:nekohtml)
+BuildRequires:  mvn(org.apache.httpcomponents:httpclient)
+BuildRequires:  mvn(org.apache.httpcomponents:httpcore)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-enforcer-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-shade-plugin)
+BuildRequires:  mvn(org.apache.maven.scm:maven-scm-api)
+BuildRequires:  mvn(org.apache.maven:maven-parent)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-container-default)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-interactivity-api)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  mvn(org.eclipse.jetty:jetty-client)
+BuildRequires:  mvn(org.eclipse.jetty:jetty-security)
+BuildRequires:  mvn(org.eclipse.jetty:jetty-server)
+BuildRequires:  mvn(org.eclipse.jetty:jetty-servlet)
+BuildRequires:  mvn(org.eclipse.jetty:jetty-util)
+BuildRequires:  mvn(org.jsoup:jsoup)
+BuildRequires:  mvn(org.slf4j:slf4j-api)
+BuildRequires:  mvn(xerces:xercesImpl)
 
 Obsoletes:      maven-wagon-manual < %{epoch}:%{version}-%{release}
 
@@ -111,7 +70,6 @@ scm module for %{name}.
 
 %package javadoc
 Summary:        Javadoc for %{name}
-Group:          Development/Documentation
 
 %description javadoc
 Javadoc for %{name}.
@@ -155,11 +113,6 @@ Javadoc for %{name}.
 %install
 %mvn_install
 
-# javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-
-
 %files -f .mfiles
 %doc LICENSE NOTICE DEPENDENCIES
 %files provider-test -f .mfiles-provider-test
@@ -168,6 +121,9 @@ cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Feb 28 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.4-1
+- Simplify build-requires
+
 * Thu Feb 14 2013 Michal Srb <msrb@redhat.com> - 0:2.4-1
 - Update to latest upstream 2.4
 - Remove old depmap and patches
