@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -114,8 +114,8 @@ popd
 iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new
 
 # prepare pom files (replace @version@ with real version)
-find contrib -iname '*.pom.xml.template' -exec \
-             sed -i "s:@version@:%{version}:g" \{\} \;
+find . -name '*pom.xml.template' -exec \
+              sed -i "s:@version@:%{version}:g" '{}' \;
 
 cp %{SOURCE3} .
 
@@ -246,6 +246,9 @@ cp -pr build/docs/api/* \
 %endif
 
 %changelog
+* Fri Mar 1 2013 Krzysztof Daniel <kdaniel@redhat.com> 0:3.6.2-2
+- 830762: lucene ships POMs with uninitialized version properties
+
 * Tue Feb 26 2013 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.2-1
 - Update to upstream release 3.6.2
 - Fix build errors related to icu4j v50 incompatibility.
