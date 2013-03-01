@@ -137,7 +137,7 @@ install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name
 mv $M2_HOME/bin/m2.conf %{buildroot}%{_sysconfdir}
 ln -sf %{_sysconfdir}/m2.conf %{buildroot}%{_datadir}/%{name}/bin/m2.conf
 mv $M2_HOME/conf/settings.xml %{buildroot}%{_sysconfdir}/%{name}
-ln -sf %{_sysconfdir}/%{name}/m2.conf %{buildroot}%{_datadir}/%{name}/conf/m2.conf
+ln -sf %{_sysconfdir}/%{name}/settings.xml %{buildroot}%{_datadir}/%{name}/conf/settings.xml
 
 cp -a $M2_HOME/bin/* %{buildroot}%{_datadir}/%{name}/bin
 
