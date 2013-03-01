@@ -1,16 +1,14 @@
 %global debug_package %{nil}
 
 Name:           maven
-Version:        3.0.4
-Release:        32%{?dist}
+Version:        3.0.5
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
 License:        ASL 2.0
 URL:            http://maven.apache.org/
-# Source URL is for testing only, final version will be in different place:
-# http://www.apache.org/dyn/closer.cgi/maven/source/apache-%{name}-%{version}-src.tar.gz
-Source0:        http://archive.apache.org/dist/maven/source/apache-%{name}-%{version}-src.tar.gz
+Source0:        http://archive.apache.org/dist/%{name}/%{name}-3/%{version}/source/apache-%{name}-%{version}-src.tar.gz
 Source1:        maven-bash-completion
 Source2:        mvn.1
 
@@ -129,6 +127,7 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}/boot
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/ext
 install -d -m 755 %{buildroot}%{_bindir}
+install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
 install -d -m 755 %{buildroot}%{_sysconfdir}/bash_completion.d
 install -d -m 755 %{buildroot}%{_mandir}/man1
 
@@ -137,9 +136,10 @@ install -p -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1
 install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
 mv $M2_HOME/bin/m2.conf %{buildroot}%{_sysconfdir}
 ln -sf %{_sysconfdir}/m2.conf %{buildroot}%{_datadir}/%{name}/bin/m2.conf
+mv $M2_HOME/conf/settings.xml %{buildroot}%{_sysconfdir}/%{name}
+ln -sf %{_sysconfdir}/%{name}/m2.conf %{buildroot}%{_datadir}/%{name}/conf/m2.conf
 
 cp -a $M2_HOME/bin/* %{buildroot}%{_datadir}/%{name}/bin
-cp -a $M2_HOME/conf/* %{buildroot}%{_datadir}/%{name}/conf
 
 ln -sf $(build-classpath plexus/classworlds) \
     %{buildroot}%{_datadir}/%{name}/boot/plexus-classworlds.jar
@@ -181,7 +181,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 %{_datadir}/%{name}
 %{_bindir}/mvn
 %dir %{_javadir}/%{name}
+%dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/m2.conf
+%config(noreplace) %{_sysconfdir}/%{name}/settings.xml
 %config(noreplace) %{_sysconfdir}/bash_completion.d/%{name}
 %{_mandir}/man1/mvn.1.gz
 
@@ -190,6 +192,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Mar  1 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-1
+- Update to upstream version 3.0.5
+- Move settings.xml to /etc
+
 * Mon Feb 11 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.4-32
 - Remove xerces-j2 from plexus.core realm
 - Resolves: rhbz#784816
