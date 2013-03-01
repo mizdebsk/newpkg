@@ -9,7 +9,7 @@ License:        ASL 2.0
 URL:            http://maven.apache.org/wagon
 Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{version}/wagon-%{version}-source-release.zip
 
-Patch0:         0001-Port-to-jetty-8.patch
+Patch0:         0001-Port-to-jetty-9.patch
 
 BuildArch:      noarch
 
@@ -121,6 +121,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Fri Mar 01 2013 Michal Srb <msrb@redhat.com> - 0:2.4-1
+- Port to jetty 9
+
 * Thu Feb 28 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.4-1
 - Simplify build-requires
 
