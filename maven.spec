@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -124,8 +124,7 @@ export M2_HOME=$(pwd)/m2home/apache-maven-%{version}%{?ver_add}
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/bin
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/conf
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/boot
-install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib
-install -d -m 755 %{buildroot}%{_datadir}/%{name}/ext
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib/ext
 install -d -m 755 %{buildroot}%{_bindir}
 install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
 install -d -m 755 %{buildroot}%{_sysconfdir}/bash_completion.d
@@ -192,6 +191,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Mar 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-3
+- Make ext/ a subdirectory of lib/
+
 * Tue Mar 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-2
 - In maven-script don't override M2_HOME if already set
 
