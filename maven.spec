@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -192,6 +192,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Mar 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-2
+- In maven-script don't override M2_HOME if already set
+
 * Fri Mar  1 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-1
 - Update to upstream version 3.0.5
 - Move settings.xml to /etc
