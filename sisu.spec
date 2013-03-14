@@ -2,15 +2,20 @@
 
 Name:           sisu
 Version:        2.3.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
 URL:            http://github.com/sonatype/sisu
 
-# git clone git://github.com/sonatype/%{name}
-# git archive --prefix=%{name}-%{version}/ --format=tar %{name}-%{version} | xz >%{name}-%{version}.tar.xz
-Source0:        %{name}-%{version}.tar.xz
+# git clone git://github.com/sonatype/%{name} ${name}-%{version}
+# cd %{name}-%{version}
+# git checkout %{name}-%{version}
+# find ./ -name "*.jar" -delete
+# find ./ -name "*.class" -delete
+# cd ..
+# tar czvf %{name}-%{version}.tar.gz %{name}-%{version}
+Source0:        %{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -227,6 +232,8 @@ sed -i "s|<optional>true</optional>|<scope>provided</scope>|" \
 # Remove bundled objectweb-asm library
 rm -rf ./sisu-inject/containers/guice-bean/guice-bean-scanners/src/main/java/org/sonatype/guice/bean/scanners/asm
 %pom_add_dep asm:asm sisu-inject/containers/guice-bean/guice-bean-scanners
+# sisu-inject-bean bundles classes from other modules, so it also needs asm
+%pom_add_dep asm:asm sisu-inject/containers/guice-bean/sisu-inject-bean
 
 # Fix namespace of imported asm classes
 sed -i 's/org.sonatype.guice.bean.scanners.asm/org.objectweb.asm/g' \
@@ -292,6 +299,10 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Thu Mar 14 2013 Michal Srb <msrb@redhat.com> - 2.3.0-7
+- sisu-inject-bean: add dependency on asm
+- Remove bundled JARs and .class files from tarball
+
 * Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-6
 - Add ASM dependency only to a single module, not all of them
 - Disable animal-sniffer plugin
