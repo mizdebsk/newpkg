@@ -5,14 +5,14 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.1.2
-Release:        11%{?dist}
+Version:        3.1.3
+Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
 # ./create-tarball.sh %{version}
-Source:         %{name}-%{version}.tar.xz
+Source0:        %{name}-%{version}.tar.xz
 BuildArch:      noarch
 
 BuildRequires:  java-devel
@@ -157,7 +157,7 @@ This package provides %{summary}.
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
 # We don't have struts2 in Fedora yet.
 %pom_disable_module struts2 extensions
@@ -173,6 +173,9 @@ This package provides %{summary}.
 # We don't have the custom doclet used by upstream. Remove
 # maven-javadoc-plugin to generate javadocs with default style.
 %pom_remove_plugin :maven-javadoc-plugin
+
+%pom_remove_dep javax.persistence:persistence-api extensions/persist
+%pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.0-api extensions/persist
 
 # Don't try to build extension modules unless they are needed
 %if %{without extensions}
@@ -218,6 +221,10 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Thu Mar 14 2013 Michal Srb <msrb@redhat.com> - 3.1.3-1
+- Update to upstream version 3.1.3
+- Remove bundled JARs from tarball
+
 * Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 3.1.2-11
 - Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
 - Replace maven BuildRequires with maven-local
