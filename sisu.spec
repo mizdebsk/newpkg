@@ -243,7 +243,8 @@ sed -i 's/org.sonatype.guice.bean.scanners.asm/org.objectweb.asm/g' \
 # Fix plexus bundling
 sed -i -e '/provide these APIs as a convenience/,+2d' \
     sisu-inject/containers/guice-bean/sisu-inject-bean/pom.xml
-%pom_add_dep javax.inject:javax.inject sisu-inject/containers/guice-plexus/sisu-inject-plexus
+%pom_add_dep javax.inject:javax.inject sisu-inject/containers/guice-bean/sisu-inject-bean
+%pom_add_dep javax.enterprise:cdi-api sisu-inject/containers/guice-bean/sisu-inject-bean
 
 # add backward compatible location
 cp sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/sonatype/guice/plexus/lifecycles/*java \
@@ -301,6 +302,7 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 %changelog
 * Thu Mar 14 2013 Michal Srb <msrb@redhat.com> - 2.3.0-7
 - sisu-inject-bean: add dependency on asm
+- Fix dependencies on javax.inject and javax.enterprise.inject
 - Remove bundled JARs and .class files from tarball
 
 * Thu Feb  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-6
