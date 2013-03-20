@@ -8,6 +8,8 @@ URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 # use antrun-plugin instead of gmaven
 Patch0:         %{name}-1.0.9-antrunplugin.patch
+# remove core test-jar
+Patch1:         %{name}-1.0.10-classic-pom.patch
 
 # Java dependencies
 BuildRequires: jpackage-utils
@@ -15,7 +17,6 @@ BuildRequires: java-devel >= 1:1.6.0
 
 # Required libraries
 BuildRequires: geronimo-jms
-BuildRequires: geronimo-parent-poms
 BuildRequires: fusesource-pom
 # require groovy 2.0.7
 BuildRequires: groovy
@@ -38,9 +39,6 @@ BuildRequires: objectweb-asm
 BuildRequires: ant-junit
 BuildRequires: felix-main
 BuildRequires: junit
-
-BuildRequires: fest-assert
-BuildRequires: mockito
 
 # depend on rhbz#914056 BuildRequires: gmaven
 BuildRequires: maven-local
@@ -125,6 +123,7 @@ logback-examples module.
 %setup -q
 
 %patch0 -p0
+%patch1 -p0
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
 %pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic

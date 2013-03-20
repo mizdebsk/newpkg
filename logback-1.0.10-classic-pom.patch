@@ -1,0 +1,17 @@
+--- logback-classic/pom.xml	2013-03-20 17:31:34.511343667 +0100
++++ logback-classic/pom.xml-gil	2013-03-20 17:32:56.764823014 +0100
+@@ -125,12 +125,12 @@
+     </dependency>
+ 
+ 
+-    <dependency>
++    <!--dependency>
+       <groupId>ch.qos.logback</groupId>
+       <artifactId>logback-core</artifactId>
+       <type>test-jar</type>
+       <scope>test</scope>
+-    </dependency>
++    </dependency-->
+ 
+     <dependency>
+       <groupId>org.slf4j</groupId>
