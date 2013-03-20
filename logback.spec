@@ -1,17 +1,13 @@
-%global with_maven 0
 Name:           logback
-Version:        1.0.9
-Release:        3%{?dist}
+Version:        1.0.10
+Release:        1%{?dist}
 Summary:        A Java logging library
-
 Group:          Development/Tools
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
-Source1:        %{name}-%{version}-00-build.xml
-Source2:        %{name}-%{version}-core-osgi.bnd
-Source3:        %{name}-%{version}-classic-osgi.bnd
-Source4:        %{name}-%{version}-access-osgi.bnd
+# use antrun-plugin instead of gmaven
+Patch0:         %{name}-1.0.9-antrunplugin.patch
 
 # Java dependencies
 BuildRequires: jpackage-utils
@@ -19,10 +15,10 @@ BuildRequires: java-devel >= 1:1.6.0
 
 # Required libraries
 BuildRequires: geronimo-jms
-# require groovy 2.0.0
+BuildRequires: fusesource-pom
+# require groovy 2.0.7
 BuildRequires: groovy
 BuildRequires: janino
-# require jansi 1.8
 BuildRequires: jansi
 BuildRequires: javamail
 BuildRequires: jetty
@@ -37,14 +33,13 @@ BuildRequires: apache-commons-cli
 BuildRequires: objectweb-asm
 
 # Build tools -- build with ant for now because of circular dependencies
-%if %with_maven
 # antrun plugin deps
 BuildRequires: ant-junit
 BuildRequires: felix-main
 BuildRequires: junit
 
-BuildRequires: gmaven
-BuildRequires: maven
+# depend on rhbz#914056 BuildRequires: gmaven
+BuildRequires: maven-local
 BuildRequires: maven-antrun-plugin
 BuildRequires: maven-compiler-plugin
 BuildRequires: maven-install-plugin
@@ -55,10 +50,6 @@ BuildRequires: maven-plugin-bundle
 BuildRequires: maven-resources-plugin
 BuildRequires: maven-source-plugin
 BuildRequires: maven-surefire-plugin
-%else
-BuildRequires: ant
-BuildRequires: aqute-bnd
-%endif
 
 # Java runtime dependencies
 Requires:      java >= 1:1.6.0
@@ -128,11 +119,12 @@ logback-examples module.
 
 %prep
 %setup -q
-%if !%with_maven
-cp -p %{SOURCE4} osgi-access.bnd
-%endif
 
+%patch0 -p0
+
+%pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
 %pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core
+%pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
 
 find . -name "*.class" -delete
 find . -name "*.cmd" -delete
@@ -152,19 +144,12 @@ sed -i 's#<module>logback-site</module>#<!--module>logback-site</module-->#' pom
 
 %build
 
-%if %with_maven
 # unavailable test dep maven-scala-plugin
 # slf4jJAR and org.apache.felix.main are required by logback-examples modules for maven-antrun-plugin
 mvn-rpmbuild -Dmaven.test.skip=true \
   -Dslf4jJAR=$(build-classpath slf4j/api) \
   -Dorg.apache.felix:org.apache.felix.main:jar=$(build-classpath felix/org.apache.felix.main) \
   package javadoc:aggregate
-%else
-cp -p %{SOURCE1} build.xml
-cp -p %{SOURCE2} osgi-core.bnd
-cp -p %{SOURCE3} osgi-classic.bnd
-ant dist javadoc
-%endif
 
 %install
 
@@ -190,7 +175,7 @@ for sub in access examples; do
 %add_maven_depmap JPP.%{name}-%{name}-$sub.pom %{name}/%{name}-$sub.jar -f $sub
 done
 
-install -d -m 755 p %{buildroot}%{_javadocdir}/%{name}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
 # copy only apis docs
 cp -r target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
 
@@ -225,6 +210,13 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_mavenpomdir}/JPP.%{name}-%{name}-examples.pom
 
 %changelog
+* Tue Mar 19 2013 gil cattaneo <puntogil@libero.it> - 1.0.10-1
+- Update to 1.0.10
+
+* Thu Mar 14 2013 gil cattaneo <puntogil@libero.it> - 1.0.9-4
+- Use Maven build
+- Removed un{used,available} plugin
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.9-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
