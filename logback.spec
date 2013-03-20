@@ -40,6 +40,10 @@ BuildRequires: ant-junit
 BuildRequires: felix-main
 BuildRequires: junit
 
+BuildRequires: geronimo-parent-poms
+BuildRequires: fest-assert
+BuildRequires: mockito
+
 # depend on rhbz#914056 BuildRequires: gmaven
 BuildRequires: maven-local
 BuildRequires: maven-antrun-plugin
