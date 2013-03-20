@@ -127,9 +127,23 @@ logback-examples module.
 %patch0 -p0
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
-%pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core
-%pom_remove_dep org.scala-lang:scala-library %{name}-core
 %pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
+
+# remove test deps
+%pom_remove_dep hsqldb:hsqldb %{name}-access
+# type>test-jar
+%pom_remove_dep ch.qos.logback:logback-core %{name}-access
+%pom_add_dep ch.qos.logback:logback-core::compile %{name}-access
+%pom_remove_dep com.h2database:h2 %{name}-classic
+%pom_remove_dep postgresql:postgresql %{name}-classic
+%pom_remove_dep mysql:mysql-connector-java %{name}-classic
+%pom_remove_dep org.slf4j:integration %{name}-classic
+%pom_remove_dep com.icegreen:greenmail %{name}-classic
+%pom_remove_dep org.subethamail:subethasmtp %{name}-classic
+%pom_remove_dep org.scala-lang:scala-library %{name}-core
+%pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core    
+
+rm -r %{name}-*/src/test/java/*
 
 find . -name "*.class" -delete
 find . -name "*.cmd" -delete
