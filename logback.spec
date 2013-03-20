@@ -128,7 +128,7 @@ logback-examples module.
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
 %pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core
-%pom_dep_plugin org.scala-lang:scala-library %{name}-core
+%pom_remove_dep org.scala-lang:scala-library %{name}-core
 %pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
 
 find . -name "*.class" -delete
