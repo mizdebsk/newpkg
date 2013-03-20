@@ -40,10 +40,6 @@ BuildRequires: ant-junit
 BuildRequires: felix-main
 BuildRequires: junit
 
-BuildRequires: geronimo-parent-poms
-BuildRequires: fest-assert
-BuildRequires: mockito
-
 # depend on rhbz#914056 BuildRequires: gmaven
 BuildRequires: maven-local
 BuildRequires: maven-antrun-plugin
@@ -133,6 +129,7 @@ logback-examples module.
 %pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
 
 # remove test deps
+%pom_remove_dep org.easytesting:fest-assert
 %pom_remove_dep hsqldb:hsqldb %{name}-access
 # type>test-jar
 %pom_remove_dep ch.qos.logback:logback-core %{name}-access
@@ -143,6 +140,7 @@ logback-examples module.
 %pom_remove_dep org.slf4j:integration %{name}-classic
 %pom_remove_dep com.icegreen:greenmail %{name}-classic
 %pom_remove_dep org.subethamail:subethasmtp %{name}-classic
+%pom_remove_dep org.mockito:mockito-core %{name}-core
 %pom_remove_dep org.scala-lang:scala-library %{name}-core
 %pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core    
 
