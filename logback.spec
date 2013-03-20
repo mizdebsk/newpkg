@@ -8,8 +8,8 @@ URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 # use antrun-plugin instead of gmaven
 Patch0:         %{name}-1.0.9-antrunplugin.patch
-# remove core test-jar
-Patch1:         %{name}-1.0.10-classic-pom.patch
+# with pom macros break build
+Patch1:         %{name}-1.0.10-remove-core-test-jar.patch
 
 # Java dependencies
 BuildRequires: jpackage-utils
@@ -123,7 +123,7 @@ logback-examples module.
 %setup -q
 
 %patch0 -p0
-%patch1 -p0
+%patch1 -p1
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
 %pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
@@ -131,9 +131,6 @@ logback-examples module.
 # remove test deps
 %pom_remove_dep org.easytesting:fest-assert
 %pom_remove_dep hsqldb:hsqldb %{name}-access
-# type>test-jar
-%pom_remove_dep ch.qos.logback:logback-core %{name}-access
-%pom_add_dep ch.qos.logback:logback-core::compile %{name}-access
 %pom_remove_dep com.h2database:h2 %{name}-classic
 %pom_remove_dep postgresql:postgresql %{name}-classic
 %pom_remove_dep mysql:mysql-connector-java %{name}-classic
