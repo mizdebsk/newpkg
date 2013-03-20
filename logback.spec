@@ -38,6 +38,7 @@ BuildRequires: objectweb-asm
 BuildRequires: ant-junit
 BuildRequires: felix-main
 BuildRequires: junit
+BuildRequires: mockito
 
 # depend on rhbz#914056 BuildRequires: gmaven
 BuildRequires: maven-local
