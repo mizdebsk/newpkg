@@ -15,6 +15,7 @@ BuildRequires: java-devel >= 1:1.6.0
 
 # Required libraries
 BuildRequires: geronimo-jms
+BuildRequires: geronimo-parent-poms
 BuildRequires: fusesource-pom
 # require groovy 2.0.7
 BuildRequires: groovy
