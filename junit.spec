@@ -95,10 +95,10 @@ Demonstrations and samples for %{name}.
 
 %prep
 %setup -q -n %{name}-r%{version}
-%patch0 -p1
+#%patch0 -p1
 cp build/maven/junit-pom-template.xml pom.xml
 find -iname '*.class' -o -iname '*.jar' -delete
-ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
+ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
 
 %build
 ant dist
@@ -219,18 +219,18 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 * Thu Aug 10 2006 Karsten Hopp <karsten@redhat.de> 0:3.8.2-2jpp_3fc
 - Require(post/postun): coreutils
 
-* Sun Jun 23 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_2fc
+* Fri Jun 23 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_2fc
 - Rebuilt.
 
-* Sat Jun 22 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_1fc
+* Thu Jun 22 2006 Deepak Bhole <dbhole@redhat.com> -  0:3.8.2-2jpp_1fc
 - Upgrade to 3.8.2
 - Added conditional native compilation.
 - Fix path where demo is located.
 
-* Mon Mar 03 2006 Ralph Apel <r.apel at r-apel.de> - 0:3.8.2-1jpp
+* Fri Mar 03 2006 Ralph Apel <r.apel at r-apel.de> - 0:3.8.2-1jpp
 - First JPP-1.7 release
 
-* Sun Aug 23 2004 Randy Watler <rwatler at finali.com> - 0:3.8.1-4jpp
+* Mon Aug 23 2004 Randy Watler <rwatler at finali.com> - 0:3.8.1-4jpp
 - Rebuild with ant-1.6.2
 * Fri May 09 2003 David Walluck <david@anti-microsoft.org> 0:3.8.1-3jpp
 - update for JPackage 1.5
