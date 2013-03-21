@@ -1,5 +1,5 @@
 diff --git a/build.xml b/build.xml
-index 0efaf87..62e1df3 100644
+index 0efaf87..2efa11c 100644
 --- a/build.xml
 +++ b/build.xml
 @@ -30,7 +30,6 @@
@@ -21,6 +21,15 @@ index 0efaf87..62e1df3 100644
    <target name="release-notes">
      <property name="basename" value="doc/ReleaseNotes${version-base}" />
      <exec executable="perl" failonerror="true">
+@@ -138,7 +133,7 @@
+     </exec>
+   </target>
+   
+-  <target name="javadoc" depends="unjar.hamcrest">
++  <target name="javadoc">
+     <javadoc destdir="${javadocdir}"
+              author="false"
+              version="false"
 @@ -151,7 +146,6 @@
        <excludepackage name="org.junit.experimental.theories.internal.*" />
        
