@@ -29,8 +29,8 @@
 #
 
 Name:           junit
-Version:        4.10
-Release:        8%{?dist}
+Version:        4.11
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -38,20 +38,18 @@ URL:            http://www.junit.org/
 Group:          Development/Tools
 BuildArch:      noarch
 
-# git clone --bare git://github.com/KentBeck/junit.git junit.git 
-# mkdir junit-4.10
-# git --git-dir=junit.git --work-tree=junit-4.10 checkout r4.10
-# tar cjf junit-4.10.tar.xz junit-4.10/
-Source0:        %{name}-%{version}.tar.xz
-Source1:        http://search.maven.org/remotecontent?filepath=%{name}/%{name}/%{version}/%{name}-%{version}.pom
+Source0:        https://github.com/junit-team/junit/archive/r%{version}.tar.gz
 Source2:        junit-OSGi-MANIFEST.MF
 Patch0:         %{name}-removed-test.patch
 
 BuildRequires:  ant
 BuildRequires:  ant-contrib
+BuildRequires:  apache-commons-net
 BuildRequires:  jpackage-utils >= 0:1.7.4
+BuildRequires:  jakarta-oro
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  hamcrest
+BuildRequires:  maven-ant-tasks
 BuildRequires:  perl(Digest::MD5)
 
 Requires:       hamcrest
@@ -96,9 +94,9 @@ Obsoletes:      junit4-demo < %{epoch}:%{version}-%{release}
 Demonstrations and samples for %{name}.
 
 %prep
-%setup -q 
+%setup -q -n %{name}-r%{version}
 %patch0 -p1
-cp %{SOURCE1} pom.xml
+cp build/maven/junit-pom-template.xml pom.xml
 find -iname '*.class' -o -iname '*.jar' -delete
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
 
