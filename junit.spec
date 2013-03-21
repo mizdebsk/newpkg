@@ -109,12 +109,12 @@ ant dist
 mkdir -p META-INF
 cp -p %{SOURCE2} META-INF/MANIFEST.MF
 touch META-INF/MANIFEST.MF
-zip -u %{name}%{version}/%{name}-%{version}.jar META-INF/MANIFEST.MF
+zip -u %{name}%{version}-SNAPSHOT/%{name}-%{version}-SNAPSHOT.jar META-INF/MANIFEST.MF
 
 %install
 # jars
 install -d -m 755 %{buildroot}%{_javadir}
-install -m 644 %{name}%{version}/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
+install -m 644 %{name}%{version}-SNAPSHOT/%{name}-%{version}-SNAPSHOT.jar %{buildroot}%{_javadir}/%{name}.jar
 # Many packages still use the junit4.jar directly
 ln -s %{_javadir}/%{name}.jar %{buildroot}%{_javadir}/%{name}4.jar
 
@@ -125,12 +125,12 @@ install -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
 
 # javadoc
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
-cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}
+cp -pr %{name}%{version}-SNAPSHOT/javadoc/* %{buildroot}%{_javadocdir}/%{name}
 
 # demo
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/%{name} 
 
-cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
+cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 
 
 %files
