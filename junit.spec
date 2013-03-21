@@ -38,10 +38,10 @@ URL:            http://www.junit.org/
 Group:          Development/Tools
 BuildArch:      noarch
 
-Source0:        https://github.com/junit-team/junit/archive/r%{version}.tar.gz
+Source0:        https://github.com/%{name}-team/%{name}/archive/r%{version}.tar.gz
 Source2:        junit-OSGi-MANIFEST.MF
-Patch0:         %{name}-removed-test.patch
-Patch1:         %{name}-no-hamcrest-src.patch
+# Removing hamcrest source jar references (not available and/or necessary)
+Patch0:         %{name}-no-hamcrest-src.patch
 
 BuildRequires:  ant
 BuildRequires:  ant-contrib
@@ -96,8 +96,7 @@ Demonstrations and samples for %{name}.
 
 %prep
 %setup -q -n %{name}-r%{version}
-#%patch0 -p1
-%patch1 -p1
+%patch0 -p1
 cp build/maven/junit-pom-template.xml pom.xml
 find -iname '*.class' -o -iname '*.jar' -delete
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
@@ -121,7 +120,7 @@ ln -s %{_javadir}/%{name}.jar %{buildroot}%{_javadir}/%{name}4.jar
 # pom
 install -d -m 755 %{buildroot}%{_mavenpomdir}
 install -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-%add_maven_depmap JPP-%{name}.pom %{name}.jar
+%add_maven_depmap
 
 # javadoc
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
@@ -134,25 +133,28 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 
 
 %files
-%doc cpl-v10.html README.html
+%doc LICENSE README CODING_STYLE
 %{_javadir}/%{name}.jar
 %{_javadir}/%{name}4.jar
 %{_mavenpomdir}/*
 %{_mavendepmapfragdir}/*
 
 %files demo
-%doc cpl-v10.html
+%doc LICENSE
 %{_datadir}/%{name}
 
 %files javadoc
-%doc cpl-v10.html
+%doc LICENSE
 %doc %{_javadocdir}/%{name}
 
 %files manual
-%doc cpl-v10.html
-%doc junit%{version}/doc/*
+%doc LICENSE README CODING_STYLE
+%doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Thu Mar 21 2013 Tomas Radej <tradej@redhat.com> - 0:4.11-1
+- Updated to latest upstream version
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.10-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
