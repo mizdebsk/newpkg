@@ -41,6 +41,7 @@ BuildArch:      noarch
 Source0:        https://github.com/junit-team/junit/archive/r%{version}.tar.gz
 Source2:        junit-OSGi-MANIFEST.MF
 Patch0:         %{name}-removed-test.patch
+Patch1:         %{name}-no-hamcrest-src.patch
 
 BuildRequires:  ant
 BuildRequires:  ant-contrib
@@ -96,6 +97,7 @@ Demonstrations and samples for %{name}.
 %prep
 %setup -q -n %{name}-r%{version}
 #%patch0 -p1
+%patch1 -p1
 cp build/maven/junit-pom-template.xml pom.xml
 find -iname '*.class' -o -iname '*.jar' -delete
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
