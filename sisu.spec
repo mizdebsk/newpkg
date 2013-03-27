@@ -2,7 +2,7 @@
 
 Name:           sisu
 Version:        2.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 License:        ASL 2.0 and EPL and MIT
@@ -23,11 +23,11 @@ BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
 BuildRequires:  maven-local >= 0.11.1
 
-BuildRequires:  animal-sniffer
 BuildRequires:  aopalliance
 BuildRequires:  atinject
 BuildRequires:  cdi-api
 BuildRequires:  felix-framework
+BuildRequires:  forge-parent
 BuildRequires:  geronimo-specs
 BuildRequires:  google-guice
 BuildRequires:  junit
@@ -300,6 +300,10 @@ sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
 
 
 %changelog
+* Wed Mar 27 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.3.0-8
+- Remove unneeded animal-sniffer BuildRequires
+- Add forge-parent to BuildRequires to ensure it's present
+
 * Thu Mar 14 2013 Michal Srb <msrb@redhat.com> - 2.3.0-7
 - sisu-inject-bean: add dependency on asm
 - Fix dependencies on javax.inject and javax.enterprise.inject
