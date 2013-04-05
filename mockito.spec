@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -11,6 +11,7 @@ Patch0:         fixup-ant-script.patch
 Patch1:         fix-cglib-refs.patch
 Patch2:         maven-cglib-dependency.patch
 Patch3:         fix-bnd-config.patch
+Patch4:         %{name}-matcher.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils
@@ -51,6 +52,7 @@ This package contains the API documentation for %{name}.
 # Set Bundle-Version properly
 sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
 %patch3
+%patch4 -p1
 
 %build
 ant jar javadoc
@@ -86,6 +88,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Mon Mar 25 2013 Tomas Radej <tradej@redhat.com> - 1.9.0-12
+- Patched LocalizedMatcher due to hamcrest update, (bug upstream)
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
