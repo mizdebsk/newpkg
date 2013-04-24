@@ -5,7 +5,7 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.1.3
+Version:        3.1.4
 Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
@@ -26,6 +26,7 @@ BuildRequires:  atinject
 BuildRequires:  cglib
 BuildRequires:  guava
 BuildRequires:  slf4j
+BuildRequires:  objectweb-asm4
 
 %if %{with extensions}
 BuildRequires:  hibernate-jpa-2.0-api
@@ -192,6 +193,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
 %mvn_file  ":sisu-guice" %{short_name}/%{name} %{name}
 %mvn_alias ":sisu-guice" "com.google.inject:guice"
+%mvn_package :extensions-parent guice-extensions
 # Skip tests because of missing dependency (hsqldb-j5).
 %mvn_build -f -s
 
@@ -221,6 +223,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Apr 24 2013 Michal Srb <msrb@redhat.com> - 3.1.4-1
+- Update to upstream version 3.1.4
+
 * Thu Mar 14 2013 Michal Srb <msrb@redhat.com> - 3.1.3-1
 - Update to upstream version 3.1.3
 - Remove bundled JARs from tarball
