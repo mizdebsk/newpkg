@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -20,29 +20,42 @@ Patch100:       0005-Use-generics-in-modello-generated-code.patch
 
 BuildArch:      noarch
 
+BuildRequires:  maven-local
+
 BuildRequires:  aether >= 1.13.1
 BuildRequires:  aopalliance
+BuildRequires:  apache-commons-cli
+BuildRequires:  apache-commons-jxpath
 BuildRequires:  apache-resource-bundles
 BuildRequires:  async-http-client
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
 BuildRequires:  cglib
+BuildRequires:  easymock
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
-BuildRequires:  maven-local
+BuildRequires:  junit
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-parent
 BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
+BuildRequires:  maven-wagon
 BuildRequires:  objectweb-asm
+BuildRequires:  plexus-cipher
+BuildRequires:  plexus-classworlds
+BuildRequires:  plexus-containers-component-annotations
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
+BuildRequires:  plexus-interpolation
+BuildRequires:  plexus-sec-dispatcher
+BuildRequires:  plexus-utils
 BuildRequires:  sisu-inject-bean
 BuildRequires:  sisu-inject-plexus
 BuildRequires:  slf4j
@@ -191,6 +204,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Apr 26 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-4
+- Add missing BuildRequires
+
 * Tue Mar 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-3
 - Make ext/ a subdirectory of lib/
 
