@@ -1,56 +1,114 @@
 Name:           aether
 Version:        1.13.1
-Release:        5%{?dist}
+Release:        8%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
-
-Group:          Development/Libraries
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
 # git clone https://github.com/sonatype/sonatype-aether.git
 # git archive --prefix="aether-1.11/" --format=tar aether-1.11 | bzip2 > aether-1.11.tar.bz2
 Source0:        %{name}-%{version}.tar.bz2
-
 BuildArch:      noarch
 
-BuildRequires:  maven
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-resources-plugin
-BuildRequires:  maven-site-plugin
-BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  plexus-containers-component-metadata >= 1.5.4-4
-BuildRequires:  mojo-parent
-BuildRequires:  async-http-client >= 1.6.1
-BuildRequires:  sonatype-oss-parent
-%if 0%{?fedora}
-BuildRequires:  animal-sniffer >= 1.6-5
-%endif
+BuildRequires:  maven-local
+BuildRequires:  mvn(com.ning:async-http-client)
+BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  mvn(org.slf4j:slf4j-api)
+BuildRequires:  mvn(org.sonatype.forge:forge-parent)
+BuildRequires:  mvn(org.sonatype.sisu:sisu-inject-plexus)
 
-# required by netty really, but we push this dep on level higer
-BuildRequires:  jboss-parent
-Requires:       jboss-parent
-
-Requires:       async-http-client >= 1.6.1
-Requires:       java >= 1:1.6.0
-
+# Require all subpackages for now, until all packages that use aether
+# migrate to appropriate subpackages.  See rhbz #958143
+# TODO: Remove these once the above bug is closed.
+Requires:       %{name}-api                       = %{version}-%{release}
+Requires:       %{name}-connector-asynchttpclient = %{version}-%{release}
+Requires:       %{name}-connector-file            = %{version}-%{release}
+Requires:       %{name}-connector-wagon           = %{version}-%{release}
+Requires:       %{name}-impl                      = %{version}-%{release}
+Requires:       %{name}-spi                       = %{version}-%{release}
+Requires:       %{name}-test-util                 = %{version}-%{release}
+Requires:       %{name}-util                      = %{version}-%{release}
 
 %description
-Aether is standalone library to resolve, install and deploy artifacts
-the Maven way developed by Sonatype
+Aether is a standalone library to resolve, install and deploy artifacts
+the Maven way.
+
+%package api
+Summary: Aether API
+
+%description api
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides application
+programming interface for Aether repository system.
+
+%package connector-asynchttpclient
+Summary: Aether connector for Async Http Client
+
+%description connector-asynchttpclient
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides Aether repository
+connector implementation based on Async Http Client.
+
+%package connector-file
+Summary: Aether connector for file URLs
+
+%description connector-file
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides Aether repository
+connector implementation for repositories using file:// URLs.
+
+%package connector-wagon
+Summary: Aether connector for Maven Wagon
+
+%description connector-wagon
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides Aether repository
+connector implementation based on Maven Wagon.
+
+%package impl
+Summary: Implementation of Aether repository system
+
+%description impl
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides implementation of
+Aether repository system.
+
+%package spi
+Summary: Aether SPI
+
+%description spi
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package contains Aether service
+provider interface (SPI) for repository system implementations and
+repository connectors.
+
+%package test-util
+Summary: Aether test utilities
+
+%description test-util
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides collection of utility
+classes that ease testing of Aether repository system.
+
+%package util
+Summary: Aether utilities
+
+%description util
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides a collection of
+utility classes to ease usage of Aether repository system.
 
 %package javadoc
-Summary:   API documentation for %{name}
-Group:     Documentation
-Requires:  jpackage-utils
+Summary: Java API documentation for Aether
 
 %description javadoc
-%{summary}.
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides Java API documentation
+for Aether.
 
 %prep
-# last part will have to change every time
 %setup -q
 
 # we'd need org.sonatype.http-testing-harness so let's remove async
@@ -67,49 +125,46 @@ for module in asynchttpclient wagon; do (
 %pom_remove_plugin :clirr-maven-plugin aether-api
 %pom_remove_plugin :clirr-maven-plugin aether-spi
 
-if [ %{?rhel} ]; then
-    for module in . aether-connector-wagon aether-util aether-api   \
-                  aether-impl aether-connector-asynchttpclient      \
-                  aether-connector-file aether-demo aether-test-util; do
-        %pom_remove_plugin :animal-sniffer-maven-plugin $module
-    done
-fi
-
-%build
-mvn-rpmbuild install javadoc:aggregate
-
-
-%install
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-
-for module in aether-api aether-connector-file aether-connector-wagon aether-connector-asynchttpclient\
-         aether-impl aether-spi aether-test-util aether-util;do
-pushd $module
-      jarname=`echo $module | sed s:aether-::`
-      install -m 644 target/$module-*.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/$jarname.jar
-
-      install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-$jarname.pom
-      %add_maven_depmap JPP.%{name}-$jarname.pom %{name}/$jarname.jar
-popd
+# Animal sniffer is not useful in Fedora
+for module in . aether-connector-wagon aether-util aether-api   \
+              aether-impl aether-connector-asynchttpclient      \
+              aether-connector-file aether-demo aether-test-util; do
+    %pom_remove_plugin :animal-sniffer-maven-plugin $module
 done
 
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+# Workaround for rhbz#911365
+%pom_xpath_inject pom:project "<dependencies/>"
+%pom_add_dep cglib:cglib:any:test
 
-install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.%{name}-parent.pom
-%add_maven_depmap JPP.%{name}-parent.pom
+%build
+%mvn_build -s
 
-%files
+%install
+%mvn_install
+
+%files -f .mfiles-%{name}
 %doc README.md
-%{_javadir}/%{name}
-%{_mavendepmapfragdir}/%{name}
-%{_mavenpomdir}/*.pom
 
-%files javadoc
-%{_javadocdir}/%{name}
+%files api -f .mfiles-%{name}-api
+%doc README.md
+%dir %{_javadir}/%{name}
+
+%files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
+%files connector-file -f .mfiles-%{name}-connector-file
+%files connector-wagon -f .mfiles-%{name}-connector-wagon
+%files impl -f .mfiles-%{name}-impl
+%files spi -f .mfiles-%{name}-spi
+%files test-util -f .mfiles-%{name}-test-util
+%files util -f .mfiles-%{name}-util
+%files javadoc -f .mfiles-javadoc
 
 %changelog
+* Tue Apr 30 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-8
+- Complete spec file rewrite
+- Build with xmvn
+- Split into multiple subpackages, resolves: rhbz#916142
+- Update to current packaging guidelines
+
 * Mon Aug 27 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-5
 - Disable animal-sniffer on RHEL
 
