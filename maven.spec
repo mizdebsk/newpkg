@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -22,7 +22,11 @@ BuildArch:      noarch
 
 BuildRequires:  maven-local
 
-BuildRequires:  aether >= 1.13.1
+BuildRequires:  aether-api >= 1.13.1-8
+BuildRequires:  aether-connector-wagon
+BuildRequires:  aether-impl
+BuildRequires:  aether-spi
+BuildRequires:  aether-util
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
 BuildRequires:  apache-commons-jxpath
@@ -158,11 +162,11 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
-        aether/api \
-        aether/connector-wagon \
-        aether/impl \
-        aether/spi \
-        aether/util \
+        aether/aether-api \
+        aether/aether-connector-wagon \
+        aether/aether-impl \
+        aether/aether-spi \
+        aether/aether-util \
         aopalliance \
         atinject \
         cglib \
@@ -204,6 +208,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Thu May  2 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-5
+- BR proper aether subpackages
+- Resolves: rhbz#958160
+
 * Fri Apr 26 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-4
 - Add missing BuildRequires
 
