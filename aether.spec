@@ -1,6 +1,6 @@
 Name:           aether
 Version:        1.13.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
@@ -136,6 +136,10 @@ done
 %pom_xpath_inject pom:project "<dependencies/>"
 %pom_add_dep cglib:cglib:any:test
 
+# Keep compatibility with packages that use old JAR locations until
+# they migrate.
+%mvn_file ":{%{name}-{*}}" %{name}/@1 %{name}/@2
+
 %build
 %mvn_build -s
 
@@ -159,6 +163,10 @@ done
 %files javadoc -f .mfiles-javadoc
 
 %changelog
+* Thu May  2 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-9
+- Install compat JAR symlinks
+- Resolves: rhbz#958558
+
 * Tue Apr 30 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-8
 - Complete spec file rewrite
 - Build with xmvn
