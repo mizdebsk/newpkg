@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -45,12 +45,9 @@ Patch0:         %{name}-no-hamcrest-src.patch
 
 BuildRequires:  ant
 BuildRequires:  ant-contrib
-BuildRequires:  apache-commons-net
 BuildRequires:  jpackage-utils >= 0:1.7.4
-BuildRequires:  jakarta-oro
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  hamcrest
-BuildRequires:  maven-ant-tasks
 BuildRequires:  perl(Digest::MD5)
 
 Requires:       hamcrest
@@ -152,6 +149,9 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 %doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Mon May 06 2013 Tomas Radej <tradej@redhat.com> - 0:4.11-2
+- Removed uneeded dependencies
+
 * Thu Mar 21 2013 Tomas Radej <tradej@redhat.com> - 0:4.11-1
 - Updated to latest upstream version
 
