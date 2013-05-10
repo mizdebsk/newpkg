@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -31,7 +31,6 @@ BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
 BuildRequires:  apache-commons-jxpath
 BuildRequires:  apache-resource-bundles
-BuildRequires:  async-http-client
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
 BuildRequires:  cglib
@@ -208,6 +207,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri May 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-6
+- Remove unneeded BR: async-http-client
+
 * Thu May  2 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-5
 - BR proper aether subpackages
 - Resolves: rhbz#958160
