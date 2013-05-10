@@ -67,6 +67,10 @@ BuildRequires:  xmlunit
 BuildRequires:  animal-sniffer >= 1.6-5
 %endif
 
+# Theoretically Maven might be usable with just JRE, but typical Maven
+# workflow requires full JDK, wso we require it here.
+Requires:       java-devel
+
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
 
@@ -209,6 +213,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 %changelog
 * Fri May 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-6
 - Remove unneeded BR: async-http-client
+- Add Requires on java-devel
 
 * Thu May  2 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-5
 - BR proper aether subpackages
