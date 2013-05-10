@@ -1,6 +1,12 @@
+# Conditionals to build Aether with or without AHC connector
+# (connector for Async Http Client).
+%if 0%{?fedora}
+%bcond_without ahc
+%endif
+
 Name:           aether
 Version:        1.13.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
@@ -10,7 +16,6 @@ Source0:        %{name}-%{version}.tar.bz2
 BuildArch:      noarch
 
 BuildRequires:  maven-local
-BuildRequires:  mvn(com.ning:async-http-client)
 BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
@@ -18,12 +23,14 @@ BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.sonatype.forge:forge-parent)
 BuildRequires:  mvn(org.sonatype.sisu:sisu-inject-plexus)
+%if %{with ahc}
+BuildRequires:  mvn(com.ning:async-http-client)
+%endif
 
 # Require all subpackages for now, until all packages that use aether
 # migrate to appropriate subpackages.  See rhbz #958143
 # TODO: Remove these once the above bug is closed.
 Requires:       %{name}-api                       = %{version}-%{release}
-Requires:       %{name}-connector-asynchttpclient = %{version}-%{release}
 Requires:       %{name}-connector-file            = %{version}-%{release}
 Requires:       %{name}-connector-wagon           = %{version}-%{release}
 Requires:       %{name}-impl                      = %{version}-%{release}
@@ -43,6 +50,7 @@ Aether is a standalone library to resolve, install and deploy
 artifacts the Maven way.  This package provides application
 programming interface for Aether repository system.
 
+%if %{with ahc}
 %package connector-asynchttpclient
 Summary: Aether connector for Async Http Client
 
@@ -50,6 +58,7 @@ Summary: Aether connector for Async Http Client
 Aether is a standalone library to resolve, install and deploy
 artifacts the Maven way.  This package provides Aether repository
 connector implementation based on Async Http Client.
+%endif
 
 %package connector-file
 Summary: Aether connector for file URLs
@@ -111,6 +120,10 @@ for Aether.
 %prep
 %setup -q
 
+%if %{without ahc}
+%pom_disable_module aether-connector-asynchttpclient
+%endif
+
 # we'd need org.sonatype.http-testing-harness so let's remove async
 # and wagon http tests (leave others enabled)
 for module in asynchttpclient wagon; do (
@@ -153,7 +166,6 @@ done
 %doc README.md
 %dir %{_javadir}/%{name}
 
-%files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
 %files connector-file -f .mfiles-%{name}-connector-file
 %files connector-wagon -f .mfiles-%{name}-connector-wagon
 %files impl -f .mfiles-%{name}-impl
@@ -162,7 +174,14 @@ done
 %files util -f .mfiles-%{name}-util
 %files javadoc -f .mfiles-javadoc
 
+%if %{with ahc}
+%files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
+%endif
+
 %changelog
+* Fri May 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-10
+- Conditionally build without AHC connector
+
 * Thu May  2 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-9
 - Install compat JAR symlinks
 - Resolves: rhbz#958558
