@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -147,12 +147,12 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}/boot
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib/ext
 install -d -m 755 %{buildroot}%{_bindir}
 install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
-install -d -m 755 %{buildroot}%{_sysconfdir}/bash_completion.d
+install -d -m 755 %{buildroot}%{_datadir}/bash-completion/completions
 install -d -m 755 %{buildroot}%{_mandir}/man1
 
 install -p -m 755 %{SOURCE200} %{buildroot}%{_bindir}/mvn
 install -p -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1
-install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
+install -p -m 644 %{SOURCE1} %{buildroot}%{_datadir}/bash-completion/completions/%{name}
 mv $M2_HOME/bin/m2.conf %{buildroot}%{_sysconfdir}
 ln -sf %{_sysconfdir}/m2.conf %{buildroot}%{_datadir}/%{name}/bin/m2.conf
 mv $M2_HOME/conf/settings.xml %{buildroot}%{_sysconfdir}/%{name}
@@ -203,7 +203,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/m2.conf
 %config(noreplace) %{_sysconfdir}/%{name}/settings.xml
-%config(noreplace) %{_sysconfdir}/bash_completion.d/%{name}
+%{_datadir}/bash-completion/completions/%{name}
 %{_mandir}/man1/mvn.1.gz
 
 %files javadoc -f .mfiles-javadoc
@@ -211,6 +211,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon May 20 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-7
+- Move bash-completion files to primary location
+- Resolves: rhbz#918000
+
 * Fri May 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-6
 - Remove unneeded BR: async-http-client
 - Add Requires on java-devel
