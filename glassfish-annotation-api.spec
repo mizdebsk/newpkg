@@ -3,7 +3,7 @@
 %global oname javax.annotation-api
 Name:          glassfish-annotation-api
 Version:       1.2
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       Common Annotations API Specification (JSR 250)
 Group:         Development/Libraries
 License:       CDDL or GPLv2 with exceptions
@@ -26,6 +26,7 @@ BuildRequires: maven-remote-resources-plugin
 BuildRequires: maven-resources-plugin
 BuildRequires: maven-source-plugin
 BuildRequires: maven-surefire-plugin
+BuildRequires: spec-version-maven-plugin
 
 Requires:      java
 BuildArch:     noarch
@@ -44,14 +45,6 @@ This package contains javadoc for %{name}.
 %setup -q -n %{name}-%{namedversion}
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
-%pom_remove_plugin org.glassfish.build:spec-version-maven-plugin
-
-# fix manifest
-%pom_xpath_remove "pom:build/pom:plugins/pom:plugin[pom:artifactId ='maven-bundle-plugin']/pom:configuration/pom:instructions/pom:Bundle-Version"
-sed -i "s|spec.extension.name|extension.name|" pom.xml
-sed -i "s|spec.bundle.symbolic-name|bundle.symbolicName|" pom.xml
-sed -i "s|spec.implementation.version|spec.version|" pom.xml
-sed -i "s|spec.specification.version|spec.version|" pom.xml
 
 %build
 
@@ -83,6 +76,9 @@ cp -rp target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
 %doc LICENSE.txt
 
 %changelog
+* Sun May 26 2013 gil cattaneo <puntogil@libero.it> 1.2-3
+- rebuilt with spec-version-maven-plugin support
+
 * Wed May 22 2013 gil cattaneo <puntogil@libero.it> 1.2-2
 - fixed manifest
 
