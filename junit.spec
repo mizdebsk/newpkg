@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -38,7 +38,8 @@ URL:            http://www.junit.org/
 Group:          Development/Tools
 BuildArch:      noarch
 
-Source0:        https://github.com/%{name}-team/%{name}/archive/r%{version}.tar.gz
+# ./clean-tarball.sh %{version}
+Source0:        %{name}-%{version}-clean.tar.gz
 Source2:        junit-OSGi-MANIFEST.MF
 # Removing hamcrest source jar references (not available and/or necessary)
 Patch0:         %{name}-no-hamcrest-src.patch
@@ -95,7 +96,6 @@ Demonstrations and samples for %{name}.
 %setup -q -n %{name}-r%{version}
 %patch0 -p1
 cp build/maven/junit-pom-template.xml pom.xml
-find -iname '*.class' -o -iname '*.jar' -delete
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
 
 %build
@@ -149,6 +149,9 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 %doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Fri Jun 21 2013 Michal Srb <msrb@redhat.com> - 0:4.11-3
+- Build from clean tarball
+
 * Mon May 06 2013 Tomas Radej <tradej@redhat.com> - 0:4.11-2
 - Removed uneeded dependencies
 
