@@ -6,13 +6,15 @@
 
 Name:           aether
 Version:        1.13.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
 # git clone https://github.com/sonatype/sonatype-aether.git
 # git archive --prefix="aether-1.11/" --format=tar aether-1.11 | bzip2 > aether-1.11.tar.bz2
 Source0:        %{name}-%{version}.tar.bz2
+Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
+Source2:        http://www.eclipse.org/legal/epl-v10.html
 BuildArch:      noarch
 
 BuildRequires:  maven-local
@@ -119,6 +121,8 @@ for Aether.
 
 %prep
 %setup -q
+cp -p %{SOURCE1} LICENSE-ASL
+cp -p %{SOURCE2} LICENSE-EPL
 
 %if %{without ahc}
 %pom_disable_module aether-connector-asynchttpclient
@@ -161,9 +165,11 @@ done
 
 %files -f .mfiles-%{name}
 %doc README.md
+%doc LICENSE-ASL LICENSE-EPL
 
 %files api -f .mfiles-%{name}-api
 %doc README.md
+%doc LICENSE-ASL LICENSE-EPL
 %dir %{_javadir}/%{name}
 
 %files connector-file -f .mfiles-%{name}-connector-file
@@ -173,12 +179,17 @@ done
 %files test-util -f .mfiles-%{name}-test-util
 %files util -f .mfiles-%{name}-util
 %files javadoc -f .mfiles-javadoc
+%doc LICENSE-ASL LICENSE-EPL
 
 %if %{with ahc}
 %files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
 %endif
 
 %changelog
+* Wed Jun 26 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-11
+- Install license files
+- Resolves: rhbz#958116
+
 * Fri May 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-10
 - Conditionally build without AHC connector
 
