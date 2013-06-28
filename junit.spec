@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -149,6 +149,10 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 %doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Fri Jun 28 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:4.11-4
+- Rebuild to regenerate API documentation
+- Resolves: CVE-2013-1571
+
 * Fri Jun 21 2013 Michal Srb <msrb@redhat.com> - 0:4.11-3
 - Build from clean tarball
 
