@@ -1,8 +1,7 @@
 Name:          glassfish-master-pom
 Version:       8
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       Master POM for Glassfish Maven projects
-Group:         Development/Libraries
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
 # svn export https://svn.java.net/svn/glassfish~svn/tags/master-pom-8/ glassfish-master-pom-8
@@ -14,7 +13,6 @@ Source1:       glassfish-LICENSE.txt
 
 BuildRequires: java-devel
 BuildRequires: maven-local
-Requires:      java
 BuildArch:     noarch
 
 %description
@@ -29,22 +27,20 @@ cp -p %{SOURCE1} LICENSE.txt
 sed -i 's/\r//' LICENSE.txt
 
 %build
-# Nothing to do
+
+%mvn_build
+
 %install
+%mvn_install
 
-mkdir -p %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-%add_maven_depmap JPP-%{name}.pom
-
-%check
-mvn-rpmbuild verify
-
-%files
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
+%files -f .mfiles
 %doc LICENSE.txt
 
 %changelog
+* Fri Jul 05 2013 gil cattaneo <puntogil@libero.it> 8-3
+- switch to XMvn
+- minor changes to adapt to current guideline
+
 * Thu May 02 2013 gil cattaneo <puntogil@libero.it> 8-2
 - fixed license tag
 
