@@ -3,9 +3,8 @@
 %global oname javax.annotation-api
 Name:          glassfish-annotation-api
 Version:       1.2
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       Common Annotations API Specification (JSR 250)
-Group:         Development/Libraries
 License:       CDDL or GPLv2 with exceptions
 # http://jcp.org/en/jsr/detail?id=250
 URL:           http://glassfish.java.net/
@@ -18,24 +17,17 @@ BuildRequires: jvnet-parent
 BuildRequires: glassfish-legal
 
 BuildRequires: maven-local
-BuildRequires: maven-compiler-plugin
-BuildRequires: maven-jar-plugin
-BuildRequires: maven-javadoc-plugin
 BuildRequires: maven-plugin-bundle
 BuildRequires: maven-remote-resources-plugin
-BuildRequires: maven-resources-plugin
 BuildRequires: maven-source-plugin
-BuildRequires: maven-surefire-plugin
 BuildRequires: spec-version-maven-plugin
 
-Requires:      java
 BuildArch:     noarch
 
 %description
 Common Annotations APIs for the Java Platform (JSR 250).
 
 %package javadoc
-Group:         Documentation
 Summary:       Javadoc for %{name}
 
 %description javadoc
@@ -48,34 +40,26 @@ This package contains javadoc for %{name}.
 
 %build
 
-mvn-rpmbuild package javadoc:aggregate
+%mvn_file :%{oname} %{name}
+%mvn_build
 
 sed -i 's/\r//' target/classes/META-INF/LICENSE.txt
 cp -p target/classes/META-INF/LICENSE.txt .
 
 %install
+%mvn_install
 
-mkdir -p %{buildroot}%{_javadir}
-install -pm 644 target/%{oname}-%{namedversion}.jar %{buildroot}%{_javadir}/%{name}.jar
-
-mkdir -p %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-%add_maven_depmap JPP-%{name}.pom %{name}.jar
-
-mkdir -p %{buildroot}%{_javadocdir}/%{name}
-cp -rp target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
-
-%files
-%{_javadir}/%{name}.jar
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
+%files -f .mfiles
 %doc LICENSE.txt
 
-%files javadoc
-%{_javadocdir}/%{name}
+%files javadoc -f .mfiles-javadoc
 %doc LICENSE.txt
 
 %changelog
+* Mon Jul 08 2013 gil cattaneo <puntogil@libero.it> 1.2-4
+- switch to XMvn
+- minor changes to adapt to current guideline
+
 * Sun May 26 2013 gil cattaneo <puntogil@libero.it> 1.2-3
 - rebuilt with spec-version-maven-plugin support
 
