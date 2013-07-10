@@ -7,7 +7,7 @@ License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 # use antrun-plugin instead of gmaven
-Patch0:         %{name}-1.0.9-antrunplugin.patch
+Patch0:         %{name}-1.0.10-antrunplugin.patch
 # with pom macros break build
 Patch1:         %{name}-1.0.10-remove-core-test-jar.patch
 
@@ -64,7 +64,7 @@ Tomcat and Jetty, to provide HTTP-access log functionality. Note that you
 could easily build your own module on top of logback-core.
 
 %package javadoc
-Group:         Documentation
+Summary:       Javadoc for %{name}
 
 %description javadoc
 API documentation for the Logback library
@@ -118,6 +118,9 @@ rm -rf docs/apidocs docs/project-reports docs/testapidocs docs/project-reports.h
 rm -f docs/manual/.htaccess docs/css/site.css # Zero-length file
 
 sed -i 's#<artifactId>groovy-all</artifactId#<artifactId>groovy</artifactId#' $(find . -name "pom.xml")
+
+sed -i 's#<groupId>javax.servlet#<groupId>org.apache.tomcat#' $(find . -name "pom.xml")
+sed -i 's#<artifactId>servlet-api#<artifactId>tomcat-servlet-api#' $(find . -name "pom.xml")
 
 # disable for now
 #om_disable_module logback-site
