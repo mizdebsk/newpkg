@@ -1,12 +1,10 @@
---- logback-classic/pom.xml	2012-12-05 00:03:13.000000000 +0100
-+++ logback-classic/pom.xml-gil	2013-03-14 17:24:09.478417644 +0100
-@@ -198,6 +198,78 @@
-     <plugins>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-+        <artifactId>maven-antrun-plugin</artifactId>
-+        <version>1.7</version>
-+        <dependencies>
+--- logback-classic/pom.xml	2013-03-15 17:18:51.000000000 +0100
++++ logback-classic/pom.xml-gil	2013-07-11 01:29:54.812344771 +0200
+@@ -269,10 +269,52 @@
+             <artifactId>junit</artifactId>
+             <version>${junit.version}</version>
+           </dependency>
+-
 +          <dependency>
 +            <groupId>org.codehaus.groovy</groupId>
 +            <artifactId>groovy</artifactId>
@@ -32,9 +30,10 @@
 +            <artifactId>slf4j-nop</artifactId>
 +            <version>any</version>
 +          </dependency>
-+        </dependencies>
-+        <executions>
-+          <execution>
+         </dependencies>
+ 
+         <executions>
++           <execution>
 +            <id>compile</id>
 +            <phase>process-sources</phase>
 +            <configuration>
@@ -52,30 +51,6 @@
 +              <goal>run</goal>
 +            </goals>
 +          </execution>
-+          <!--execution>
-+            <id>test-compile</id>
-+            <phase>process-test-sources</phase>
-+            <configuration>
-+              <target>
-+                <taskdef name="groovyc"
-+                  classname="org.codehaus.groovy.ant.Groovyc">
-+                  <classpath refid="maven.plugin.classpath"/>
-+                </taskdef>
-+                <mkdir dir="${project.build.testOutputDirectory}"/>
-+                <groovyc destdir="${project.build.testOutputDirectory}" srcdir="${basedir}/src/test" classpathref="maven.test.classpath">
-+                  <javac source="1.5" target="1.5" debug="on"/>
-+                </groovyc>
-+              </target>
-+            </configuration>
-+            <goals>
-+              <goal>run</goal>
-+            </goals>
-+          </execution-->
-+        </executions>
-+      </plugin>
-+
-+      <plugin>
-+        <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-compiler-plugin</artifactId>
-         <configuration>
-           <source>1.5</source>
+           <execution>
+             <id>ant-osgi-test</id>
+             <phase>package</phase>
