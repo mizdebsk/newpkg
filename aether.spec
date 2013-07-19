@@ -4,41 +4,35 @@
 %bcond_without ahc
 %endif
 
+%global vertag M2
+
 Name:           aether
-Version:        1.13.1
-Release:        12%{?dist}
+Epoch:          1
+Version:        0.9.0
+Release:        0.%{vertag}.1%{?dist}
 Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
 License:        EPL or ASL 2.0
 URL:            https://docs.sonatype.org/display/AETHER/Home
-# git clone https://github.com/sonatype/sonatype-aether.git
-# git archive --prefix="aether-1.11/" --format=tar aether-1.11 | bzip2 > aether-1.11.tar.bz2
-Source0:        %{name}-%{version}.tar.bz2
-Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
-Source2:        http://www.eclipse.org/legal/epl-v10.html
 BuildArch:      noarch
+
+Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
+
+# Temporarly BuildRequire Sonatype Aether
+BuildRequires:  aether < 1:0
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
+BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.sonatype.forge:forge-parent)
+BuildRequires:  mvn(org.sonatype.plugins:sisu-maven-plugin)
 BuildRequires:  mvn(org.sonatype.sisu:sisu-inject-plexus)
 %if %{with ahc}
 BuildRequires:  mvn(com.ning:async-http-client)
 %endif
-
-# Require all subpackages for now, until all packages that use aether
-# migrate to appropriate subpackages.  See rhbz #958143
-# TODO: Remove these once the above bug is closed.
-Requires:       %{name}-api                       = %{version}-%{release}
-Requires:       %{name}-connector-file            = %{version}-%{release}
-Requires:       %{name}-connector-wagon           = %{version}-%{release}
-Requires:       %{name}-impl                      = %{version}-%{release}
-Requires:       %{name}-spi                       = %{version}-%{release}
-Requires:       %{name}-test-util                 = %{version}-%{release}
-Requires:       %{name}-util                      = %{version}-%{release}
 
 %description
 Aether is a standalone library to resolve, install and deploy artifacts
@@ -120,9 +114,7 @@ artifacts the Maven way.  This package provides Java API documentation
 for Aether.
 
 %prep
-%setup -q
-cp -p %{SOURCE1} LICENSE-ASL
-cp -p %{SOURCE2} LICENSE-EPL
+%setup -q -n %{name}-%{version}.%{vertag}
 
 %if %{without ahc}
 %pom_disable_module aether-connector-asynchttpclient
@@ -145,17 +137,20 @@ for module in asynchttpclient wagon; do (
 # Animal sniffer is not useful in Fedora
 for module in . aether-connector-wagon aether-util aether-api   \
               aether-impl aether-connector-asynchttpclient      \
-              aether-connector-file aether-demo aether-test-util; do
+              aether-connector-file aether-test-util; do
     %pom_remove_plugin :animal-sniffer-maven-plugin $module
 done
+
+%pom_remove_plugin :maven-enforcer-plugin
 
 # Workaround for rhbz#911365
 %pom_xpath_inject pom:project "<dependencies/>"
 %pom_add_dep cglib:cglib:any:test
+%pom_add_dep aopalliance:aopalliance:any:test
 
 # Keep compatibility with packages that use old JAR locations until
 # they migrate.
-%mvn_file ":{%{name}-{*}}" %{name}/@1 %{name}/@2 sonatype-%{name}/@1
+%mvn_file ":{%{name}-{*}}" %{name}/@1 %{name}/@2
 
 %build
 %mvn_build -s
@@ -163,13 +158,23 @@ done
 %install
 %mvn_install
 
+install -d -m 755 %{buildroot}%{_javadir}/sonatype-%{name}
+for jar in %{_javadir}/sonatype-%{name}/*; do
+    mod=`basename ${jar/.jar/}`
+    cp -p %{_javadir}/%{name}/$mod.jar %{buildroot}%{_javadir}/sonatype-%{name}/
+    cp -p %{_mavenpomdir}/JPP.%{name}-$mod.pom %{buildroot}%{_mavenpomdir}/JPP.sonatype-%{name}-$mod.pom
+    %add_maven_depmap JPP.sonatype-%{name}-$mod.pom sonatype-%{name}/$mod.jar -f $mod
+done
+cp -p %{_mavenpomdir}/JPP.%{name}-org.sonatype.%{name}@%{name}.pom %{buildroot}%{_mavenpomdir}/JPP.sonatype-%{name}-%{name}.pom
+%add_maven_depmap JPP.sonatype-%{name}-%{name}.pom -f %{name}
+
 %files -f .mfiles-%{name}
 %doc README.md
-%doc LICENSE-ASL LICENSE-EPL
+%doc epl-v10.html notice.html
 
 %files api -f .mfiles-%{name}-api
 %doc README.md
-%doc LICENSE-ASL LICENSE-EPL
+%doc epl-v10.html notice.html
 %dir %{_javadir}/%{name}
 %dir %{_javadir}/sonatype-%{name}
 
@@ -180,13 +185,18 @@ done
 %files test-util -f .mfiles-%{name}-test-util
 %files util -f .mfiles-%{name}-util
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE-ASL LICENSE-EPL
+%doc epl-v10.html notice.html
 
 %if %{with ahc}
 %files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
 %endif
 
 %changelog
+* Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.M2.1
+- Switch upstream from Sonatype to Eclipse
+- Update to upstream version 0.9.0.M2
+- Install Sonatype Aether in pararell to Eclipse Aether
+
 * Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.13.1-12
 - Add symlinks to Sonatype Aether
 
