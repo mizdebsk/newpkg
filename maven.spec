@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.0.5
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -22,7 +22,7 @@ BuildArch:      noarch
 
 BuildRequires:  maven-local
 
-BuildRequires:  aether-api >= 1.13.1-8
+BuildRequires:  aether-api >= 1.13.1-12
 BuildRequires:  aether-connector-wagon
 BuildRequires:  aether-impl
 BuildRequires:  aether-spi
@@ -66,6 +66,9 @@ BuildRequires:  xmlunit
 %if 0%{?fedora}
 BuildRequires:  animal-sniffer >= 1.6-5
 %endif
+
+# Only this version has proper sonatype-aether symlinks
+Requires:       aether-api >= 1.13.1-12
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
@@ -165,11 +168,11 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
-        aether/aether-api \
-        aether/aether-connector-wagon \
-        aether/aether-impl \
-        aether/aether-spi \
-        aether/aether-util \
+        sonatype-aether/aether-api \
+        sonatype-aether/aether-connector-wagon \
+        sonatype-aether/aether-impl \
+        sonatype-aether/aether-spi \
+        sonatype-aether/aether-util \
         aopalliance \
         atinject \
         cglib \
@@ -211,6 +214,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-8
+- Use sonatype-aether symlinks
+
 * Mon May 20 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-7
 - Move bash-completion files to primary location
 - Resolves: rhbz#918000
