@@ -1,88 +1,58 @@
 Name:           maven-plugin-build-helper
-Version:        1.5
-Release:        8%{?dist}
+Version:        1.8
+Release:        1%{?dist}
 Summary:        Build Helper Maven Plugin
-
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
 URL:            http://mojo.codehaus.org/build-helper-maven-plugin/
-# The source tarball has been generated from upstream VCS:
-# svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} 
-#            %{name}-%{version}
-# tar caf %{name}-%{version}.tar.xz %{name}-%{version}
-Source0:        %{name}-%{version}.tar.xz
-Patch0:         add-junit-dependency.patch
-Patch1:         %{name}-core.patch
-
 BuildArch: noarch
 
-BuildRequires: jpackage-utils
-BuildRequires: plexus-utils
-BuildRequires: maven-local
-BuildRequires: maven-plugin-cobertura
-BuildRequires: maven-plugin-plugin
-BuildRequires: maven-resources-plugin
-BuildRequires: maven-compiler-plugin
-BuildRequires: maven-install-plugin
-BuildRequires: maven-jar-plugin
-BuildRequires: maven-javadoc-plugin
-BuildRequires: maven-enforcer-plugin
-BuildRequires: maven-surefire-plugin
-BuildRequires: maven-surefire-provider-junit4
-BuildRequires: maven-doxia-sitetools
-BuildRequires: mojo-parent
-BuildRequires: junit4
-Requires: jpackage-utils
-Requires: plexus-utils
-Requires: mojo-parent
+# The source tarball has been generated from upstream VCS:
+# svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} %{name}-%{version}
+# tar caf %{name}-%{version}.tar.xz %{name}-%{version}
+Source0:        %{name}-%{version}.tar.xz
+
+BuildRequires:  maven-local
+BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-plugin-plugin)
+BuildRequires:  mvn(org.apache.maven:maven-artifact)
+BuildRequires:  mvn(org.apache.maven:maven-core)
+BuildRequires:  mvn(org.apache.maven:maven-model)
+BuildRequires:  mvn(org.apache.maven:maven-plugin-api)
+BuildRequires:  mvn(org.apache.maven:maven-project)
+BuildRequires:  mvn(org.beanshell:bsh)
+BuildRequires:  mvn(org.codehaus.mojo:mojo-parent)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 
 %description
 This plugin contains various small independent goals to assist with
 Maven build lifecycle.
 
 %package javadoc
-Group:          Documentation
-Summary:        Javadoc for %{name}
-Requires:       jpackage-utils
+Summary:        API documentation for %{name}
 
 %description javadoc
-API documentation for %{name}.
+This package provides %{summary}.
 
 %prep
 %setup -q 
-%patch0
-%patch1 -p1
+%pom_add_dep org.apache.maven:maven-compat
 
 %build
-mvn-rpmbuild install javadoc:aggregate
+%mvn_build -f
 
 %install
-# jars
-install -d -m 0755 %{buildroot}%{_javadir}
-install -m 644 target/build-helper-maven-plugin-%{version}.jar \
-  %{buildroot}%{_javadir}/%{name}.jar
+%mvn_install
 
+%files -f .mfiles
+%dir %{_javadir}/%{name}
 
-# poms
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml \
-    %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-
-%add_maven_depmap JPP-%{name}.pom %{name}.jar
-
-# javadoc
-install -d -m 0755 %{buildroot}%{_javadocdir}/%{name}
-cp -pr target/site/api*/* %{buildroot}%{_javadocdir}/%{name}/
-
-%files
-%{_javadir}/%{name}.jar
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
-
-%files javadoc
-%{_javadocdir}/%{name}
+%files javadoc -f .mfiles-javadoc
 
 %changelog
+* Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-1
+- Update to upstream version 1.8
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
