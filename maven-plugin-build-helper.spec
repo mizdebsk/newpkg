@@ -14,6 +14,7 @@ Source0:        %{name}-%{version}.tar.xz
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-invoker-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-plugin-plugin)
 BuildRequires:  mvn(org.apache.maven:maven-artifact)
 BuildRequires:  mvn(org.apache.maven:maven-core)
@@ -50,6 +51,9 @@ This package provides %{summary}.
 %files javadoc -f .mfiles-javadoc
 
 %changelog
+* Mon Jul 22 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-1
+- Add missing BR: maven-invoker-plugin
+
 * Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-1
 - Update to upstream version 1.8
 
