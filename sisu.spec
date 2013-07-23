@@ -154,6 +154,11 @@ export TYCHO_MVN_RPMBUILD=1
 export MAVEN_OPTS="-DskipTychoVersionCheck"
 %mvn_build -f
 
+# Tycho inject dependencies with system scope.  Disable installation
+# of effective POMs until Mvn can handle system-scoped deps.
+sed -i /effective-poms/d .mfiles*
+rm -rf .xmvn/root%{_datadir}/maven-effective-poms
+
 %install
 %mvn_install
 
