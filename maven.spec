@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -165,6 +165,8 @@ mv $M2_HOME/bin/m2.conf %{buildroot}%{_sysconfdir}
 ln -sf %{_sysconfdir}/m2.conf %{buildroot}%{_datadir}/%{name}/bin/m2.conf
 mv $M2_HOME/conf/settings.xml %{buildroot}%{_sysconfdir}/%{name}
 ln -sf %{_sysconfdir}/%{name}/settings.xml %{buildroot}%{_datadir}/%{name}/conf/settings.xml
+mv $M2_HOME/conf/logging %{buildroot}%{_sysconfdir}/%{name}
+ln -sf %{_sysconfdir}/%{name}/logging %{buildroot}%{_datadir}/%{name}/conf
 
 cp -a $M2_HOME/bin/* %{buildroot}%{_datadir}/%{name}/bin
 
@@ -212,8 +214,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 %{_bindir}/mvn
 %dir %{_javadir}/%{name}
 %dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/logging
 %config(noreplace) %{_sysconfdir}/m2.conf
 %config(noreplace) %{_sysconfdir}/%{name}/settings.xml
+%config(noreplace) %{_sysconfdir}/%{name}/logging/simplelogger.properties
 %{_datadir}/bash-completion/completions/%{name}
 %{_mandir}/man1/mvn.1.gz
 
@@ -222,6 +226,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-2
+- Install simplelogger.properties into %{_sysconfdir}
+
 * Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-1
 - Update to upstream version 3.1.0
 
