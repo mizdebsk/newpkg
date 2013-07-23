@@ -65,6 +65,7 @@ BuildRequires:  sisu-inject >= 1:0
 BuildRequires:  sisu-plexus >= 1:0
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
+BuildRequires:  mvn(ch.qos.logback:logback-classic)
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
