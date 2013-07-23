@@ -1,305 +1,182 @@
 %global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^osgi\\(org\\.sonatype\\.sisu\\.guava\\)$
 
+%global vertag M4
+
 Name:           sisu
-Version:        2.3.0
-Release:        8%{?dist}
+Epoch:          1
+Version:        0.0.0
+Release:        0.1.%{vertag}%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
-License:        ASL 2.0 and EPL and MIT
-URL:            http://github.com/sonatype/sisu
+# bundled asm is under BSD
+License:        EPL and BSD
+URL:            http://eclipse.org/sisu
 
-# git clone git://github.com/sonatype/%{name} ${name}-%{version}
-# cd %{name}-%{version}
-# git checkout %{name}-%{version}
-# find ./ -name "*.jar" -delete
-# find ./ -name "*.class" -delete
-# cd ..
-# tar czvf %{name}-%{version}.tar.gz %{name}-%{version}
-Source0:        %{name}-%{version}.tar.gz
+# TODO: unbundle asm
+# TODO: install EPL license file
+
+Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/milestones/%{version}.M4.tar.bz2#/org.eclipse.%{name}.inject-%{version}.M4.tar.bz2
+Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/milestones/%{version}.M4.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.M4.tar.bz2
 
 BuildArch:      noarch
 
-BuildRequires:  java-devel
-BuildRequires:  jpackage-utils
-BuildRequires:  maven-local >= 0.11.1
+BuildRequires:  maven-local
+BuildRequires:  mvn(ch.qos.logback:logback-classic)
+BuildRequires:  mvn(com.google.inject.extensions:guice-assistedinject)
+BuildRequires:  mvn(com.google.inject:guice)
+BuildRequires:  mvn(javax.enterprise:cdi-api)
+BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(org.apache.felix:org.apache.felix.framework)
+BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
+BuildRequires:  mvn(org.osgi:org.osgi.core)
+BuildRequires:  mvn(org.sonatype.oss:oss-parent)
+BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
+BuildRequires:  mvn(org.jacoco:jacoco-maven-plugin)
 
-BuildRequires:  aopalliance
-BuildRequires:  atinject
-BuildRequires:  cdi-api
-BuildRequires:  felix-framework
-BuildRequires:  forge-parent
-BuildRequires:  geronimo-specs
-BuildRequires:  google-guice
-BuildRequires:  junit
-BuildRequires:  plexus-classworlds
-BuildRequires:  plexus-containers-component-annotations
-BuildRequires:  plexus-utils
-BuildRequires:  geronimo-parent-poms
-BuildRequires:  sisu
-BuildRequires:  testng
-BuildRequires:  weld-parent
-
-Requires:       %{name}-bean              = %{version}-%{release}
-Requires:       %{name}-bean-binders      = %{version}-%{release}
-Requires:       %{name}-bean-containers   = %{version}-%{release}
-Requires:       %{name}-bean-converters   = %{version}-%{release}
-Requires:       %{name}-bean-inject       = %{version}-%{release}
-Requires:       %{name}-bean-locators     = %{version}-%{release}
-Requires:       %{name}-bean-reflect      = %{version}-%{release}
-Requires:       %{name}-bean-scanners     = %{version}-%{release}
-Requires:       %{name}-containers        = %{version}-%{release}
-Requires:       %{name}-inject            = %{version}-%{release}
-Requires:       %{name}-inject-bean       = %{version}-%{release}
-Requires:       %{name}-inject-plexus     = %{version}-%{release}
-Requires:       %{name}-osgi-registry     = %{version}-%{release}
-Requires:       %{name}-parent            = %{version}-%{release}
-Requires:       %{name}-plexus            = %{version}-%{release}
-Requires:       %{name}-plexus-binders    = %{version}-%{release}
-Requires:       %{name}-plexus-converters = %{version}-%{release}
-Requires:       %{name}-plexus-lifecycles = %{version}-%{release}
-Requires:       %{name}-plexus-locators   = %{version}-%{release}
-Requires:       %{name}-plexus-metadata   = %{version}-%{release}
-Requires:       %{name}-plexus-scanners   = %{version}-%{release}
-Requires:       %{name}-plexus-shim       = %{version}-%{release}
-Requires:       %{name}-registries        = %{version}-%{release}
-Requires:       %{name}-spi-registry      = %{version}-%{release}
+BuildRequires:  osgi(aopalliance)
+BuildRequires:  osgi(com.google.guava)
+BuildRequires:  osgi(javax.el)
+BuildRequires:  osgi(javax.enterprise.cdi-api)
+BuildRequires:  osgi(javax.inject)
+BuildRequires:  osgi(javax.servlet)
+BuildRequires:  osgi(javax.xml.rpc)
+BuildRequires:  osgi(org.apache.geronimo.specs.geronimo-annotation_1.1_spec)
+BuildRequires:  osgi(org.apache.geronimo.specs.geronimo-ejb_3.1_spec)
+BuildRequires:  osgi(org.codehaus.plexus.classworlds)
+BuildRequires:  osgi(org.codehaus.plexus.component-annotations)
+BuildRequires:  osgi(org.codehaus.plexus.utils)
+BuildRequires:  osgi(org.eclipse.jdt.apt.core)
+BuildRequires:  osgi(org.eclipse.osgi)
+BuildRequires:  osgi(org.hamcrest.core)
+BuildRequires:  osgi(org.junit)
+BuildRequires:  osgi(org.sonatype.sisu.guice)
+BuildRequires:  osgi(org.testng)
+BuildRequires:  osgi(slf4j.api)
 
 %description
 Java dependency injection framework with backward support for plexus and bean
 style dependency injection.
 
-%package        parent
-Summary:        Sisu parent POM
+%package        inject
+Summary:        Sisu inject POM
 
-%description    parent
-This package contains %{summary}.
+Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-binders      < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-containers   < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-converters   < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-inject       < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-locators     < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-reflect      < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-bean-scanners     < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-containers        < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-inject-bean       < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-inject-plexus     < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-osgi-registry     < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-parent            < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-binders    < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-converters < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-lifecycles < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-locators   < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-metadata   < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-scanners   < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-plexus-shim       < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-registries        < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-spi-registry      < %{epoch}:%{version}-%{release}
 
-%package        containers
-Summary:        Sisu containers POM
-
-%description    containers
-This package contains %{summary}.
-
-%package        bean
-Summary:        Sisu bean POM
-
-%description    bean
+%description    inject
 This package contains %{summary}.
 
 %package        plexus
 Summary:        Sisu Plexus POM
 
+# XXX: temporary hack
+Provides:       mvn(org.sonatype.sisu:sisu-inject-plexus)
+
 %description    plexus
-This package contains %{summary}.
-
-%package        registries
-Summary:        Sisu registries POM
-
-%description    registries
-This package contains %{summary}.
-
-%package        inject
-Summary:        Sisu inject POM
-
-%description    inject
-This package contains %{summary}.
-
-%package        bean-binders
-Summary:        Guice Bean Binders module for Sisu
-
-%description    bean-binders
-This package contains %{summary}.
-
-%package        bean-containers
-Summary:        Guice Bean Containers module for Sisu
-
-%description    bean-containers
-This package contains %{summary}.
-
-%package        bean-converters
-Summary:        Guice Bean Converters module for Sisu
-
-%description    bean-converters
-This package contains %{summary}.
-
-%package        bean-inject
-Summary:        Guice Bean Inject module for Sisu
-
-%description    bean-inject
-This package contains %{summary}.
-
-%package        bean-locators
-Summary:        Guice Bean Locators module for Sisu
-
-%description    bean-locators
-This package contains %{summary}.
-
-%package        bean-reflect
-Summary:        Guice Bean Reflect module for Sisu
-
-%description    bean-reflect
-This package contains %{summary}.
-
-%package        bean-scanners
-Summary:        Guice Bean Scanners module for Sisu
-
-%description    bean-scanners
-This package contains %{summary}.
-
-%package        plexus-binders
-Summary:        Guice Plexus Binders module for Sisu
-
-%description    plexus-binders
-This package contains %{summary}.
-
-%package        plexus-converters
-Summary:        Guice Plexus Converters module for Sisu
-
-%description    plexus-converters
-This package contains %{summary}.
-
-%package        plexus-lifecycles
-Summary:        Guice Plexus Lifecycles module for Sisu
-
-%description    plexus-lifecycles
-This package contains %{summary}.
-
-%package        plexus-locators
-Summary:        Guice Plexus Locators module for Sisu
-
-%description    plexus-locators
-This package contains %{summary}.
-
-%package        plexus-metadata
-Summary:        Guice Plexus Metadata module for Sisu
-
-%description    plexus-metadata
-This package contains %{summary}.
-
-%package        plexus-scanners
-Summary:        Guice Plexus Scanners module for Sisu
-
-%description    plexus-scanners
-This package contains %{summary}.
-
-%package        plexus-shim
-Summary:        Guice Plexus Shim module for Sisu
-
-%description    plexus-shim
-This package contains %{summary}.
-
-%package        inject-bean
-Summary:        Bean Inject bundle for Sisu
-
-%description    inject-bean
-This package contains %{summary}.
-
-%package        inject-plexus
-Summary:        Plexus Inject bundle for Sisu
-
-%description    inject-plexus
-This package contains %{summary}.
-
-%package        osgi-registry
-Summary:        OSGi registry for Sisu
-
-%description    osgi-registry
-This package contains %{summary}.
-
-%package        spi-registry
-Summary:        SPI registry for Sisu
-
-%description    spi-registry
 This package contains %{summary}.
 
 %package        javadoc
 Summary:        API documentation for Sisu
-Group:          Documentation
 
 %description    javadoc
 This package contains %{summary}.
 
 %prep
-%setup -q
+%setup -q -c -T
+tar xf %{SOURCE0} && mv milestones/* sisu-inject && rmdir milestones
+tar xf %{SOURCE1} && mv milestones/* sisu-plexus && rmdir milestones
 
-# Animal sniffer is only causing problems
-%pom_remove_plugin :animal-sniffer-maven-plugin
+%mvn_file ":{*}" @1
+%mvn_package ":*{inject,plexus}" @1
+%mvn_package : __noinstall
 
-# Don't generate auto-requires for optional dependencies
-sed -i "s|<optional>true</optional>|<scope>provided</scope>|" \
-    $(grep -l "<optional>" $(find sisu-inject -name pom.xml))
+for target in \
+    sisu-inject/org.eclipse.sisu.inject/build.target \
+    sisu-plexus/org.eclipse.sisu.plexus/build.target
+do
+    sed -i '/<unit/s|version="[^"]*"||' $target
+    sed -i '/<repository/s|location="[^"]*"|location="file:'"$PWD"'/.m2/p2/repo"|' $target
+    sed -i '/<unit id="plexus-deps"/s|.*|<unit id="org.codehaus.plexus.classworlds"/><unit id="org.codehaus.plexus.component-annotations"/><unit id="org.codehaus.plexus.utils"/>|' $target
+    sed -i '/<unit id="org.aopalliance"/s|.*|<unit id="aopalliance"/>|' $target
+    sed -i '/<unit id="cdi.api"/s|.*|<unit id="javax.enterprise.cdi-api"/>|' $target
+    sed -i '/<unit id="javax.annotation"/s|.*|<unit id="org.apache.geronimo.specs.geronimo-annotation_1.1_spec"/>|' $target
+    sed -i '/<unit id="javax.ejb"/s|.*|<unit id="org.apache.geronimo.specs.geronimo-ejb_3.1_spec"/>|' $target
+    sed -i '/<unit id="com.google.inject"/s|.*|<unit id="org.sonatype.sisu.guice"/>|' $target
+    sed -i '/<unit id="org.slf4j.api"/s|.*|<unit id="slf4j.api"/>|' $target
+done
 
-# Remove bundled objectweb-asm library
-rm -rf ./sisu-inject/containers/guice-bean/guice-bean-scanners/src/main/java/org/sonatype/guice/bean/scanners/asm
-%pom_add_dep asm:asm sisu-inject/containers/guice-bean/guice-bean-scanners
-# sisu-inject-bean bundles classes from other modules, so it also needs asm
-%pom_add_dep asm:asm sisu-inject/containers/guice-bean/sisu-inject-bean
+for pom in \
+    sisu-inject/org.eclipse.sisu.inject \
+    sisu-inject/org.eclipse.sisu.inject.extender \
+    sisu-plexus/org.eclipse.sisu.plexus
+do
+    %pom_remove_plugin :animal-sniffer-maven-plugin $pom
+done
 
-# Fix namespace of imported asm classes
-sed -i 's/org.sonatype.guice.bean.scanners.asm/org.objectweb.asm/g' \
-    sisu-inject/containers/guice-plexus/guice-plexus-scanners/src/{main,test}/java/org/sonatype/guice/plexus/scanners/*.java \
-    sisu-inject/containers/guice-bean/guice-bean-scanners/src/{main,test}/java/org/sonatype/guice/bean/scanners/*.java \
+sed -i '260s/<Object/<String/g' `find sisu-inject -name SisuActivator.java`
 
-# Fix plexus bundling
-sed -i -e '/provide these APIs as a convenience/,+2d' \
-    sisu-inject/containers/guice-bean/sisu-inject-bean/pom.xml
-%pom_add_dep javax.inject:javax.inject sisu-inject/containers/guice-bean/sisu-inject-bean
-%pom_add_dep javax.enterprise:cdi-api sisu-inject/containers/guice-bean/sisu-inject-bean
-
-# add backward compatible location
-cp sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/sonatype/guice/plexus/lifecycles/*java \
-   sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/codehaus/plexus/
-sed -i 's/org.sonatype.guice.plexus.lifecycles/org.codehaus.plexus/' \
-       sisu-inject/containers/guice-plexus/guice-plexus-lifecycles/src/main/java/org/codehaus/plexus/*java
-
-# Dependency not available
-%pom_disable_module sisu-eclipse-registry sisu-inject/registries
-
-%pom_remove_plugin :maven-surefire-plugin sisu-inject/containers/guice-bean/guice-bean-containers
-%pom_remove_plugin :maven-clean-plugin sisu-inject/containers/guice-plexus/guice-plexus-binders
-%pom_remove_plugin :maven-dependency-plugin sisu-inject/containers/guice-plexus/guice-plexus-binders
+cat <<EOF >pom.xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.fedoraproject.maven</groupId>
+  <artifactId>aggregator-project</artifactId>
+  <version>dummy</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>sisu-inject</module>
+    <module>sisu-plexus</module>
+  </modules>
+</project>
+EOF
 
 %build
-%mvn_package ":{sisu,guice}-{*}" @2
-%mvn_build -s -f
+export TYCHO_MVN_RPMBUILD=1
+export MAVEN_OPTS="-DskipTychoVersionCheck"
+%mvn_build -f
 
 %install
 %mvn_install
 
-%files
-%doc LICENSE-ASL.txt LICENSE-EPL.txt
-%dir %{_javadir}/%{name}
+# XXX: temporary hack
+install -d -m 755 %{buildroot}%{_javadir}/%{name}
+ln -sf %{_javadir}/org.eclipse.%{name}.inject.jar \
+   %{buildroot}%{_javadir}/%{name}/sisu-inject-bean.jar
+ln -sf %{_javadir}/org.eclipse.%{name}.plexus.jar \
+   %{buildroot}%{_javadir}/%{name}/sisu-inject-plexus.jar
 
-%files parent            -f .mfiles-parent
-%files containers        -f .mfiles-containers
-%files bean              -f .mfiles-bean
-%files plexus            -f .mfiles-plexus
-%files registries        -f .mfiles-registries
-%files inject            -f .mfiles-inject
-%files bean-binders      -f .mfiles-bean-binders
-%files bean-containers   -f .mfiles-bean-containers
-%files bean-converters   -f .mfiles-bean-converters
-%files bean-inject       -f .mfiles-bean-inject
-%files bean-locators     -f .mfiles-bean-locators
-%files bean-reflect      -f .mfiles-bean-reflect
-%files bean-scanners     -f .mfiles-bean-scanners
-%files plexus-binders    -f .mfiles-plexus-binders
-%files plexus-converters -f .mfiles-plexus-converters
-%files plexus-lifecycles -f .mfiles-plexus-lifecycles
-%files plexus-locators   -f .mfiles-plexus-locators
-%files plexus-metadata   -f .mfiles-plexus-metadata
-%files plexus-scanners   -f .mfiles-plexus-scanners
-%files plexus-shim       -f .mfiles-plexus-shim
-%files inject-bean       -f .mfiles-inject-bean
-%files inject-plexus     -f .mfiles-inject-plexus
-%files osgi-registry     -f .mfiles-osgi-registry
-%files spi-registry      -f .mfiles-spi-registry
+
+%files inject -f .mfiles-inject
+
+%files plexus -f .mfiles-plexus
+%{_javadir}/%{name}
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE-ASL.txt LICENSE-EPL.txt
 
 
 %changelog
+* Mon Jul 22 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.1.M4
+- Update to upstream version 0.0.0.M4
+
 * Wed Mar 27 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.3.0-8
 - Remove unneeded animal-sniffer BuildRequires
 - Add forge-parent to BuildRequires to ensure it's present
