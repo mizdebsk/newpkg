@@ -5,7 +5,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.1.%{vertag}%{?dist}
+Release:        0.2.%{vertag}%{?dist}
 Summary:        Sonatype dependency injection framework
 Group:          Development/Libraries
 # bundled asm is under BSD
@@ -89,9 +89,6 @@ This package contains %{summary}.
 %package        plexus
 Summary:        Sisu Plexus POM
 
-# XXX: temporary hack
-Provides:       mvn(org.sonatype.sisu:sisu-inject-plexus)
-
 %description    plexus
 This package contains %{summary}.
 
@@ -162,23 +159,18 @@ rm -rf .xmvn/root%{_datadir}/maven-effective-poms
 %install
 %mvn_install
 
-# XXX: temporary hack
-install -d -m 755 %{buildroot}%{_javadir}/%{name}
-ln -sf %{_javadir}/org.eclipse.%{name}.inject.jar \
-   %{buildroot}%{_javadir}/%{name}/sisu-inject-bean.jar
-ln -sf %{_javadir}/org.eclipse.%{name}.plexus.jar \
-   %{buildroot}%{_javadir}/%{name}/sisu-inject-plexus.jar
-
 
 %files inject -f .mfiles-inject
 
 %files plexus -f .mfiles-plexus
-%{_javadir}/%{name}
 
 %files javadoc -f .mfiles-javadoc
 
 
 %changelog
+* Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.2.M4
+- Remove unneeded provides and compat symlinks
+
 * Mon Jul 22 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.1.M4
 - Update to upstream version 0.0.0.M4
 
