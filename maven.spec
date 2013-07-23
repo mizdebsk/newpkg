@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           maven
-Version:        3.0.5
-Release:        8%{?dist}
+Version:        3.1.0
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -22,11 +22,12 @@ BuildArch:      noarch
 
 BuildRequires:  maven-local
 
-BuildRequires:  aether-api >= 1.13.1-12
-BuildRequires:  aether-connector-wagon
-BuildRequires:  aether-impl
-BuildRequires:  aether-spi
-BuildRequires:  aether-util
+BuildRequires:  aether >= 1:0
+BuildRequires:  aether-api >= 1:0
+BuildRequires:  aether-connector-wagon >= 1:0
+BuildRequires:  aether-impl >= 1:0
+BuildRequires:  aether-spi >= 1:0
+BuildRequires:  aether-util >= 1:0
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
 BuildRequires:  apache-commons-jxpath
@@ -37,6 +38,7 @@ BuildRequires:  cglib
 BuildRequires:  easymock
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
+BuildRequires:  jsr-305
 BuildRequires:  junit
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
@@ -59,16 +61,10 @@ BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-interpolation
 BuildRequires:  plexus-sec-dispatcher
 BuildRequires:  plexus-utils
-BuildRequires:  sisu-inject-bean
-BuildRequires:  sisu-inject-plexus
+BuildRequires:  sisu-inject >= 1:0
+BuildRequires:  sisu-plexus >= 1:0
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
-%if 0%{?fedora}
-BuildRequires:  animal-sniffer >= 1.6-5
-%endif
-
-# Only this version has proper sonatype-aether symlinks
-Requires:       aether-api >= 1.13.1-12
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
@@ -119,10 +115,18 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 %pom_remove_plugin :animal-sniffer-maven-plugin
 #fi
 
-%pom_add_dep org.codehaus.plexus:plexus-container-default maven-plugin-api
 # Test dependencies
 %pom_add_dep aopalliance:aopalliance:any:test maven-model-builder
+%pom_add_dep cglib:cglib:any:test maven-aether-provider
+%pom_add_dep cglib:cglib:any:test maven-core
+%pom_add_dep cglib:cglib:any:test maven-compat
 %pom_add_dep cglib:cglib:any:test maven-model-builder
+
+
+# Fix test failures caused by incompatible version of plexus-utils
+# (rhbz#987316).
+sed -i 's/"  1.5  "/&.trim()/' `find -name DefaultModelBuilderFactoryTest.java`
+sed -i 's/"  preserve space  "/&.trim()/' `find -name PomConstructionTest.java`
 
 %build
 # Put all JARs in standard location, but create symlinks in Maven lib
@@ -168,34 +172,37 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
-        sonatype-aether/aether-api \
-        sonatype-aether/aether-connector-wagon \
-        sonatype-aether/aether-impl \
-        sonatype-aether/aether-spi \
-        sonatype-aether/aether-util \
+        aether/aether-api \
+        aether/aether-connector-wagon \
+        aether/aether-impl \
+        aether/aether-spi \
+        aether/aether-util \
         aopalliance \
-        atinject \
-        cglib \
+        objectweb-asm \
+        cdi-api \
         commons-cli \
         google-guice \
         guava \
-        maven-wagon/file \
-        maven-wagon/http-lightweight \
-        maven-wagon/http-shared \
-        maven-wagon/provider-api \
-        nekohtml \
-        objectweb-asm \
+        atinject \
+        jsr-305 \
+        org.eclipse.sisu.inject \
+        org.eclipse.sisu.plexus \
+        plexus/plexus-cipher \
         plexus/containers-component-annotations \
         plexus/interpolation \
-        plexus/plexus-cipher \
         plexus/plexus-sec-dispatcher \
         plexus/utils \
-        sisu/sisu-inject-bean \
-        sisu/sisu-inject-plexus \
         slf4j/api \
-        slf4j/nop \
-        xbean/xbean-reflect \
+        slf4j/simple \
+        maven-wagon/file \
+        maven-wagon/http-shared \
+        maven-wagon/provider-api \
+        \
+        maven-wagon/http-lightweight \
+        cglib \
+        nekohtml \
 )
+
 
 
 %files -f .mfiles
@@ -214,6 +221,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-1
+- Update to upstream version 3.1.0
+
 * Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0.5-8
 - Use sonatype-aether symlinks
 
