@@ -9,16 +9,15 @@
 Name:           aether
 Epoch:          1
 Version:        0.9.0
-Release:        0.%{vertag}.1%{?dist}
-Summary:        Sonatype library to resolve, install and deploy artifacts the Maven way
-License:        EPL or ASL 2.0
-URL:            https://docs.sonatype.org/display/AETHER/Home
+Release:        0.2.%{vertag}%{?dist}
+Summary:        Library to resolve, install and deploy artifacts the Maven way
+License:        EPL
+URL:            http://eclipse.org/aether
 BuildArch:      noarch
 
 Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
 
-# Temporarly BuildRequire Sonatype Aether
-BuildRequires:  aether < 1:0
+Patch0001:      0001-Port-from-Sonatype-Sisu-to-Eclipse-Sisu.patch
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
@@ -26,10 +25,10 @@ BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-maven-plugin)
+BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.sonatype.forge:forge-parent)
-BuildRequires:  mvn(org.sonatype.plugins:sisu-maven-plugin)
-BuildRequires:  mvn(org.sonatype.sisu:sisu-inject-plexus)
 %if %{with ahc}
 BuildRequires:  mvn(com.ning:async-http-client)
 %endif
@@ -148,6 +147,8 @@ done
 %pom_add_dep cglib:cglib:any:test
 %pom_add_dep aopalliance:aopalliance:any:test
 
+%patch0001 -p1
+
 # Keep compatibility with packages that use old JAR locations until
 # they migrate.
 %mvn_file ":{%{name}-{*}}" %{name}/@1 %{name}/@2
@@ -158,16 +159,6 @@ done
 %install
 %mvn_install
 
-install -d -m 755 %{buildroot}%{_javadir}/sonatype-%{name}
-for jar in %{_javadir}/sonatype-%{name}/*; do
-    mod=`basename ${jar/.jar/}`
-    cp -p %{_javadir}/%{name}/$mod.jar %{buildroot}%{_javadir}/sonatype-%{name}/
-    cp -p %{_mavenpomdir}/JPP.%{name}-$mod.pom %{buildroot}%{_mavenpomdir}/JPP.sonatype-%{name}-$mod.pom
-    %add_maven_depmap JPP.sonatype-%{name}-$mod.pom sonatype-%{name}/$mod.jar -f $mod
-done
-cp -p %{_mavenpomdir}/JPP.%{name}-org.sonatype.%{name}@%{name}.pom %{buildroot}%{_mavenpomdir}/JPP.sonatype-%{name}-%{name}.pom
-%add_maven_depmap JPP.sonatype-%{name}-%{name}.pom -f %{name}
-
 %files -f .mfiles-%{name}
 %doc README.md
 %doc epl-v10.html notice.html
@@ -176,7 +167,6 @@ cp -p %{_mavenpomdir}/JPP.%{name}-org.sonatype.%{name}@%{name}.pom %{buildroot}%
 %doc README.md
 %doc epl-v10.html notice.html
 %dir %{_javadir}/%{name}
-%dir %{_javadir}/sonatype-%{name}
 
 %files connector-file -f .mfiles-%{name}-connector-file
 %files connector-wagon -f .mfiles-%{name}-connector-wagon
@@ -192,6 +182,10 @@ cp -p %{_mavenpomdir}/JPP.%{name}-org.sonatype.%{name}@%{name}.pom %{buildroot}%
 %endif
 
 %changelog
+* Thu Jul 25 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.2.M2
+- Remove remains of Sonatype Aether
+- Port from Sonatype Sisu to Eclipse Sisu, resolves: rhbz#985691
+
 * Fri Jul 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.M2.1
 - Switch upstream from Sonatype to Eclipse
 - Update to upstream version 0.9.0.M2
