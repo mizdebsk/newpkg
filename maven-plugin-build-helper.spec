@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
 Version:        1.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build Helper Maven Plugin
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
@@ -11,6 +11,7 @@ BuildArch: noarch
 # svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} %{name}-%{version}
 # tar caf %{name}-%{version}.tar.xz %{name}-%{version}
 Source0:        %{name}-%{version}.tar.xz
+Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
@@ -37,6 +38,7 @@ This package provides %{summary}.
 
 %prep
 %setup -q 
+cp %{SOURCE1} LICENSE-2.0.txt
 %pom_add_dep org.apache.maven:maven-compat
 
 %build
@@ -46,11 +48,16 @@ This package provides %{summary}.
 %mvn_install
 
 %files -f .mfiles
+%doc header.txt LICENSE-2.0.txt
 %dir %{_javadir}/%{name}
 
 %files javadoc -f .mfiles-javadoc
+%doc header.txt LICENSE-2.0.txt
 
 %changelog
+* Fri Jul 26 2013 Tomas Radej <tradej@redhat.com> - 1.8-2
+- Add missing ASL license text and installed all license files
+
 * Mon Jul 22 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.8-1
 - Add missing BR: maven-invoker-plugin
 
