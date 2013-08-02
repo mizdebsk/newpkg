@@ -1,6 +1,6 @@
 Name:	SimplyHTML		
 Version:	0.16.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Application and a java component for rich text processing
 
 Group:		Development/Libraries
@@ -106,6 +106,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.16.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Fri Mar 29 2013 Johannes Lips <hannes@fedoraproject.org> 0.16.7-1
 - update to latest upstream version 
 
