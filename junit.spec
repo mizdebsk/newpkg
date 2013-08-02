@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -41,6 +41,8 @@ BuildArch:      noarch
 # ./clean-tarball.sh %{version}
 Source0:        %{name}-%{version}-clean.tar.gz
 Source2:        junit-OSGi-MANIFEST.MF
+Source3:        create-tarball.sh
+
 # Removing hamcrest source jar references (not available and/or necessary)
 Patch0:         %{name}-no-hamcrest-src.patch
 
@@ -149,6 +151,9 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 %doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Fri Aug 02 2013 Michal Srb <msrb@redhat.com> - 0:4.11-5
+- Add create-tarball.sh script to SRPM
+
 * Fri Jun 28 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:4.11-4
 - Rebuild to regenerate API documentation
 - Resolves: CVE-2013-1571

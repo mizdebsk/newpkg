@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-    echo "Usage: ./clean-tarball VERSION"
+    echo "Usage: ./create-tarball.sh VERSION"
     exit 1
 fi
 
