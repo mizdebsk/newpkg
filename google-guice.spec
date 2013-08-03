@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -221,6 +221,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Wed Apr 24 2013 Michal Srb <msrb@redhat.com> - 3.1.3-2
 - Revert update to 3.1.4 (uses asm4)
 
