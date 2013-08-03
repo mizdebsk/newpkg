@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -121,6 +121,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Fri Mar 01 2013 Michal Srb <msrb@redhat.com> - 0:2.4-1
 - Port to jetty 9
 
