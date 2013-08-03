@@ -1,6 +1,6 @@
 Name:          glassfish-master-pom
 Version:       8
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       Master POM for Glassfish Maven projects
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
@@ -37,6 +37,9 @@ sed -i 's/\r//' LICENSE.txt
 %doc LICENSE.txt
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 8-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Fri Jul 05 2013 gil cattaneo <puntogil@libero.it> 8-3
 - switch to XMvn
 - minor changes to adapt to current guideline
