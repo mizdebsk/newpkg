@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -88,6 +88,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Mon Mar 25 2013 Tomas Radej <tradej@redhat.com> - 1.9.0-12
 - Patched LocalizedMatcher due to hamcrest update, (bug upstream)
 
