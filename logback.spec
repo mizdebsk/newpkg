@@ -1,6 +1,6 @@
 Name:           logback
 Version:        1.0.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Java logging library
 Group:          Development/Tools
 License:        LGPLv2 or EPL
@@ -157,6 +157,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.10-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Wed Jul 10 2013 gil cattaneo <puntogil@libero.it> - 1.0.10-2
 - switch to XMvn
 - minor changes to adapt to current guideline
