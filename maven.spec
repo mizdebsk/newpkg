@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -226,6 +226,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-2
 - Install simplelogger.properties into %{_sysconfdir}
 
