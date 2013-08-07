@@ -1,50 +1,66 @@
 Name:           logback
-Version:        1.0.10
-Release:        3%{?dist}
+Version:        1.0.13
+Release:        1%{?dist}
 Summary:        A Java logging library
-Group:          Development/Tools
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 # use antrun-plugin instead of gmaven
 Patch0:         %{name}-1.0.10-antrunplugin.patch
-# with pom macros break build
-Patch1:         %{name}-1.0.10-remove-core-test-jar.patch
 
 # Java dependencies
 BuildRequires: java-devel >= 1:1.6.0
 
 # Required libraries
-BuildRequires: geronimo-jms
-BuildRequires: fusesource-pom
+BuildRequires: mvn(javax.mail:mail)
+BuildRequires: mvn(log4j:log4j)
+BuildRequires: mvn(org.apache.geronimo.specs:geronimo-jms_1.1_spec)
+BuildRequires: mvn(org.apache.tomcat:tomcat-catalina)
+BuildRequires: mvn(org.apache.tomcat:tomcat-servlet-api)
 # require groovy 2.0.7
-BuildRequires: groovy
-BuildRequires: janino
-BuildRequires: jansi
-BuildRequires: javamail
-BuildRequires: jetty
-BuildRequires: log4j
-BuildRequires: slf4j
-BuildRequires: tomcat-lib
-BuildRequires: tomcat-servlet-3.0-api
+BuildRequires: mvn(org.codehaus.groovy:groovy)
+BuildRequires: mvn(org.codehaus.janino:janino)
+BuildRequires: mvn(org.eclipse.jetty:jetty-server)
+BuildRequires: mvn(org.fusesource:fusesource-pom)
+BuildRequires: mvn(org.fusesource.jansi:jansi)
+BuildRequires: mvn(org.slf4j:slf4j-api)
+BuildRequires: mvn(org.slf4j:slf4j-ext)
 
 # groovy-all embedded libraries
-BuildRequires: antlr-tool
-BuildRequires: apache-commons-cli
-BuildRequires: objectweb-asm
+BuildRequires: mvn(antlr:antlr)
+BuildRequires: mvn(asm:asm-all)
+BuildRequires: mvn(commons-cli:commons-cli)
+BuildRequires: mvn(org.slf4j:slf4j-nop)
 
-# Build tools -- build with ant for now because of circular dependencies
+# test deps
+%if 0
+BuildRequires: mvn(com.h2database:h2:1.2.132)
+BuildRequires: mvn(dom4j:dom4j:1.6.1)
+BuildRequires: mvn(hsqldb:hsqldb:1.8.0.7)
+BuildRequires: mvn(mysql:mysql-connector-java:5.1.9)
+BuildRequires: mvn(postgresql:postgresql:8.4-701.jdbc4)
+BuildRequires: mvn(org.easytesting:fest-assert:1.2)
+BuildRequires: mvn(org.mockito:mockito-core:1.9.0)
+BuildRequires: mvn(org.slf4j:integration:1.7.5)
+BuildRequires: mvn(org.slf4j:jul-to-slf4j:1.7.5)
+BuildRequires: mvn(org.slf4j:log4j-over-slf4j:1.7.5)
+BuildRequires: mvn(org.slf4j:slf4j-api:1.7.5:test-jar)
+BuildRequires: mvn(org.slf4j:slf4j-ext:1.7.5)
+BuildRequires: mvn(com.icegreen:greenmail:1.3)
+BuildRequires: mvn(org.subethamail:subethasmtp:2.1.0)
+# mvn(ch.qos.logback:logback-core:%%{version}:test-jar)
+%endif
+
 # antrun plugin deps
-BuildRequires: ant-junit
-BuildRequires: felix-main
-BuildRequires: junit
+BuildRequires: mvn(org.apache.ant:ant-junit)
+BuildRequires: mvn(org.apache.felix:org.apache.felix.main)
+BuildRequires: mvn(junit:junit)
 
-# depend on rhbz#914056 BuildRequires: gmaven
 BuildRequires: maven-local
 BuildRequires: maven-antrun-plugin
 BuildRequires: maven-plugin-build-helper
 BuildRequires: maven-plugin-bundle
-BuildRequires: maven-source-plugin
+#BuildRequires: maven-source-plugin
 
 BuildArch:     noarch
 
@@ -85,31 +101,16 @@ logback-examples module.
 
 %prep
 %setup -q
-
-%patch0 -p0
-%patch1 -p1
-
-%pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
-%pom_remove_plugin org.codehaus.gmaven:gmaven-plugin %{name}-classic
-
-# remove test deps
-%pom_remove_dep org.easytesting:fest-assert
-%pom_remove_dep hsqldb:hsqldb %{name}-access
-%pom_remove_dep com.h2database:h2 %{name}-classic
-%pom_remove_dep postgresql:postgresql %{name}-classic
-%pom_remove_dep mysql:mysql-connector-java %{name}-classic
-%pom_remove_dep org.slf4j:integration %{name}-classic
-%pom_remove_dep com.icegreen:greenmail %{name}-classic
-%pom_remove_dep org.subethamail:subethasmtp %{name}-classic
-%pom_remove_dep org.mockito:mockito-core %{name}-core
-%pom_remove_dep org.scala-lang:scala-library %{name}-core
-%pom_remove_plugin org.scala-tools:maven-scala-plugin %{name}-core    
-
-rm -r %{name}-*/src/test/java/*
-
+# Clean up
 find . -name "*.class" -delete
 find . -name "*.cmd" -delete
 find . -name "*.jar" -delete
+
+%patch0 -p0
+
+%pom_remove_plugin :maven-source-plugin
+%pom_remove_plugin :findbugs-maven-plugin
+%pom_remove_plugin :gmaven-plugin %{name}-classic
 
 # Clean up the documentation
 sed -i 's/\r//' LICENSE.txt README.txt docs/*.* docs/*/*.* docs/*/*/*.*
@@ -119,12 +120,52 @@ rm -f docs/manual/.htaccess docs/css/site.css # Zero-length file
 
 sed -i 's#<artifactId>groovy-all</artifactId#<artifactId>groovy</artifactId#' $(find . -name "pom.xml")
 
+# force tomcat apis
 sed -i 's#<groupId>javax.servlet#<groupId>org.apache.tomcat#' $(find . -name "pom.xml")
 sed -i 's#<artifactId>servlet-api#<artifactId>tomcat-servlet-api#' $(find . -name "pom.xml")
+sed -i 's#javax.servlet.*;version="2.5"#javax.servlet.*;version="3.0"#' %{name}-access/pom.xml
+sed -i 's#<version>2.5</version>#<version>${tomcat.version}</version>#' pom.xml
+
+rm -r %{name}-*/src/test/java/*
+# remove test deps
+# ch.qos.logback:logback-core:test-jar
+%pom_xpath_remove "pom:project/pom:dependencyManagement/pom:dependencies/pom:dependency[pom:type = 'test-jar']"
+
+while read f
+do
+
+%pom_xpath_remove "pom:project/pom:dependencies/pom:dependency[pom:type = 'test-jar']" ${f}
+
+done << EOF
+%{name}-access/pom.xml
+%{name}-classic/pom.xml
+EOF
+
+while read f
+do
+
+%pom_xpath_remove "pom:project/pom:dependencies/pom:dependency[pom:scope = 'test']" ${f}
+
+done << EOF
+pom.xml
+%{name}-access/pom.xml
+%{name}-classic/pom.xml
+%{name}-core/pom.xml
+EOF
+
+# bundle-test-jar
+%pom_xpath_remove "pom:project/pom:build/pom:plugins/pom:plugin[pom:artifactId = 'maven-jar-plugin']/pom:executions" %{name}-access
+%pom_xpath_remove "pom:project/pom:build/pom:plugins/pom:plugin[pom:artifactId = 'maven-jar-plugin']/pom:executions" %{name}-classic
+%pom_xpath_remove "pom:project/pom:build/pom:plugins/pom:plugin[pom:artifactId = 'maven-jar-plugin']/pom:executions" %{name}-core
+
+# com.oracle:ojdbc14:10.2.0.1 com.microsoft.sqlserver:sqljdbc4:2.0
+%pom_xpath_remove "pom:project/pom:profiles/pom:profile[pom:id = 'host-orion']" %{name}-access
+%pom_xpath_remove "pom:project/pom:profiles" %{name}-classic
+
+%pom_xpath_remove "pom:project/pom:profiles/pom:profile[pom:id = 'javadocjar']"
 
 # disable for now
-#om_disable_module logback-site
-sed -i 's#<module>logback-site</module>#<!--module>logback-site</module-->#' pom.xml
+%pom_disable_module logback-site
 
 %build
 
@@ -157,6 +198,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Sun Aug 04 2013 gil cattaneo <puntogil@libero.it> - 1.0.13-1
+- Update to 1.0.13
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.10-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
