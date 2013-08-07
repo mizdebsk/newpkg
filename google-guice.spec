@@ -6,13 +6,14 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
-# ./create-tarball.sh %{version}
+# ./create-tarball.sh %%{version}
 Source0:        %{name}-%{version}.tar.xz
+Source1:        create-tarball.sh
 BuildArch:      noarch
 
 BuildRequires:  java-devel
@@ -221,6 +222,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Aug 07 2013 Michal Srb <msrb@redhat.com> - 3.1.3-4
+- Add create-tarball.sh script to SRPM
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
