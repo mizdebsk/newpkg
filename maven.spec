@@ -2,7 +2,7 @@
 
 Name:           maven
 Version:        3.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -60,7 +60,7 @@ BuildRequires:  plexus-containers-component-metadata >= 1.5.5
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-interpolation
 BuildRequires:  plexus-sec-dispatcher
-BuildRequires:  plexus-utils
+BuildRequires:  plexus-utils >= 3.0.10
 BuildRequires:  sisu-inject >= 1:0
 BuildRequires:  sisu-plexus >= 1:0
 BuildRequires:  slf4j
@@ -123,11 +123,6 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 %pom_add_dep cglib:cglib:any:test maven-compat
 %pom_add_dep cglib:cglib:any:test maven-model-builder
 
-
-# Fix test failures caused by incompatible version of plexus-utils
-# (rhbz#987316).
-sed -i 's/"  1.5  "/&.trim()/' `find -name DefaultModelBuilderFactoryTest.java`
-sed -i 's/"  preserve space  "/&.trim()/' `find -name PomConstructionTest.java`
 
 %build
 # Put all JARs in standard location, but create symlinks in Maven lib
@@ -226,6 +221,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Aug  9 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-4
+- Remove workaround for incompatible plexus-utils
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
