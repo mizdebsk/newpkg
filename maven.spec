@@ -1,8 +1,8 @@
-%global debug_package %{nil}
+%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^mvn\\(org\\.eclipse\\.aether:.*\\)$
 
 Name:           maven
 Version:        3.1.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -168,6 +168,8 @@ cp -a $M2_HOME/bin/* %{buildroot}%{_datadir}/%{name}/bin
 ln -sf $(build-classpath plexus/classworlds) \
     %{buildroot}%{_datadir}/%{name}/boot/plexus-classworlds.jar
 
+ln -sf %{_javadir}/aether/aether-connector-basic.jar %{buildroot}%{_datadir}/%{name}/lib/
+ln -sf %{_javadir}/aether/aether-transport-wagon.jar %{buildroot}%{_datadir}/%{name}/lib/
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
         aether/aether-api \
@@ -221,6 +223,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-5
+- Prepare for update to Aether 0.9.0.M3
+
 * Fri Aug  9 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-4
 - Remove workaround for incompatible plexus-utils
 
