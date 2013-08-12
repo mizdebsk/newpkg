@@ -1,15 +1,9 @@
-# Conditionals to build Aether with or without AHC connector
-# (connector for Async Http Client).
-%if 0%{?fedora}
-%bcond_without ahc
-%endif
-
-%global vertag M2
+%global vertag M3
 
 Name:           aether
 Epoch:          1
 Version:        0.9.0
-Release:        0.2.%{vertag}%{?dist}
+Release:        0.3.%{vertag}%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -17,21 +11,18 @@ BuildArch:      noarch
 
 Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
 
-Patch0001:      0001-Port-from-Sonatype-Sisu-to-Eclipse-Sisu.patch
-
 BuildRequires:  maven-local
+BuildRequires:  mvn(javax.inject:javax.inject)
+BuildRequires:  mvn(org.apache.httpcomponents:httpclient)
 BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
 BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
-BuildRequires:  mvn(org.eclipse.sisu:sisu-maven-plugin)
 BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-maven-plugin)
+BuildRequires:  mvn(org.slf4j:jcl-over-slf4j)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
-BuildRequires:  mvn(org.sonatype.forge:forge-parent)
-%if %{with ahc}
-BuildRequires:  mvn(com.ning:async-http-client)
-%endif
 
 %description
 Aether is a standalone library to resolve, install and deploy artifacts
@@ -45,31 +36,13 @@ Aether is a standalone library to resolve, install and deploy
 artifacts the Maven way.  This package provides application
 programming interface for Aether repository system.
 
-%if %{with ahc}
-%package connector-asynchttpclient
-Summary: Aether connector for Async Http Client
+%package connector-basic
+Summary: Aether Connector Basic
 
-%description connector-asynchttpclient
+%description connector-basic
 Aether is a standalone library to resolve, install and deploy
-artifacts the Maven way.  This package provides Aether repository
-connector implementation based on Async Http Client.
-%endif
-
-%package connector-file
-Summary: Aether connector for file URLs
-
-%description connector-file
-Aether is a standalone library to resolve, install and deploy
-artifacts the Maven way.  This package provides Aether repository
-connector implementation for repositories using file:// URLs.
-
-%package connector-wagon
-Summary: Aether connector for Maven Wagon
-
-%description connector-wagon
-Aether is a standalone library to resolve, install and deploy
-artifacts the Maven way.  This package provides Aether repository
-connector implementation based on Maven Wagon.
+artifacts the Maven way.  This package provides repository connector
+implementation for repositories using URI-based layouts.
 
 %package impl
 Summary: Implementation of Aether repository system
@@ -96,6 +69,40 @@ Aether is a standalone library to resolve, install and deploy
 artifacts the Maven way.  This package provides collection of utility
 classes that ease testing of Aether repository system.
 
+%package transport-classpath
+Summary: Aether Transport Classpath
+
+%description transport-classpath
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides a transport
+implementation for repositories using classpath:// URLs.
+
+%package transport-file
+Summary: Aether Transport File
+
+%description transport-file
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides a transport
+implementation for repositories using file:// URLs.
+
+%package transport-http
+Summary: Aether Transport HTTP
+Obsoletes: %{name}-connector-asynchttpclient < %{epoch}:%{version}-%{release}
+
+%description transport-http
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides a transport
+implementation for repositories using http:// and https:// URLs.
+
+%package transport-wagon
+Summary: Aether Transport Wagon
+Obsoletes: %{name}-connector-wagon < %{epoch}:%{version}-%{release}
+
+%description transport-wagon
+Aether is a standalone library to resolve, install and deploy
+artifacts the Maven way.  This package provides a transport
+implementation based on Maven Wagon.
+
 %package util
 Summary: Aether utilities
 
@@ -115,30 +122,23 @@ for Aether.
 %prep
 %setup -q -n %{name}-%{version}.%{vertag}
 
-%if %{without ahc}
-%pom_disable_module aether-connector-asynchttpclient
-%endif
-
-# we'd need org.sonatype.http-testing-harness so let's remove async
-# and wagon http tests (leave others enabled)
-for module in asynchttpclient wagon; do (
-    cd ./aether-connector-$module
-    rm -rf src/test
-    # Removes all dependencies with test scope
-    %pom_xpath_remove "pom:dependency[pom:scope[text()='test']]"
-) done
-
 # Remove clirr plugin
 %pom_remove_plugin :clirr-maven-plugin
 %pom_remove_plugin :clirr-maven-plugin aether-api
+%pom_remove_plugin :clirr-maven-plugin aether-util
 %pom_remove_plugin :clirr-maven-plugin aether-spi
 
 # Animal sniffer is not useful in Fedora
-for module in . aether-connector-wagon aether-util aether-api   \
-              aether-impl aether-connector-asynchttpclient      \
-              aether-connector-file aether-test-util; do
+for module in . aether-api aether-connector-basic aether-impl   \
+              aether-spi aether-test-util aether-transport-file \
+              aether-transport-classpath aether-transport-http  \
+              aether-transport-wagon aether-util; do
     %pom_remove_plugin :animal-sniffer-maven-plugin $module
 done
+
+# HTTP transport tests require Jetty 7 and networking.
+rm -rf aether-transport-http/src/test
+%pom_xpath_remove "pom:dependency[pom:scope='test']" aether-transport-http
 
 %pom_remove_plugin :maven-enforcer-plugin
 
@@ -146,12 +146,6 @@ done
 %pom_xpath_inject pom:project "<dependencies/>"
 %pom_add_dep cglib:cglib:any:test
 %pom_add_dep aopalliance:aopalliance:any:test
-
-%patch0001 -p1
-
-# Keep compatibility with packages that use old JAR locations until
-# they migrate.
-%mvn_file ":{%{name}-{*}}" %{name}/@1 %{name}/@2
 
 %build
 %mvn_build -s
@@ -168,20 +162,22 @@ done
 %doc epl-v10.html notice.html
 %dir %{_javadir}/%{name}
 
-%files connector-file -f .mfiles-%{name}-connector-file
-%files connector-wagon -f .mfiles-%{name}-connector-wagon
+%files connector-basic -f .mfiles-%{name}-connector-basic
 %files impl -f .mfiles-%{name}-impl
 %files spi -f .mfiles-%{name}-spi
 %files test-util -f .mfiles-%{name}-test-util
+%files transport-classpath -f .mfiles-%{name}-transport-classpath
+%files transport-file -f .mfiles-%{name}-transport-file
+%files transport-http -f .mfiles-%{name}-transport-http
+%files transport-wagon -f .mfiles-%{name}-transport-wagon
 %files util -f .mfiles-%{name}-util
 %files javadoc -f .mfiles-javadoc
 %doc epl-v10.html notice.html
 
-%if %{with ahc}
-%files connector-asynchttpclient -f .mfiles-%{name}-connector-asynchttpclient
-%endif
-
 %changelog
+* Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.3.M3
+- Update to upstream version 0.9.0.M3
+
 * Thu Jul 25 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.2.M2
 - Remove remains of Sonatype Aether
 - Port from Sonatype Sisu to Eclipse Sisu, resolves: rhbz#985691
