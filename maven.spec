@@ -1,8 +1,6 @@
-%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^mvn\\(org\\.eclipse\\.aether:.*\\)$
-
 Name:           maven
 Version:        3.1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -18,16 +16,19 @@ Source200:      %{name}-script
 # Patch1XX could be upstreamed probably
 Patch100:       0005-Use-generics-in-modello-generated-code.patch
 
+# Forwarded upstream (MNG-5502)
+Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
+
 BuildArch:      noarch
 
 BuildRequires:  maven-local
 
-BuildRequires:  aether >= 1:0
 BuildRequires:  aether-api >= 1:0
-BuildRequires:  aether-connector-wagon >= 1:0
+BuildRequires:  aether-connector-basic >= 1:0
 BuildRequires:  aether-impl >= 1:0
 BuildRequires:  aether-spi >= 1:0
 BuildRequires:  aether-util >= 1:0
+BuildRequires:  aether-transport-wagon >= 1:0
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
 BuildRequires:  apache-commons-jxpath
@@ -93,6 +94,7 @@ Group:          Documentation
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
 %patch100 -p1
+%patch200 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -168,15 +170,14 @@ cp -a $M2_HOME/bin/* %{buildroot}%{_datadir}/%{name}/bin
 ln -sf $(build-classpath plexus/classworlds) \
     %{buildroot}%{_datadir}/%{name}/boot/plexus-classworlds.jar
 
-ln -sf %{_javadir}/aether/aether-connector-basic.jar %{buildroot}%{_datadir}/%{name}/lib/
-ln -sf %{_javadir}/aether/aether-transport-wagon.jar %{buildroot}%{_datadir}/%{name}/lib/
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
         aether/aether-api \
-        aether/aether-connector-wagon \
+        aether/aether-connector-basic \
         aether/aether-impl \
         aether/aether-spi \
         aether/aether-util \
+        aether/aether-transport-wagon \
         aopalliance \
         objectweb-asm \
         cdi-api \
@@ -223,6 +224,9 @@ ln -sf %{_javadir}/aether/aether-transport-wagon.jar %{buildroot}%{_datadir}/%{n
 
 
 %changelog
+* Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-6
+- Update Aether to 0.9.0.M3
+
 * Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-5
 - Prepare for update to Aether 0.9.0.M3
 
