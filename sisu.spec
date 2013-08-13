@@ -1,12 +1,10 @@
-%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^osgi\\(org\\.sonatype\\.sisu\\.guava\\)$
-
 %global vertag M4
 
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.2.%{vertag}%{?dist}
-Summary:        Sonatype dependency injection framework
+Release:        0.3.%{vertag}%{?dist}
+Summary:        Eclipse dependency injection framework
 Group:          Development/Libraries
 # bundled asm is under BSD
 License:        EPL and BSD
@@ -14,9 +12,13 @@ URL:            http://eclipse.org/sisu
 
 # TODO: unbundle asm
 # TODO: install EPL license file
+# TODO: inject pom.properties
+# TODO: regenerate build-requires
+# TODO: generate proper requires
+# convert lazy sed patches to real patches and upstream
 
-Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/milestones/%{version}.M4.tar.bz2#/org.eclipse.%{name}.inject-%{version}.M4.tar.bz2
-Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/milestones/%{version}.M4.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.M4.tar.bz2
+Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.%{vertag}.tar.bz2
+Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.%{vertag}.tar.bz2
 
 BuildArch:      noarch
 
@@ -60,6 +62,7 @@ style dependency injection.
 %package        inject
 Summary:        Sisu inject POM
 
+Obsoletes:      %{name}                   < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean-binders      < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean-containers   < %{epoch}:%{version}-%{release}
@@ -131,6 +134,8 @@ do
 done
 
 sed -i '260s/<Object/<String/g' `find sisu-inject -name SisuActivator.java`
+# Incompatible version of Plexus Classworlds (upstreamable)
+sed -i '198s/return/&(Class)/' `find -name ComponentDescriptor.java`
 
 cat <<EOF >pom.xml
 <project>
@@ -147,8 +152,6 @@ cat <<EOF >pom.xml
 EOF
 
 %build
-export TYCHO_MVN_RPMBUILD=1
-export MAVEN_OPTS="-DskipTychoVersionCheck"
 %mvn_build -f
 
 # Tycho inject dependencies with system scope.  Disable installation
@@ -168,6 +171,9 @@ rm -rf .xmvn/root%{_datadir}/maven-effective-poms
 
 
 %changelog
+* Tue Aug 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.3.M4
+- Obsolete sisu main package, resolves: rhbz#996288
+
 * Tue Jul 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.2.M4
 - Remove unneeded provides and compat symlinks
 
