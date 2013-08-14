@@ -3,7 +3,7 @@
 Name:           aether
 Epoch:          1
 Version:        0.9.0
-Release:        0.3.%{vertag}%{?dist}
+Release:        0.4.%{vertag}%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -79,6 +79,7 @@ implementation for repositories using classpath:// URLs.
 
 %package transport-file
 Summary: Aether Transport File
+Obsoletes: %{name}-connector-file < %{epoch}:%{version}-%{release}
 
 %description transport-file
 Aether is a standalone library to resolve, install and deploy
@@ -175,6 +176,10 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Wed Aug 14 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.4.M3
+- Add missing Obsoletes: aether-connector-file
+- Resolves: rhbz#996764
+
 * Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.3.M3
 - Update to upstream version 0.9.0.M3
 
