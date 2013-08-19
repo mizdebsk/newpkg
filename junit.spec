@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -97,7 +97,11 @@ Demonstrations and samples for %{name}.
 %prep
 %setup -q -n %{name}-r%{version}
 %patch0 -p1
+
 cp build/maven/junit-pom-template.xml pom.xml
+# fix placeholder version in pom
+%pom_xpath_set pom:project/pom:version "%{version}"
+
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
 
 %build
@@ -151,6 +155,9 @@ cp -pr %{name}%{version}-SNAPSHOT/%{name}/* %{buildroot}%{_datadir}/%{name}/demo
 %doc junit%{version}-SNAPSHOT/doc/*
 
 %changelog
+* Mon Aug 19 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:4.11-6
+- Fix version in pom.xml (#998266)
+
 * Fri Aug 02 2013 Michal Srb <msrb@redhat.com> - 0:4.11-5
 - Add create-tarball.sh script to SRPM
 
