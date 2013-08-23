@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -18,6 +18,9 @@ Patch100:       0005-Use-generics-in-modello-generated-code.patch
 
 # Forwarded upstream (MNG-5502)
 Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
+
+# Taken from upstream git (commit 11f46bd, MNG-5503)
+Patch300:       0001-MNG-5503-Fix-for-the-issue-where-Maven-3.1.0-fails-t.patch
 
 BuildArch:      noarch
 
@@ -95,6 +98,7 @@ Group:          Documentation
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
 %patch100 -p1
 %patch200 -p1
+%patch300 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -224,6 +228,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Aug 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-7
+- Add patch for MNG-5503
+- Resolves: rhbz#991454
+
 * Mon Aug 12 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-6
 - Update Aether to 0.9.0.M3
 
