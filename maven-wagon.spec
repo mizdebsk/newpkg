@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -20,7 +20,6 @@ BuildRequires:  mvn(commons-io:commons-io)
 BuildRequires:  mvn(commons-lang:commons-lang)
 BuildRequires:  mvn(commons-logging:commons-logging)
 BuildRequires:  mvn(commons-net:commons-net)
-BuildRequires:  mvn(easymock:easymock)
 BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(log4j:log4j)
 BuildRequires:  mvn(nekohtml:nekohtml)
@@ -43,7 +42,8 @@ BuildRequires:  mvn(org.jsoup:jsoup)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(xerces:xercesImpl)
 
-Obsoletes:      maven-wagon-manual < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-manual < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-provider-test < %{epoch}:%{version}-%{release}
 
 %description
 Maven Wagon is a transport abstraction that is used in Maven's
@@ -55,12 +55,6 @@ following providers:
 * SSH/SCP
 * WebDAV
 * SCM (in progress)
-
-%package provider-test
-Summary:        provider-test module for %{name}
-
-%description provider-test
-provider-test module for %{name}.
 
 %package scm
 Summary:        scm module for %{name}
@@ -95,6 +89,7 @@ Javadoc for %{name}.
 # disable tests, missing dependencies
 %pom_disable_module wagon-tcks
 %pom_disable_module wagon-ssh-common-test wagon-providers/pom.xml
+%pom_disable_module wagon-provider-test
 
 # missing dependencies
 %pom_disable_module wagon-webdav-jackrabbit wagon-providers
@@ -102,8 +97,6 @@ Javadoc for %{name}.
 %build
 %mvn_file ":wagon-{*}" %{name}/@1
 
-# wagon-provider-test has dependency on jetty
-%mvn_package ":wagon-provider-test" provider-test
 # scm module has a lot of dependencies
 %mvn_package ":wagon-scm" scm
 
@@ -115,12 +108,15 @@ Javadoc for %{name}.
 
 %files -f .mfiles
 %doc LICENSE NOTICE DEPENDENCIES
-%files provider-test -f .mfiles-provider-test
 %files scm -f .mfiles-scm
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Aug 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.4-3
+- Disable unused wagon-provider-test module
+- Resolves: rhbz#1002480
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
