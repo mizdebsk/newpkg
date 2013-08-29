@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -15,6 +15,7 @@ Source200:      %{name}-script
 
 # Patch1XX could be upstreamed probably
 Patch100:       0005-Use-generics-in-modello-generated-code.patch
+Patch101:       0001-Migrate-from-easymock-1-to-easymock-3.patch
 
 # Forwarded upstream (MNG-5502)
 Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
@@ -39,7 +40,7 @@ BuildRequires:  apache-resource-bundles
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
 BuildRequires:  cglib
-BuildRequires:  easymock
+BuildRequires:  easymock3
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
 BuildRequires:  jsr-305
@@ -97,6 +98,7 @@ Group:          Documentation
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
 %patch100 -p1
+%patch101 -p1
 %patch200 -p1
 %patch300 -p1
 
@@ -228,6 +230,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Thu Aug 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-8
+- Migrate from easymock 1 to easymock 3
+- Resolves: rhbz#1002432
+
 * Fri Aug 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-7
 - Add patch for MNG-5503
 - Resolves: rhbz#991454
