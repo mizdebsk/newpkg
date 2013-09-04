@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -183,6 +183,9 @@ This package provides %{summary}.
 %pom_disable_module extensions
 %endif
 
+# Upstream doesn't generate pom.properties, but we need it.
+sed -i "/<addMavenDescriptor>/d" pom.xml
+
 
 %build
 %if %{with extensions}
@@ -222,6 +225,10 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Sep  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-5
+- Enable pom.properties
+- Resolves: rhbz#1004360
+
 * Wed Aug 07 2013 Michal Srb <msrb@redhat.com> - 3.1.3-4
 - Add create-tarball.sh script to SRPM
 
