@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -19,8 +19,9 @@ BuildArch:      noarch
 BuildRequires:  java-devel
 BuildRequires:  jpackage-utils
 BuildRequires:  javapackages-tools >= 0.7.0
-BuildRequires:  maven-local
+BuildRequires:  maven-local >= 3.0.0
 BuildRequires:  maven-remote-resources-plugin
+BuildRequires:  munge-maven-plugin
 BuildRequires:  apache-resource-bundles
 BuildRequires:  aopalliance
 BuildRequires:  atinject
@@ -165,7 +166,7 @@ This package provides %{summary}.
 
 # Remove additional build profiles, which we don't use anyways
 # and which are only pulling additional dependencies.
-%pom_xpath_remove pom:project/pom:profiles core
+%pom_xpath_remove "pom:profile[pom:id='guice.with.jarjar']" core
 
 # Animal sniffer is only causing problems. Disable it for now.
 %pom_remove_plugin :animal-sniffer-maven-plugin core
@@ -225,6 +226,10 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Tue Sep 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-6
+- Install no_aop artifact
+- Resolves: rhbz#1006491
+
 * Wed Sep  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-5
 - Enable pom.properties
 - Resolves: rhbz#1004360
