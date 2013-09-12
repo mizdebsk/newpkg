@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -179,6 +179,10 @@ This package provides %{summary}.
 %pom_remove_dep javax.persistence:persistence-api extensions/persist
 %pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.0-api extensions/persist
 
+# remove test dependency to make sure we don't produce requires
+# see #1007498
+%pom_xpath_remove "pom:dependency[pom:classifier[text()='tests']]" extensions
+
 # Don't try to build extension modules unless they are needed
 %if %{without extensions}
 %pom_disable_module extensions
@@ -226,6 +230,10 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Thu Sep 12 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.1.3-7
+- Remove dependency on tests from runtime
+- Related: rhbz#1007498
+
 * Tue Sep 10 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-6
 - Install no_aop artifact
 - Resolves: rhbz#1006491
