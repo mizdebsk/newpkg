@@ -1,8 +1,8 @@
 %global bname     wagon
 
 Name:           maven-%{bname}
-Version:        2.4
-Release:        3%{?dist}
+Version:        2.5
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -40,7 +40,6 @@ BuildRequires:  mvn(org.eclipse.jetty:jetty-servlet)
 BuildRequires:  mvn(org.eclipse.jetty:jetty-util)
 BuildRequires:  mvn(org.jsoup:jsoup)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
-BuildRequires:  mvn(xerces:xercesImpl)
 
 Obsoletes:      %{name}-manual < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-provider-test < %{epoch}:%{version}-%{release}
@@ -76,15 +75,8 @@ Javadoc for %{name}.
 %pom_remove_plugin :animal-sniffer-maven-plugin
 %pom_remove_dep :wagon-tck-http wagon-providers/wagon-http
 
-%pom_remove_dep :xercesMinimal wagon-providers/wagon-http-shared
-%pom_xpath_inject "pom:dependencies" \
-   "<dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-    </dependency>" wagon-providers/wagon-http-shared
-
 # correct groupId for jetty
-%pom_xpath_replace "pom:groupId[text()='org.mortbay.jetty']" "<groupId>org.eclipse.jetty</groupId>"
+%pom_xpath_set "pom:groupId[text()='org.mortbay.jetty']" "org.eclipse.jetty"
 
 # disable tests, missing dependencies
 %pom_disable_module wagon-tcks
@@ -113,6 +105,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Tue Sep 17 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.5-1
+- Update to upstream version 2.5
+
 * Thu Aug 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.4-3
 - Disable unused wagon-provider-test module
 - Resolves: rhbz#1002480
