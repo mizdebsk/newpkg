@@ -3,7 +3,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.3.%{vertag}%{?dist}
+Release:        0.4.%{vertag}%{?dist}
 Summary:        Eclipse dependency injection framework
 Group:          Development/Libraries
 # bundled asm is under BSD
@@ -110,6 +110,9 @@ tar xf %{SOURCE1} && mv milestones/* sisu-plexus && rmdir milestones
 %mvn_package ":*{inject,plexus}" @1
 %mvn_package : __noinstall
 
+%pom_disable_module org.eclipse.sisu.inject.tests sisu-inject
+%pom_disable_module org.eclipse.sisu.plexus.tests sisu-plexus
+
 for target in \
     sisu-inject/org.eclipse.sisu.inject/build.target \
     sisu-plexus/org.eclipse.sisu.plexus/build.target
@@ -152,12 +155,13 @@ cat <<EOF >pom.xml
 EOF
 
 %build
-%mvn_build -f
-
 # Tycho inject dependencies with system scope.  Disable installation
 # of effective POMs until Mvn can handle system-scoped deps.
-sed -i /effective-poms/d .mfiles*
-rm -rf .xmvn/root%{_datadir}/maven-effective-poms
+%mvn_build -f -i
+for mod in inject plexus; do
+    %mvn_artifact sisu-${mod}/pom.xml
+    %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar
+done
 
 %install
 %mvn_install
@@ -171,6 +175,9 @@ rm -rf .xmvn/root%{_datadir}/maven-effective-poms
 
 
 %changelog
+* Fri Sep 20 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.4.M4
+- Update to XMvn 1.0.0
+
 * Tue Aug 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.3.M4
 - Obsolete sisu main package, resolves: rhbz#996288
 
