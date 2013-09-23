@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -95,6 +95,9 @@ Javadoc for %{name}.
 # tests are disabled because of missing dependencies
 %mvn_build -f
 
+# Maven requires Wagon HTTP with classifier "shaded"
+%mvn_alias :wagon-http :::shaded:
+
 %install
 %mvn_install
 
@@ -105,6 +108,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.5-2
+- Add shaded alias for wagon-http
+
 * Tue Sep 17 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.5-1
 - Update to upstream version 2.5
 
