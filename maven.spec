@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -56,7 +56,7 @@ BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  maven-wagon
+BuildRequires:  maven-wagon >= 2.5-2
 BuildRequires:  objectweb-asm
 BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
@@ -82,6 +82,10 @@ Obsoletes:      %{name} < 0:%{version}-%{release}
 # maven2 bin package no longer exists.
 Obsoletes:      maven2 < 2.2.1-99
 Provides:       maven2 = %{version}-%{release}
+
+# Temporary fix for broken sisu
+Requires:       cdi-api
+BuildRequires:  cdi-api
 
 %description
 Maven is a software project management and comprehension tool. Based on the
@@ -124,18 +128,11 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 %pom_remove_plugin :animal-sniffer-maven-plugin
 #fi
 
-# Test dependencies
-%pom_add_dep aopalliance:aopalliance:any:test maven-model-builder
-%pom_add_dep cglib:cglib:any:test maven-aether-provider
-%pom_add_dep cglib:cglib:any:test maven-core
-%pom_add_dep cglib:cglib:any:test maven-compat
-%pom_add_dep cglib:cglib:any:test maven-model-builder
-
 
 %build
 # Put all JARs in standard location, but create symlinks in Maven lib
 # directory so that Plexus Classworlds can find them.
-%mvn_file ":{*}" %{name}/@1 %{_datadir}/%{name}/lib/@1
+%mvn_file ":{*}" %{name}/@1 ../%{name}/lib/@1
 
 %mvn_build -- -Dproject.build.sourceEncoding=UTF-8
 
@@ -188,9 +185,9 @@ ln -sf $(build-classpath plexus/classworlds) \
         objectweb-asm \
         cdi-api \
         commons-cli \
-        google-guice \
         guava \
         atinject \
+        geronimo-annotation \
         jsr-305 \
         org.eclipse.sisu.inject \
         org.eclipse.sisu.plexus \
@@ -199,17 +196,13 @@ ln -sf $(build-classpath plexus/classworlds) \
         plexus/interpolation \
         plexus/plexus-sec-dispatcher \
         plexus/utils \
+        google-guice-no_aop \
         slf4j/api \
         slf4j/simple \
         maven-wagon/file \
-        maven-wagon/http-shared \
+        maven-wagon/http-shaded \
         maven-wagon/provider-api \
-        \
-        maven-wagon/http-lightweight \
-        cglib \
-        nekohtml \
 )
-
 
 
 %files -f .mfiles
@@ -230,6 +223,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-9
+- Synchronize JAR list in lib/ with upstream release
+- Remove test dependencies on aopalliance and cglib
+
 * Thu Aug 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-8
 - Migrate from easymock 1 to easymock 3
 - Resolves: rhbz#1002432
