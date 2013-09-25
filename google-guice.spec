@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -16,10 +16,7 @@ Source0:        %{name}-%{version}.tar.xz
 Source1:        create-tarball.sh
 BuildArch:      noarch
 
-BuildRequires:  java-devel
-BuildRequires:  jpackage-utils
-BuildRequires:  javapackages-tools >= 0.7.0
-BuildRequires:  maven-local >= 3.0.0
+BuildRequires:  maven-local >= 3.2.4-2
 BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  munge-maven-plugin
 BuildRequires:  apache-resource-bundles
@@ -198,6 +195,8 @@ sed -i "/<addMavenDescriptor>/d" pom.xml
 servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %endif # with extensions
 
+%mvn_package :::no_aop: sisu-guice
+
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
 %mvn_file  ":sisu-guice" %{short_name}/%{name} %{name}
 %mvn_alias ":sisu-guice" "com.google.inject:guice"
@@ -230,6 +229,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Sep 25 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-8
+- Install no_aop artifact after javapackages update
+
 * Thu Sep 12 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.1.3-7
 - Remove dependency on tests from runtime
 - Related: rhbz#1007498
