@@ -1,0 +1,25 @@
+From d22b82bb351469b46726d329a1736aaa92241bad Mon Sep 17 00:00:00 2001
+From: Michal Srb <msrb@redhat.com>
+Date: Wed, 25 Sep 2013 14:16:44 +0200
+Subject: [PATCH 1/2] Fix OSGi compatibility
+
+---
+ .../src/org/eclipse/sisu/launch/internal/SisuActivator.java             | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sisu-inject/org.eclipse.sisu.inject.extender/src/org/eclipse/sisu/launch/internal/SisuActivator.java b/sisu-inject/org.eclipse.sisu.inject.extender/src/org/eclipse/sisu/launch/internal/SisuActivator.java
+index 23b43eb..ebbd923 100644
+--- a/sisu-inject/org.eclipse.sisu.inject.extender/src/org/eclipse/sisu/launch/internal/SisuActivator.java
++++ b/sisu-inject/org.eclipse.sisu.inject.extender/src/org/eclipse/sisu/launch/internal/SisuActivator.java
+@@ -257,7 +257,7 @@ public final class SisuActivator
+                 }
+             }, new SpaceModule( space, scanning ).with( extensions ) ).with( extensions ) );
+ 
+-            final Dictionary<Object, Object> metadata = new Hashtable<Object, Object>();
++            final Dictionary<String, Object> metadata = new Hashtable<String, Object>();
+             metadata.put( Constants.SERVICE_PID, CONTAINER_SYMBOLIC_NAME );
+             extendedBundleContext.registerService( API, this, metadata );
+         }
+-- 
+1.8.3.1
+

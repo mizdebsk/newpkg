@@ -1,39 +1,43 @@
-%global vertag M4
+%global vertag M5
 
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.4.%{vertag}%{?dist}
+Release:        0.5.%{vertag}%{?dist}
 Summary:        Eclipse dependency injection framework
-Group:          Development/Libraries
 # bundled asm is under BSD
+# See also: https://fedorahosted.org/fpc/ticket/346
 License:        EPL and BSD
 URL:            http://eclipse.org/sisu
 
 # TODO: unbundle asm
-# TODO: install EPL license file
-# TODO: inject pom.properties
-# TODO: regenerate build-requires
-# TODO: generate proper requires
-# convert lazy sed patches to real patches and upstream
 
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.%{vertag}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.%{vertag}.tar.bz2
+Patch0:         0001-Fix-OSGi-compatibility.patch
+# Incompatible version of Plexus Classworlds (upstreamable)
+Patch1:         0002-Fix-compatibility-with-Plexus-Classworlds-2.5.patch
 
 BuildArch:      noarch
 
 BuildRequires:  maven-local
-BuildRequires:  mvn(ch.qos.logback:logback-classic)
-BuildRequires:  mvn(com.google.inject.extensions:guice-assistedinject)
+BuildRequires:  mvn(com.google.guava:guava)
 BuildRequires:  mvn(com.google.inject:guice)
 BuildRequires:  mvn(javax.enterprise:cdi-api)
 BuildRequires:  mvn(junit:junit)
-BuildRequires:  mvn(org.apache.felix:org.apache.felix.framework)
-BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
-BuildRequires:  mvn(org.osgi:org.osgi.core)
-BuildRequires:  mvn(org.sonatype.oss:oss-parent)
 BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
-BuildRequires:  mvn(org.jacoco:jacoco-maven-plugin)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-inject)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-plexus)
+BuildRequires:  mvn(org.eclipse.tycho:target-platform-configuration)
+BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
+BuildRequires:  mvn(org.eclipse.tycho:tycho-source-plugin)
+BuildRequires:  mvn(org.slf4j:slf4j-api)
+BuildRequires:  mvn(org.sonatype.oss:oss-parent)
+BuildRequires:  mvn(org.sonatype.sisu:sisu-guice::no_aop:)
 
 BuildRequires:  osgi(aopalliance)
 BuildRequires:  osgi(com.google.guava)
@@ -52,8 +56,8 @@ BuildRequires:  osgi(org.eclipse.osgi)
 BuildRequires:  osgi(org.hamcrest.core)
 BuildRequires:  osgi(org.junit)
 BuildRequires:  osgi(org.sonatype.sisu.guice)
-BuildRequires:  osgi(org.testng)
 BuildRequires:  osgi(slf4j.api)
+
 
 %description
 Java dependency injection framework with backward support for plexus and bean
@@ -61,6 +65,8 @@ style dependency injection.
 
 %package        inject
 Summary:        Sisu inject POM
+Requires:       mvn(javax.enterprise:cdi-api)
+Requires:       mvn(com.google.inject:guice)
 
 Obsoletes:      %{name}                   < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
@@ -91,6 +97,13 @@ This package contains %{summary}.
 
 %package        plexus
 Summary:        Sisu Plexus POM
+Requires:       mvn(javax.enterprise:cdi-api)
+Requires:       mvn(com.google.guava:guava)
+Requires:       mvn(org.sonatype.sisu:sisu-guice::no_aop:)
+Requires:       mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
+Requires:       mvn(org.codehaus.plexus:plexus-component-annotations)
+Requires:       mvn(org.codehaus.plexus:plexus-classworlds)
+Requires:       mvn(org.codehaus.plexus:plexus-utils)
 
 %description    plexus
 This package contains %{summary}.
@@ -105,6 +118,9 @@ This package contains %{summary}.
 %setup -q -c -T
 tar xf %{SOURCE0} && mv milestones/* sisu-inject && rmdir milestones
 tar xf %{SOURCE1} && mv milestones/* sisu-plexus && rmdir milestones
+
+%patch0 -p1
+%patch1 -p1
 
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
@@ -136,9 +152,12 @@ do
     %pom_remove_plugin :animal-sniffer-maven-plugin $pom
 done
 
-sed -i '260s/<Object/<String/g' `find sisu-inject -name SisuActivator.java`
-# Incompatible version of Plexus Classworlds (upstreamable)
-sed -i '198s/return/&(Class)/' `find -name ComponentDescriptor.java`
+# missing dep org.eclipse.tycho.extras:tycho-sourceref-jgit
+%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:dependencies" sisu-inject
+%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:configuration/pom:sourceReferences" sisu-inject
+%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:dependencies" sisu-plexus
+%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:configuration/pom:sourceReferences" sisu-plexus
+
 
 cat <<EOF >pom.xml
 <project>
@@ -161,6 +180,16 @@ EOF
 for mod in inject plexus; do
     %mvn_artifact sisu-${mod}/pom.xml
     %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar
+
+    # inject pom.properties file
+    mkdir -p META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/
+    cat > META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/pom.properties << EOF
+version=%{version}
+groupId=org.eclipse.sisu
+artifactId=org.eclipse.sisu.${mod}
+EOF
+    zip -u sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar \
+      META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/pom.properties
 done
 
 %install
@@ -168,13 +197,23 @@ done
 
 
 %files inject -f .mfiles-inject
+%doc sisu-inject/LICENSE.txt
 
 %files plexus -f .mfiles-plexus
+%doc sisu-inject/LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
+%doc sisu-inject/LICENSE.txt
 
 
 %changelog
+* Wed Sep 25 2013 Michal Srb <msrb@redhat.com> - 1:0.0.0-0.5.M5
+- Update to upstream version 0.0.0.M5
+- Install EPL license file
+- Inject pom.properties
+- Regenerate BR
+- Add R
+
 * Fri Sep 20 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.4.M4
 - Update to XMvn 1.0.0
 
