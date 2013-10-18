@@ -3,7 +3,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.5.%{vertag}%{?dist}
+Release:        0.6.%{vertag}%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -180,16 +180,6 @@ EOF
 for mod in inject plexus; do
     %mvn_artifact sisu-${mod}/pom.xml
     %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar
-
-    # inject pom.properties file
-    mkdir -p META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/
-    cat > META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/pom.properties << EOF
-version=%{version}
-groupId=org.eclipse.sisu
-artifactId=org.eclipse.sisu.${mod}
-EOF
-    zip -u sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar \
-      META-INF/maven/org.eclipse.sisu/org/eclipse/sisu/${mod}/pom.properties
 done
 
 %install
@@ -207,6 +197,9 @@ done
 
 
 %changelog
+* Fri Oct 18 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.6.M5
+- Don't inject pom.properties
+
 * Wed Sep 25 2013 Michal Srb <msrb@redhat.com> - 1:0.0.0-0.5.M5
 - Update to upstream version 0.0.0.M5
 - Install EPL license file
