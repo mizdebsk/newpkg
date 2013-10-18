@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.3
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -185,9 +185,6 @@ This package provides %{summary}.
 %pom_disable_module extensions
 %endif
 
-# Upstream doesn't generate pom.properties, but we need it.
-sed -i "/<addMavenDescriptor>/d" pom.xml
-
 
 %build
 %if %{with extensions}
@@ -229,6 +226,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Fri Oct 18 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-9
+- Don't force generation of pom.properties
+
 * Wed Sep 25 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-8
 - Install no_aop artifact after javapackages update
 
