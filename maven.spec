@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -35,7 +35,9 @@ BuildRequires:  aether-util >= 1:0
 BuildRequires:  aether-transport-wagon >= 1:0
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
+BuildRequires:  apache-commons-codec
 BuildRequires:  apache-commons-jxpath
+BuildRequires:  apache-commons-logging
 BuildRequires:  apache-resource-bundles
 BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
@@ -43,6 +45,8 @@ BuildRequires:  cglib
 BuildRequires:  easymock3
 BuildRequires:  google-guice >= 3.0
 BuildRequires:  hamcrest
+BuildRequires:  httpcomponents-core
+BuildRequires:  httpcomponents-client
 BuildRequires:  jsr-305
 BuildRequires:  junit
 BuildRequires:  maven-assembly-plugin
@@ -57,7 +61,6 @@ BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  maven-wagon >= 2.5-2
-BuildRequires:  objectweb-asm
 BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
 BuildRequires:  plexus-containers-component-annotations
@@ -176,13 +179,11 @@ ln -sf $(build-classpath plexus/classworlds) \
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
         aether/aether-api \
-        aether/aether-connector-basic \
+        aether/aether-connector-basic aether/aether-transport-wagon \
         aether/aether-impl \
         aether/aether-spi \
         aether/aether-util \
-        aether/aether-transport-wagon \
         aopalliance \
-        objectweb-asm \
         cdi-api \
         commons-cli \
         guava \
@@ -202,6 +203,11 @@ ln -sf $(build-classpath plexus/classworlds) \
         maven-wagon/file \
         maven-wagon/http-shaded \
         maven-wagon/provider-api \
+        \
+        httpcomponents/httpclient \
+        httpcomponents/httpcore \
+        commons-logging \
+        commons-codec \
 )
 
 
@@ -223,6 +229,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-10
+- Add dependencies of wagon-http-shaded to plexus.core
+- Remove objectweb-asm from plexus.core
+
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-9
 - Synchronize JAR list in lib/ with upstream release
 - Remove test dependencies on aopalliance and cglib
