@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -226,6 +226,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-3
+- Rebuild to regenerate broken POM files
+- Related: rhbz#1021484
+
 * Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-2
 - Add dependencies of wagon-http-shaded to plexus.core
 - Remove objectweb-asm from plexus.core
