@@ -3,7 +3,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.0.0
-Release:        0.6.%{vertag}%{?dist}
+Release:        0.7.%{vertag}%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -197,6 +197,10 @@ done
 
 
 %changelog
+* Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.7.M5
+- Rebuild to regenerate broken POMs
+- Related: rhbz#1021484
+
 * Fri Oct 18 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.6.M5
 - Don't inject pom.properties
 
