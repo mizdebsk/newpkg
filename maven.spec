@@ -79,6 +79,40 @@ BuildRequires:  mvn(ch.qos.logback:logback-classic)
 # workflow requires full JDK, wso we require it here.
 Requires:       java-devel
 
+# XMvn does generate auto-requires, but explicit requires are still
+# needed because some symlinked JARs are not present in Maven POMs or
+# their dependency scope prevents them from being added automatically
+# by XMvn.  It would be possible to explicitly specify only
+# dependencies which are not generated automatically, but adding
+# everything seems to be easier.
+Requires:       aether-api
+Requires:       aether-connector-basic
+Requires:       aether-impl
+Requires:       aether-spi
+Requires:       aether-transport-wagon
+Requires:       aether-util
+Requires:       aopalliance
+Requires:       apache-commons-cli
+Requires:       apache-commons-codec
+Requires:       apache-commons-logging
+Requires:       atinject
+Requires:       geronimo-annotation
+Requires:       google-guice
+Requires:       guava
+Requires:       httpcomponents-client
+Requires:       httpcomponents-core
+Requires:       jsr-305
+Requires:       maven-wagon
+Requires:       plexus-cipher
+Requires:       plexus-classworlds
+Requires:       plexus-containers-component-annotations
+Requires:       plexus-interpolation
+Requires:       plexus-sec-dispatcher
+Requires:       plexus-utils
+Requires:       sisu-inject
+Requires:       sisu-plexus
+Requires:       slf4j
+
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
 
@@ -232,6 +266,8 @@ ln -sf $(build-classpath plexus/classworlds) \
 * Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-10
 - Add dependencies of wagon-http-shaded to plexus.core
 - Remove objectweb-asm from plexus.core
+- Add explicit requires
+- Resolves: rhbz#1023872
 
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-9
 - Synchronize JAR list in lib/ with upstream release
