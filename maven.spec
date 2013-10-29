@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -76,6 +76,40 @@ BuildRequires:  mvn(org.mockito:mockito-core)
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
 Requires:       java-devel
+
+# XMvn does generate auto-requires, but explicit requires are still
+# needed because some symlinked JARs are not present in Maven POMs or
+# their dependency scope prevents them from being added automatically
+# by XMvn.  It would be possible to explicitly specify only
+# dependencies which are not generated automatically, but adding
+# everything seems to be easier.
+Requires:       aether-api
+Requires:       aether-connector-basic
+Requires:       aether-impl
+Requires:       aether-spi
+Requires:       aether-transport-wagon
+Requires:       aether-util
+Requires:       aopalliance
+Requires:       apache-commons-cli
+Requires:       apache-commons-codec
+Requires:       apache-commons-logging
+Requires:       atinject
+Requires:       geronimo-annotation
+Requires:       google-guice
+Requires:       guava
+Requires:       httpcomponents-client
+Requires:       httpcomponents-core
+Requires:       jsr-305
+Requires:       maven-wagon
+Requires:       plexus-cipher
+Requires:       plexus-classworlds
+Requires:       plexus-containers-component-annotations
+Requires:       plexus-interpolation
+Requires:       plexus-sec-dispatcher
+Requires:       plexus-utils
+Requires:       sisu-inject
+Requires:       sisu-plexus
+Requires:       slf4j
 
 # for noarch->arch change
 Obsoletes:      %{name} < 0:%{version}-%{release}
@@ -226,6 +260,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Oct 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-4
+- Add explicit requires
+
 * Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-3
 - Rebuild to regenerate broken POM files
 - Related: rhbz#1021484
