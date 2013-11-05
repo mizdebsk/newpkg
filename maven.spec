@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -21,6 +21,10 @@ Patch101:       0001-Migrate-from-easymock-1-to-easymock-3.patch
 Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
 
 BuildArch:      noarch
+
+# If XMvn is part of the same RPM transaction then it should be
+# installed first to avoid triggering rhbz#1014355.
+OrderWithRequires: xmvn
 
 BuildRequires:  maven-local
 
@@ -260,6 +264,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Nov  5 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-5
+- Add OrderWithRequires: xmvn
+- Related: rhbz#1014355
+
 * Tue Oct 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-4
 - Add explicit requires
 
