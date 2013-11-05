@@ -1,6 +1,6 @@
 Name:           maven
-Version:        3.1.0
-Release:        11%{?dist}
+Version:        3.1.1
+Release:        12%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -19,9 +19,6 @@ Patch101:       0001-Migrate-from-easymock-1-to-easymock-3.patch
 
 # Forwarded upstream (MNG-5502)
 Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
-
-# Taken from upstream git (commit 11f46bd, MNG-5503)
-Patch300:       0001-MNG-5503-Fix-for-the-issue-where-Maven-3.1.0-fails-t.patch
 
 BuildArch:      noarch
 
@@ -78,6 +75,7 @@ BuildRequires:  sisu-plexus >= 1:0
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
 BuildRequires:  mvn(ch.qos.logback:logback-classic)
+BuildRequires:  mvn(org.mockito:mockito-core)
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
@@ -145,7 +143,6 @@ Group:          Documentation
 %patch100 -p1
 %patch101 -p1
 %patch200 -p1
-%patch300 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -250,7 +247,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %files -f .mfiles
-%doc LICENSE.txt NOTICE.txt README.txt
+%doc LICENSE NOTICE README.txt
 %{_datadir}/%{name}
 %{_bindir}/mvn
 %dir %{_javadir}/%{name}
@@ -263,19 +260,33 @@ ln -sf $(build-classpath plexus/classworlds) \
 %{_mandir}/man1/mvn.1.gz
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE.txt NOTICE.txt
+%doc LICENSE NOTICE
 
 
 %changelog
-* Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-11
+* Tue Nov  5 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-6
+- Update F20 to upstream bugfix release 3.1.1
+
+* Tue Nov  5 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-5
 - Add OrderWithRequires: xmvn
 - Related: rhbz#1014355
+
+* Tue Oct 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-4
+- Add explicit requires
+
+* Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-3
+- Rebuild to regenerate broken POM files
+- Related: rhbz#1021484
 
 * Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-10
 - Add dependencies of wagon-http-shaded to plexus.core
 - Remove objectweb-asm from plexus.core
 - Add explicit requires
 - Resolves: rhbz#1023872
+
+* Mon Oct  7 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-1
+- Update to upstream version 3.1.1
+- Remove patch for MNG-5503 (included upstream)
 
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-9
 - Synchronize JAR list in lib/ with upstream release

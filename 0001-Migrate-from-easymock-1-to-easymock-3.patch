@@ -1,7 +1,7 @@
-From cb3b8016fa74d1684029034793c0605b36491b60 Mon Sep 17 00:00:00 2001
+From 13b48a2b020ced6858e90c4d596f6804989844b9 Mon Sep 17 00:00:00 2001
 From: Mikolaj Izdebski <mizdebsk@redhat.com>
 Date: Thu, 29 Aug 2013 10:11:48 +0200
-Subject: [PATCH] Migrate from easymock 1 to easymock 3
+Subject: [PATCH 2/3] Migrate from easymock 1 to easymock 3
 
 ---
  maven-compat/pom.xml                               |  2 +-
@@ -12,10 +12,10 @@ Subject: [PATCH] Migrate from easymock 1 to easymock 3
  delete mode 100644 maven-compat/src/test/java/org/apache/maven/artifact/testutils/MockManager.java
 
 diff --git a/maven-compat/pom.xml b/maven-compat/pom.xml
-index 21270b7..e07855b 100644
+index dbb4155..f4cd5a9 100644
 --- a/maven-compat/pom.xml
 +++ b/maven-compat/pom.xml
-@@ -77,7 +77,7 @@
+@@ -83,7 +83,7 @@
        <scope>test</scope>
      </dependency>
      <dependency>
@@ -89,10 +89,10 @@ index 4b6f637..0000000
 -
 -}
 diff --git a/maven-compat/src/test/java/org/apache/maven/repository/legacy/DefaultWagonManagerTest.java b/maven-compat/src/test/java/org/apache/maven/repository/legacy/DefaultWagonManagerTest.java
-index bcda50a..6823ae2 100644
+index bcda50a..37a281c 100644
 --- a/maven-compat/src/test/java/org/apache/maven/repository/legacy/DefaultWagonManagerTest.java
 +++ b/maven-compat/src/test/java/org/apache/maven/repository/legacy/DefaultWagonManagerTest.java
-@@ -45,7 +45,7 @@ import org.apache.maven.wagon.observers.AbstractTransferListener;
+@@ -45,7 +45,7 @@
  import org.apache.maven.wagon.observers.Debug;
  import org.codehaus.plexus.PlexusTestCase;
  import org.codehaus.plexus.util.FileUtils;
@@ -101,7 +101,7 @@ index bcda50a..6823ae2 100644
  
  /**
   * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
-@@ -162,15 +162,14 @@ public class DefaultWagonManagerTest
+@@ -162,15 +162,14 @@ public void testGetRemoteJar()
          StringWagon wagon = (StringWagon) wagonManager.getWagon( "string" );
          wagon.addExpectedContent( repo.getLayout().pathOf( artifact ), "expected" );
  
@@ -120,18 +120,18 @@ index bcda50a..6823ae2 100644
  
      private Artifact createTestPomArtifact( String directory )
 diff --git a/pom.xml b/pom.xml
-index 19edb60..06e6256 100644
+index 701e727..71e6d5a 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -44,7 +44,7 @@
    <properties>
-     <classWorldsVersion>2.4.2</classWorldsVersion>
+     <classWorldsVersion>2.5.1</classWorldsVersion>
      <commonsCliVersion>1.2</commonsCliVersion>
 -    <easyMockVersion>1.2_Java1.3</easyMockVersion>
 +    <easyMockVersion>3.2</easyMockVersion>
      <junitVersion>3.8.2</junitVersion>
      <plexusVersion>1.5.5</plexusVersion>
-     <plexusInterpolationVersion>1.16</plexusInterpolationVersion>
+     <plexusInterpolationVersion>1.19</plexusInterpolationVersion>
 @@ -320,7 +320,7 @@
        </dependency>
        <!--bootstrap-start-comment-->
@@ -142,5 +142,5 @@ index 19edb60..06e6256 100644
          <version>${easyMockVersion}</version>
          <scope>test</scope>
 -- 
-1.8.3.1
+1.8.1.4
 
