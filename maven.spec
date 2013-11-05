@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -24,6 +24,10 @@ Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
 Patch300:       0001-MNG-5503-Fix-for-the-issue-where-Maven-3.1.0-fails-t.patch
 
 BuildArch:      noarch
+
+# If XMvn is part of the same RPM transaction then it should be
+# installed first to avoid triggering rhbz#1014355.
+OrderWithRequires: xmvn
 
 BuildRequires:  maven-local
 
@@ -263,6 +267,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-11
+- Add OrderWithRequires: xmvn
+- Related: rhbz#1014355
+
 * Mon Oct 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.0-10
 - Add dependencies of wagon-http-shaded to plexus.core
 - Remove objectweb-asm from plexus.core
