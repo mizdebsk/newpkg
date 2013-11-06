@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        3.6.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -52,7 +52,6 @@ BuildRequires:  ant-junit >= 0:1.6
 BuildRequires:  junit
 BuildRequires:  javacc
 BuildRequires:  java-javadoc
-BuildRequires:  jline
 BuildRequires:  jtidy
 BuildRequires:  regexp
 BuildRequires:  apache-commons-digester
@@ -131,7 +130,7 @@ sed -i -e "s|jakarta-regexp|regexp|g" contrib/queries/ivy.xml
 mkdir -p docs
 mkdir -p lib
 export OPT_JAR_LIST="ant/ant-junit junit"
-export CLASSPATH=$(build-classpath jline jtidy regexp commons-digester apache-commons-compress ivy)
+export CLASSPATH=$(build-classpath jtidy regexp commons-digester apache-commons-compress ivy)
 
 
 ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
@@ -145,7 +144,7 @@ ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
   jar-lucene-core docs javadocs-core
 
 %if 0%{?fedora}
-export CLASSPATH=$(build-classpath jline jtidy regexp commons-digester apache-commons-compress icu4j ivy)
+export CLASSPATH=$(build-classpath jtidy regexp commons-digester apache-commons-compress icu4j ivy)
 ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
   -Djavacc.home=%{_bindir}/javacc \
   -Djavacc.jar=%{_javadir}/javacc.jar \
@@ -246,6 +245,9 @@ cp -pr build/docs/api/* \
 %endif
 
 %changelog
+* Wed Nov 06 2013 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.2-4
+- Remove unneeded BR jline. Resolves RHBZ#1023015.
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.6.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
