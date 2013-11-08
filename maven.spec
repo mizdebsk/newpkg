@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -241,6 +241,7 @@ ln -sf $(build-classpath plexus/classworlds) \
         \
         httpcomponents/httpclient \
         httpcomponents/httpcore \
+        maven-wagon/http-shared4 \
         commons-logging \
         commons-codec \
 )
@@ -264,6 +265,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Nov  8 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-13
+- Add wagon-http-shared4 to plexus.core
+
 * Tue Nov  5 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-6
 - Update F20 to upstream bugfix release 3.1.1
 
