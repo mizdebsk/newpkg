@@ -5,8 +5,8 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.1.3
-Release:        10%{?dist}
+Version:        3.1.8
+Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -210,7 +210,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 %if %{with extensions}
 %files -n %{short_name}-assistedinject -f .mfiles-guice-assistedinject
-%files -n %{short_name}-extensions -f .mfiles-guice-extensions
+%files -n %{short_name}-extensions -f .mfiles-extensions-parent
 %files -n %{short_name}-grapher -f .mfiles-guice-grapher
 %files -n %{short_name}-jmx -f .mfiles-guice-jmx
 %files -n %{short_name}-jndi -f .mfiles-guice-jndi
@@ -226,6 +226,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Mon Nov 11 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.8-1
+- Update to upstream version 3.1.8
+
 * Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.3-10
 - Rebuild to regenerate broken POMs
 - Related: rhbz#1021484
