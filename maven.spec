@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -19,6 +19,8 @@ Patch101:       0001-Migrate-from-easymock-1-to-easymock-3.patch
 
 # Forwarded upstream (MNG-5502)
 Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
+# Forwarded upstream (MNG-5534)
+Patch201:       0001-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
 
 BuildArch:      noarch
 
@@ -44,7 +46,7 @@ BuildRequires:  atinject
 BuildRequires:  buildnumber-maven-plugin
 BuildRequires:  cglib
 BuildRequires:  easymock3
-BuildRequires:  google-guice >= 3.0
+BuildRequires:  google-guice >= 3.1.6
 BuildRequires:  hamcrest
 BuildRequires:  httpcomponents-core
 BuildRequires:  httpcomponents-client
@@ -70,8 +72,8 @@ BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-interpolation
 BuildRequires:  plexus-sec-dispatcher
 BuildRequires:  plexus-utils >= 3.0.10
-BuildRequires:  sisu-inject >= 1:0
-BuildRequires:  sisu-plexus >= 1:0
+BuildRequires:  sisu-inject >= 1:0.1
+BuildRequires:  sisu-plexus >= 1:0.1
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
 BuildRequires:  mvn(ch.qos.logback:logback-classic)
@@ -143,6 +145,7 @@ Group:          Documentation
 %patch100 -p1
 %patch101 -p1
 %patch200 -p1
+%patch201 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -265,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-14
+- Update to Sisu 0.1.0 and Guice 3.1.6
+
 * Fri Nov  8 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-13
 - Add wagon-http-shared4 to plexus.core
 
