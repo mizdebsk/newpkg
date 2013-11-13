@@ -1,9 +1,7 @@
-%global vertag M5
-
 Name:           sisu
 Epoch:          1
-Version:        0.0.0
-Release:        0.7.%{vertag}%{?dist}
+Version:        0.1.0
+Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -12,8 +10,8 @@ URL:            http://eclipse.org/sisu
 
 # TODO: unbundle asm
 
-Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.%{vertag}.tar.bz2
-Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/milestones/%{version}.%{vertag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.%{vertag}.tar.bz2
+Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
+Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
 Patch0:         0001-Fix-OSGi-compatibility.patch
 # Incompatible version of Plexus Classworlds (upstreamable)
 Patch1:         0002-Fix-compatibility-with-Plexus-Classworlds-2.5.patch
@@ -57,6 +55,7 @@ BuildRequires:  osgi(org.hamcrest.core)
 BuildRequires:  osgi(org.junit)
 BuildRequires:  osgi(org.sonatype.sisu.guice)
 BuildRequires:  osgi(slf4j.api)
+BuildRequires:  osgi(org.eclipse.osgi.source)
 
 
 %description
@@ -116,10 +115,10 @@ This package contains %{summary}.
 
 %prep
 %setup -q -c -T
-tar xf %{SOURCE0} && mv milestones/* sisu-inject && rmdir milestones
-tar xf %{SOURCE1} && mv milestones/* sisu-plexus && rmdir milestones
+tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
+tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
-%patch0 -p1
+#patch0 -p1
 %patch1 -p1
 
 %mvn_file ":{*}" @1
@@ -142,6 +141,7 @@ do
     sed -i '/<unit id="javax.ejb"/s|.*|<unit id="org.apache.geronimo.specs.geronimo-ejb_3.1_spec"/>|' $target
     sed -i '/<unit id="com.google.inject"/s|.*|<unit id="org.sonatype.sisu.guice"/>|' $target
     sed -i '/<unit id="org.slf4j.api"/s|.*|<unit id="slf4j.api"/>|' $target
+    sed -i '/<unit id="com.google.inject.source"/d' $target
 done
 
 for pom in \
@@ -179,7 +179,7 @@ EOF
 %mvn_build -f -i
 for mod in inject plexus; do
     %mvn_artifact sisu-${mod}/pom.xml
-    %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.%{vertag}.jar
+    %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.jar
 done
 
 %install
@@ -197,6 +197,9 @@ done
 
 
 %changelog
+* Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.1.0-1
+- Update to upstream version 0.1.0
+
 * Wed Oct 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.0.0-0.7.M5
 - Rebuild to regenerate broken POMs
 - Related: rhbz#1021484
