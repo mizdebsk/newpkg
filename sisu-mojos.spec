@@ -1,14 +1,12 @@
-%global vertag M5
-
 Name:           sisu-mojos
-Version:        0.0.0
-Release:        0.1.%{vertag}%{?dist}
+Version:        0.1.0
+Release:        1%{?dist}
 Summary:        Sisu plugin for Apache Maven
 License:        EPL
 URL:            http://www.eclipse.org/sisu
 BuildArch:      noarch
 
-Source0:        http://git.eclipse.org/c/sisu/org.eclipse.sisu.mojos.git/snapshot/milestones/0.0.0.M5.tar.bz2#/%{name}-%{version}.%{vertag}.tar.bz2
+Source0:        http://git.eclipse.org/c/sisu/org.eclipse.sisu.mojos.git/snapshot/releases/%{version}.tar.bz2#/%{name}-%{version}.tar.bz2
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.guava:guava)
@@ -34,7 +32,7 @@ This package contains %{summary}.
 
 %prep
 %setup -q -c
-mv milestones/%{version}.%{vertag}/* .
+mv releases/%{version}/* .
 # Animal Sniffer is not useful in Fedora
 %pom_remove_plugin :animal-sniffer-maven-plugin
 
@@ -52,6 +50,9 @@ mv milestones/%{version}.%{vertag}/* .
 %doc LICENSE.txt
 
 %changelog
+* Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.1.0-1
+- Update to upstream version 0.1.0
+
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.0-0.1.M5
 - Initial packaging.
 - Fix unowned directory
