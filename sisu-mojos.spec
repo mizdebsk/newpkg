@@ -45,6 +45,7 @@ mv milestones/%{version}.%{vertag}/* .
 %mvn_install
 
 %files -f .mfiles
+%dir %{_javadir}/%{name}
 %doc LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
@@ -53,3 +54,4 @@ mv milestones/%{version}.%{vertag}/* .
 %changelog
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.0-0.1.M5
 - Initial packaging.
+- Fix unowned directory
