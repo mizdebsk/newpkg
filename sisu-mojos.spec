@@ -1,6 +1,6 @@
 Name:           sisu-mojos
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Sisu plugin for Apache Maven
 License:        EPL
 URL:            http://www.eclipse.org/sisu
@@ -20,6 +20,8 @@ BuildRequires:  mvn(org.slf4j:slf4j-nop)
 BuildRequires:  mvn(org.sonatype.oss:oss-parent)
 BuildRequires:  mvn(org.sonatype.sisu:sisu-guice)
 
+Obsoletes:      sisu-maven-plugin < 1:0.1
+
 %description
 The Sisu Plugin for Maven provides mojos to generate
 META-INF/sisu/javax.inject.Named index files for the Sisu container.
@@ -35,6 +37,7 @@ This package contains %{summary}.
 mv releases/%{version}/* .
 # Animal Sniffer is not useful in Fedora
 %pom_remove_plugin :animal-sniffer-maven-plugin
+%mvn_alias : org.sonatype.plugins:
 
 %build
 %mvn_build
@@ -50,6 +53,9 @@ mv releases/%{version}/* .
 %doc LICENSE.txt
 
 %changelog
+* Thu Nov 14 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.1.0-2
+- Obsolete sisu-maven-plugin
+
 * Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.1.0-1
 - Update to upstream version 0.1.0
 
