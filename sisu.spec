@@ -1,6 +1,6 @@
 Name:           sisu
 Epoch:          1
-Version:        0.1.0
+Version:        0.1.1
 Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
@@ -197,6 +197,9 @@ done
 
 
 %changelog
+* Wed Dec  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.1.1-1
+- Update to upstream version 0.1.1
+
 * Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.1.0-1
 - Update to upstream version 0.1.0
 
