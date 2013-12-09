@@ -13,7 +13,8 @@ URL:            http://eclipse.org/sisu
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
 Patch0:         0001-Fix-OSGi-compatibility.patch
-# Incompatible version of Plexus Classworlds (upstreamable)
+# Incompatible version of Plexus Classworlds
+# Forwarded upstream: https://bugs.eclipse.org/bugs/show_bug.cgi?id=423596
 Patch1:         0002-Fix-compatibility-with-Plexus-Classworlds-2.5.patch
 
 BuildArch:      noarch
