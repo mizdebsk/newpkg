@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -12,6 +12,8 @@ Patch1:         fix-cglib-refs.patch
 Patch2:         maven-cglib-dependency.patch
 Patch3:         fix-bnd-config.patch
 Patch4:         %{name}-matcher.patch
+# Workaround for NPE in setting NamingPolicy in cglib
+Patch5:         setting-naming-policy.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils
@@ -53,8 +55,10 @@ This package contains the API documentation for %{name}.
 sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
 %patch3
 %patch4 -p1
+%patch5 -p1
 
 %build
+build-jar-repository lib/compile objenesis
 ant jar javadoc
 # Convert to OSGi bundle
 pushd target
@@ -88,6 +92,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Wed Dec 11 2013 Michael Simacek <msimacek@redhat.com> - 1.9.0-14
+- Workaround for NPE in setting NamingPolicy
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
