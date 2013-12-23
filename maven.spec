@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.1.1
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -268,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Dec 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-15
+- Read user and system config files in maven-script
+
 * Wed Nov 13 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-14
 - Update to Sisu 0.1.0 and Guice 3.1.6
 

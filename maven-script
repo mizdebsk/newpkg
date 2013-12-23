@@ -1,4 +1,15 @@
 #!/bin/sh
+
+# Source system prefs
+if [ -f /etc/java/maven.conf ] ; then
+  . /etc/java/maven.conf
+fi
+
+# Source user prefs
+if [ -f $HOME/.mavenrc ] ; then
+  . $HOME/.mavenrc
+fi
+
 if [ -f /usr/share/java-utils/java-functions ] ; then
   . /usr/share/java-utils/java-functions
   set_jvm
