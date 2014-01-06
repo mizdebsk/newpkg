@@ -1,9 +1,9 @@
-%global vertag M3
+%global vertag M4
 
 Name:           aether
 Epoch:          1
 Version:        0.9.0
-Release:        0.4.%{vertag}%{?dist}
+Release:        0.5.%{vertag}%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -12,15 +12,19 @@ BuildArch:      noarch
 Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
 
 BuildRequires:  maven-local
+BuildRequires:  mvn(com.google.inject:guice::no_aop:)
 BuildRequires:  mvn(javax.inject:javax.inject)
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.httpcomponents:httpclient)
 BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
 BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
 BuildRequires:  mvn(org.eclipse.sisu:sisu-maven-plugin)
+BuildRequires:  mvn(org.hamcrest:hamcrest-library)
 BuildRequires:  mvn(org.slf4j:jcl-over-slf4j)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 
@@ -143,10 +147,9 @@ rm -rf aether-transport-http/src/test
 
 %pom_remove_plugin :maven-enforcer-plugin
 
-# Workaround for rhbz#911365
-%pom_xpath_inject pom:project "<dependencies/>"
-%pom_add_dep cglib:cglib:any:test
-%pom_add_dep aopalliance:aopalliance:any:test
+# Upstream uses Sisu 0.0.0.M4, but Fedora has 0.0.0.M5.  In M5 scope
+# of Guice dependency was changed from "compile" to "provided".
+%pom_add_dep com.google.inject:guice::provided . "<classifier>no_aop</classifier>"
 
 %build
 %mvn_build -s
@@ -176,6 +179,10 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Mon Jan  6 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.5.M4
+- Update to upstream version 0.9.0.M4
+- Remove workaround for rhbz#911365
+
 * Wed Aug 14 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.4.M3
 - Add missing Obsoletes: aether-connector-file
 - Resolves: rhbz#996764
