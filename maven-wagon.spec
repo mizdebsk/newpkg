@@ -1,8 +1,8 @@
 %global bname     wagon
 
 Name:           maven-%{bname}
-Version:        2.5
-Release:        2%{?dist}
+Version:        2.6
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -15,31 +15,31 @@ BuildArch:      noarch
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.jcraft:jsch)
-BuildRequires:  mvn(commons-httpclient:commons-httpclient)
+BuildRequires:  mvn(com.jcraft:jsch.agentproxy.connector-factory)
+BuildRequires:  mvn(com.jcraft:jsch.agentproxy.jsch)
 BuildRequires:  mvn(commons-io:commons-io)
 BuildRequires:  mvn(commons-lang:commons-lang)
 BuildRequires:  mvn(commons-logging:commons-logging)
 BuildRequires:  mvn(commons-net:commons-net)
 BuildRequires:  mvn(junit:junit)
-BuildRequires:  mvn(log4j:log4j)
-BuildRequires:  mvn(nekohtml:nekohtml)
 BuildRequires:  mvn(org.apache.httpcomponents:httpclient)
 BuildRequires:  mvn(org.apache.httpcomponents:httpcore)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-enforcer-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-shade-plugin)
 BuildRequires:  mvn(org.apache.maven.scm:maven-scm-api)
+BuildRequires:  mvn(org.apache.maven.scm:maven-scm-provider-cvsexe)
+BuildRequires:  mvn(org.apache.maven.scm:maven-scm-provider-svnexe)
+BuildRequires:  mvn(org.apache.maven.scm:maven-scm-test)
 BuildRequires:  mvn(org.apache.maven:maven-parent)
+BuildRequires:  mvn(org.apache.sshd:sshd-core)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-container-default)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-interactivity-api)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
-BuildRequires:  mvn(org.eclipse.jetty:jetty-client)
-BuildRequires:  mvn(org.eclipse.jetty:jetty-security)
-BuildRequires:  mvn(org.eclipse.jetty:jetty-server)
-BuildRequires:  mvn(org.eclipse.jetty:jetty-servlet)
-BuildRequires:  mvn(org.eclipse.jetty:jetty-util)
+BuildRequires:  mvn(org.easymock:easymock)
 BuildRequires:  mvn(org.jsoup:jsoup)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
+BuildRequires:  mvn(org.slf4j:slf4j-log4j12)
+BuildRequires:  mvn(org.slf4j:slf4j-simple)
 
 Obsoletes:      %{name}-manual < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-provider-test < %{epoch}:%{version}-%{release}
@@ -98,6 +98,7 @@ Javadoc for %{name}.
 # Maven requires Wagon HTTP with classifier "shaded"
 %mvn_alias :wagon-http :::shaded:
 
+
 %install
 %mvn_install
 
@@ -108,6 +109,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Mon Jan  6 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-1
+- Update to upstream version 2.6
+
 * Mon Sep 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.5-2
 - Add shaded alias for wagon-http
 

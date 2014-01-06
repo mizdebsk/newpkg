@@ -1,4 +1,4 @@
-From a98d4de91d767519ed9f4680607d466ba170e45d Mon Sep 17 00:00:00 2001
+From 444769c85163ba1183f007fbbc98b13fd4fb2790 Mon Sep 17 00:00:00 2001
 From: Michal Srb <msrb@redhat.com>
 Date: Wed, 27 Feb 2013 12:38:47 +0100
 Subject: [PATCH] Port to jetty 9
@@ -9,7 +9,7 @@ Subject: [PATCH] Port to jetty 9
  2 files changed, 78 insertions(+), 49 deletions(-)
 
 diff --git a/wagon-provider-test/pom.xml b/wagon-provider-test/pom.xml
-index 1bc9826..efa730d 100644
+index f251ed3..e1f612b 100644
 --- a/wagon-provider-test/pom.xml
 +++ b/wagon-provider-test/pom.xml
 @@ -51,8 +51,34 @@ under the License.
@@ -50,7 +50,7 @@ index 1bc9826..efa730d 100644
  
    </dependencies>
 diff --git a/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java b/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
-index 4ee5475..96728d3 100644
+index 4535e9f..8e11f46 100644
 --- a/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
 +++ b/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
 @@ -34,20 +34,25 @@
@@ -296,7 +296,7 @@ index 4ee5475..96728d3 100644
 +        public void handle( String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response )
              throws IOException, ServletException
          {
-             headers = new HashMap();
+             headers = new HashMap<String, String>();
 @@ -1737,31 +1742,29 @@ protected TestSecurityHandler createSecurityHandler()
          cm.setPathSpec( "/*" );
  
@@ -336,5 +336,5 @@ index 4ee5475..96728d3 100644
  
      public static class HandlerRequestResponse
 -- 
-1.8.1.2
+1.8.4.2
 
