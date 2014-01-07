@@ -1,17 +1,13 @@
 Name:	SimplyHTML		
 Version:	0.16.7
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Application and a java component for rich text processing
 
-Group:		Development/Libraries
 License:	GPLv2 and BSD
 URL:		http://simplyhtml.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/simplyhtml/%{name}_src_0_16_07.tar.gz
-Source1:	simplyhtml.sh
 Patch0:	simplyhtml-build.xml-classpath.patch
 Patch1:	simplyhtml-manifest-classpath.patch
-
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	ant
 BuildRequires:	gnu-regexp
@@ -37,8 +33,6 @@ storing textual information and styles.
 
 %package javadoc
 Summary: API documentation for %{name}
-Group: Documentation
-Requires: %{name} = %{version}-%{release}
 Requires:	jpackage-utils
 
 %description javadoc
@@ -59,53 +53,38 @@ ant full-dist dist
 cd ..
 
 %install
-rm -rf %{buildroot}
-
-
-
 mkdir -p %{buildroot}%{_javadir}/%{name}
 
 
-cp -a dist/lib/SimplyHTML.jar %{buildroot}%{_javadir}/%{name}/%{name}-%{version}.jar
-ln -s %{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}/%{name}.jar
-ln -s %{name}.jar %{buildroot}%{_javadir}/%{name}/simplyhtml-%{version}.jar
-ln -s simplyhtml-%{version}.jar %{buildroot}%{_javadir}/%{name}/simplyhtml.jar
+cp -a dist/lib/SimplyHTML.jar %{buildroot}%{_javadir}/%{name}/%{name}.jar
 
-cp -a dist/lib/SimplyHTMLHelp.jar %{buildroot}%{_javadir}/%{name}/%{name}-help-%{version}.jar
-ln -s %{name}-help-%{version}.jar %{buildroot}%{_javadir}/%{name}/%{name}-help.jar
-ln -s %{name}-help-%{version}.jar %{buildroot}%{_javadir}/%{name}/simplyhtmlhelp-%{version}.jar
-ln -s simplyhtmlhelp-%{version}.jar %{buildroot}%{_javadir}/%{name}/SimplyHTMLHelp-%{version}.jar
-ln -s simplyhtmlhelp-%{version}.jar %{buildroot}%{_javadir}/%{name}/simplyhtmlhelp.jar
+cp -a dist/lib/SimplyHTMLHelp.jar %{buildroot}%{_javadir}/%{name}/%{name}-help.jar
 
+%jpackage_script com.lightdev.app.shtm.App "" "" gnu-regexp:javahelp2:SimplyHTML simplyhtml true
 
-install -pD -m755 -T %{SOURCE1} %{buildroot}%{_bindir}/%(basename %{SOURCE1})
+mkdir -p %{buildroot}%{_javadocdir}/%{name}
+cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}
 
-mkdir -p %{buildroot}%{_javadocdir}/%{name}-%{version}
-cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
-
-
-%clean
-rm -rf %{buildroot}
-
+# Workaround for RPM bug #646523 - can't change symlink to directory
+# TODO: Remove this in F-23
+%pretrans javadoc -p <lua>
+dir = "%{_javadocdir}/%{name}"
+dummy = posix.readlink(dir) and os.remove(dir)
 
 %files
-%defattr(-,root,root,-)
 %{_javadir}/%{name}
 %{_bindir}/simplyhtml*
 %doc gpl.txt 
 
 %files javadoc
-%defattr(0644,root,root,0755)
-%doc %{_javadocdir}/%{name}-%{version}
-%doc %{_javadocdir}/%{name}
+%{_javadocdir}/%{name}
 %doc readme.txt
 
 
-
-
-
 %changelog
+* Tue Jan 07 2014 Michael Simacek <msimacek@redhat.com> - 0.16.7-3
+- Adapt to current packaging guidelines (rhbz#1022163)
+
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.16.7-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
