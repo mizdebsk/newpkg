@@ -1,0 +1,27 @@
+--- pom.xml~	2014-01-28 17:11:18.840040988 +0100
++++ pom.xml	2014-01-28 17:15:07.479067570 +0100
+@@ -242,6 +242,24 @@
+               </execution>
+             </executions>
+           </plugin>
++          <plugin>
++            <groupId>org.fedoraproject</groupId>
++            <artifactId>feclipse-maven-plugin</artifactId>
++            <version>0.0.4</version>
++            <configuration>
++              <sourceRepo>${project.build.directory}/site</sourceRepo>
++              <targetLocation>${session.executionRootDirectory}/eclipse</targetLocation>
++            </configuration>
++            <executions>
++              <execution>
++                <id>install-feature</id>
++                <phase>package</phase>
++                <goals>
++                  <goal>install</goal>
++                </goals>
++              </execution>
++            </executions>
++          </plugin>
+           <!--
+            |
+            | Only deploy the update site zip to the server using the maven-upload-plugin.
