@@ -7,6 +7,8 @@ URL:            https://github.com/tesla/tycho-support/
 BuildArch:      noarch
 
 Source0:        https://github.com/tesla/tycho-support/archive/tycho-support-%{version}.tar.gz
+# Requested upstream to include license text:
+# https://github.com/tesla/tycho-support/pull/1
 Source1:        http://www.eclipse.org/legal/epl-v10.html
 
 # Run feclipse-maven-plugin during build
