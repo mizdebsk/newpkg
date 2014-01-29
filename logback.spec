@@ -1,5 +1,5 @@
 Name:           logback
-Version:        1.0.13
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
@@ -198,6 +198,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Wed Jan 29 2014 gil cattaneo <puntogil@libero.it> - 1.1.0-1
+- Update to 1.1.0
+
 * Sun Aug 04 2013 gil cattaneo <puntogil@libero.it> - 1.0.13-1
 - Update to 1.0.13
 
