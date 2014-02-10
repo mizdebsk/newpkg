@@ -28,53 +28,66 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+%bcond_with test
+
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        3.6.2
-Release:        4%{?dist}
+Version:        4.6.1
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
-Group:          Development/Libraries
 Source0:        http://www.apache.org/dist/lucene/java/%{version}/%{name}-%{version}-src.tgz
 Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
-Source3:        ivy-conf.xml
+
+Patch0:         0001-disable-ivy-settings.patch
 # DictionaryBasedBreakIterator was moved into the base RuleBasedBreakIterator
-# in icu4j. v49 => v50
-Patch0:         lucene_contrib_icu4j_v50.patch
-#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_3_6_2/dev-tools@r1450168
-#tar caf dev-tools.tar.xz dev-tools/
-Source4:        dev-tools.tar.xz
-BuildRequires:  jpackage-utils >= 0:1.6
-BuildRequires:  ant >= 0:1.6
-BuildRequires:  ant-junit >= 0:1.6
-BuildRequires:  junit
-BuildRequires:  javacc
-BuildRequires:  java-javadoc
-BuildRequires:  jtidy
+Patch1:         0001-icu4j_v50.patch
+# ShapeReadWriter was deprecated and renamed, proper update should follow in lucene-4.7
+Patch2:         0001-update-to-spatial4j-0.4.patch
+# upstream randomizedtesting bundles it's deps
+Patch3:         0001-fix-randomizedtesting-deps.patch
+# dependencies on non-maven artifacts (tar.gz files)
+Patch4:         0001-disable-mecab.patch
+
+BuildRequires:  git
+BuildRequires:  simple-xml
+BuildRequires:  jpackage-utils
+BuildRequires:  ant
 BuildRequires:  regexp
-BuildRequires:  apache-commons-digester
-BuildRequires:  unzip
-BuildRequires:  zip
-BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  apache-commons-compress
-BuildRequires:  apache-ivy
-BuildRequires:  lucene
-# for tests
-BuildRequires:  subversion
-# BR for lucene-contrib
-%if 0%{?fedora}
+BuildRequires:  ivy-local
 BuildRequires:  icu4j
+BuildRequires:  httpcomponents-client
+BuildRequires:  jetty
+BuildRequires:  morfologik-stemming
+BuildRequires:  uimaj
+BuildRequires:  uima-addons
+BuildRequires:  spatial4j
+BuildRequires:  nekohtml
+BuildRequires:  xerces-j2
+BuildRequires:  groovy
+BuildRequires:  mvn(javax.servlet:servlet-api)
+BuildRequires:  mvn(org.antlr:antlr-runtime)
+
+%if %{with test}
+BuildRequires:  junit
+BuildRequires:  randomizedtesting-junit4-ant
+BuildRequires:  randomizedtesting-runner
 %endif
 
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
 Obsoletes:      lucene-devel < %{epoch}:%{version}-%{release}
 Obsoletes:      lucene-demo < %{epoch}:%{version}-%{release}
+# previously distributed separately, but merged into main package
+Provides:       lucene-contrib = %{version}-%{release}
+Obsoletes:      lucene-contrib < %{version}-%{release}
+
 BuildArch:      noarch
 
-Requires:       jpackage-utils
+BuildRequires:  maven-local
 
 %description
 Apache Lucene is a high-performance, full-featured text search
@@ -90,161 +103,92 @@ Requires:       jpackage-utils
 %description javadoc
 %{summary}.
 
-%if 0%{?fedora}
-%package contrib
-Summary:        Lucene contributed extensions
-Group:          Development/Libraries
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-
-%description contrib
-%{summary}.
-%endif
-
 %prep
-%setup -q -n %{name}-%{version}
+%autosetup -S git -n %{name}-%{version}
+
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 
-tar xfs %{SOURCE4}
-pushd dev-tools
-find . -name "pom.xml.template" -exec sed -i "s/@version@/%{version}/g" '{}' \;
-popd
+sed -i 's|groovy-all|groovy|' common-build.xml
 
-iconv --from=ISO-8859-1 --to=UTF-8 CHANGES.txt > CHANGES.txt.new
+# incorrect artifact type
+sed -i 's/type="orbit"//' replicator/ivy.xml
 
-# prepare pom files (replace @version@ with real version)
-find . -name '*pom.xml.template' -exec \
-              sed -i "s:@version@:%{version}:g" '{}' \;
+# interferes with XMvn local resolution
+rm ivy-settings.xml
 
-cp %{SOURCE3} .
+# ivy.xml files don't specify revision, which makes them invalid and would
+# crash %%mvn_artifact
+find . -name 'ivy.xml' -exec sed -i 's/<info/<info revision="%{version}"/' {} \;
 
-#modify artifactIds to make it easier to map to fedora
-sed -i -e "s|ant-junit|ant/ant-junit|g" test-framework/ivy.xml
-sed -i -e "s|xercesImpl|xerces-j2|g" contrib/benchmark/ivy.xml
-sed -i -e "s|jakarta-regexp|regexp|g" contrib/queries/ivy.xml
+# failing due to old version of nekohtml
+rm benchmark/src/test/org/apache/lucene/benchmark/byTask/feeds/TestHtmlParser.java
 
-# ICU4J v50 compatibility
-%patch0 -p2
+# old API
+rm -r replicator/src/test/*
+rm -r spatial/src/test/*
 
 %build
-mkdir -p docs
-mkdir -p lib
-export OPT_JAR_LIST="ant/ant-junit junit"
-export CLASSPATH=$(build-classpath jtidy regexp commons-digester apache-commons-compress ivy)
-
-
-ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
-  -Djavacc.home=%{_bindir}/javacc \
-  -Djavacc.jar=%{_javadir}/javacc.jar \
-  -Djavacc.jar.dir=%{_javadir} \
-  -Djavadoc.link=file://%{_javadocdir}/java \
+ant jar javadocs \
+  %if %{with test}
+  test \
+  %endif
+  -Divy.mode=local \
   -Dversion=%{version} \
-  -Dfailonjavadocwarning=false \
-  -Dmaven-tasks.uptodate=true \
-  jar-lucene-core docs javadocs-core
-
-%if 0%{?fedora}
-export CLASSPATH=$(build-classpath jtidy regexp commons-digester apache-commons-compress icu4j ivy)
-ant -Divy.settings.file=ivy-conf.xml -Dbuild.sysclasspath=first \
-  -Djavacc.home=%{_bindir}/javacc \
-  -Djavacc.jar=%{_javadir}/javacc.jar \
-  -Djavacc.jar.dir=%{_javadir} \
   -Djavadoc.link=file://%{_javadocdir}/java \
-  -Dversion=%{version} \
-  -Dfailonjavadocwarning=false \
-  -Dmaven-tasks.uptodate=true \
-  jar-test-framework javadocs build-contrib
-%endif
-    
+  -Dfailonjavadocwarning=false
+
 # add missing OSGi metadata to manifests
 mkdir META-INF
 unzip -o build/core/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-cp %{SOURCE1} META-INF/MANIFEST.MF
+cat %{SOURCE1} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/core/lucene-core-%{version}.jar META-INF/MANIFEST.MF
 
-%if 0%{?fedora}
-unzip -o build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
-cp %{SOURCE2} META-INF/MANIFEST.MF
+unzip -o build/analysis/common/lucene-analyzers-common-%{version}.jar META-INF/MANIFEST.MF
+cat %{SOURCE2} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
-zip -u build/contrib/analyzers/common/lucene-analyzers-%{version}.jar META-INF/MANIFEST.MF
-
-mv build/contrib/analyzers/common build/contrib/analyzers/analyzers
-mv dev-tools/maven/lucene/contrib/analyzers/common dev-tools/maven/lucene/contrib/analyzers/analyzers
-%endif
+zip -u build/analysis/common/lucene-analyzers-common-%{version}.jar META-INF/MANIFEST.MF
 
 %install
-
-# jars
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}
-install -d -m 0755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -m 0644 build/core/%{name}-core-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
-ln -sf %{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-core.jar
-
-# core pom + parents
-install -m 0644 dev-tools/maven/lucene/core/pom.xml.template \
-           $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-core.pom
-%add_maven_depmap JPP-lucene-core.pom %{name}-core.jar
-install -m 0644 dev-tools/maven/lucene/pom.xml.template \
-       $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-parent.pom
-%add_maven_depmap JPP-lucene-parent.pom
-install -m 0644 dev-tools/maven/pom.xml.template \
-       $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-solr-grandparent.pom
-%add_maven_depmap JPP-lucene-solr-grandparent.pom
-
-%if 0%{?fedora}
-# contrib jars
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib
-for c in benchmark demo facet grouping highlighter \
-         icu instantiated join memory misc pruning queries queryparser remote \
-         spatial spellchecker xml-query-parser; do
-    install -m 0644 build/contrib/$c/%{name}-${c}-%{version}.jar \
-        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
-
-    install -m 0644 dev-tools/maven/lucene/contrib/$c/pom.xml.template \
-               $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.lucene-contrib-lucene-$c.pom
-    %add_maven_depmap JPP.lucene-contrib-lucene-$c.pom %{name}-contrib/%{name}-${c}.jar
+for module in core benchmark classification codecs demo expressions facet    \
+grouping highlighter join memory misc queries queryparser replicator sandbox \
+spatial   suggest test-framework; do
+    %mvn_artifact "${module}/ivy.xml" "build/${module}/%{name}-${module}-%{version}.jar"
 done
 
-# contrib analyzers
-for c in analyzers kuromoji phonetic smartcn stempel; do
-    install -m 0644 build/contrib/analyzers/$c/%{name}-${c}-%{version}.jar \
-        $RPM_BUILD_ROOT%{_javadir}/%{name}-contrib/%{name}-${c}.jar
+%mvn_file :core %{name}/%{name}-core %{name}
 
-    install -m 0644 dev-tools/maven/lucene/contrib/analyzers/$c/pom.xml.template \
-               $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP.lucene-contrib-lucene-$c.pom
-    %add_maven_depmap JPP.lucene-contrib-lucene-$c.pom %{name}-contrib/%{name}-${c}.jar
+for analyzer in common icu kuromoji morfologik phonetic smartcn stempel uima; do
+    %mvn_artifact "analysis/${analyzer}/ivy.xml" "build/analysis/${analyzer}/%{name}-analyzers-${analyzer}-%{version}.jar"
 done
 
-# contrib pom
-install -m 0644 dev-tools/maven/lucene/contrib/pom.xml.template \
-       $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-lucene-contrib.pom
-%add_maven_depmap JPP-lucene-contrib.pom
-%endif
+# suggest provides spellchecker
+%mvn_alias :suggest :%{name}-spellchecker
 
-# javadoc
-install -d -m 0755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr build/docs/api/* \
-  $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+# artifacts on maven central have name prepended to artifactId
+%mvn_alias ':{*}' ':%{name}-@1'
 
-%files
-%doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt
-%{_mavenpomdir}/JPP*pom
-%{_mavendepmapfragdir}/%{name}
-%{_javadir}/%{name}.jar
-%{_javadir}/%{name}-core.jar
+# compatibility with existing packages
+%mvn_alias ':analyzers-{*}' ':%{name}-@1'
+%mvn_alias :analyzers-common :%{name}-analyzers
 
-%files javadoc
+sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
+
+%mvn_install -J build/docs
+
+%files -f .mfiles
+%doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt MIGRATE.txt
+
+%files javadoc -f .mfiles-javadoc
 %doc LICENSE.txt
-%{_javadocdir}/%{name}
-
-%if 0%{?fedora}
-%files contrib
-%{_javadir}/%{name}-contrib
-%doc contrib/CHANGES.txt
-%endif
 
 %changelog
+* Mon Feb 10 2014 Michael Simacek <msimacek@redhat.com> - 0:4.6.1-1
+- Update to upstream version 4.6.1
+- Use XMvn to resolve ivy artifacts and for installation
+- Remove contrib subpackage (was merged into main package)
+
 * Wed Nov 06 2013 Severin Gehwolf <sgehwolf@redhat.com> 0:3.6.2-4
 - Remove unneeded BR jline. Resolves RHBZ#1023015.
 

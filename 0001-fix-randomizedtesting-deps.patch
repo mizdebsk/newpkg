@@ -1,0 +1,28 @@
+From 315de82f4d463f90361eadbf8eb0f40074b1bc8c Mon Sep 17 00:00:00 2001
+From: Michael Simacek <msimacek@redhat.com>
+Date: Tue, 4 Feb 2014 09:17:45 +0100
+Subject: [PATCH] fix randomizedtesting deps
+
+Signed-off-by: Michael Simacek <msimacek@redhat.com>
+---
+ test-framework/ivy.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test-framework/ivy.xml b/test-framework/ivy.xml
+index 6967cd4..bc02c15 100644
+--- a/test-framework/ivy.xml
++++ b/test-framework/ivy.xml
+@@ -32,8 +32,8 @@
+       <dependency org="org.apache.ant" name="ant" rev="${/org.apache.ant/ant}" transitive="false" />
+ 
+       <dependency org="junit" name="junit" rev="${/junit/junit}" transitive="false" conf="default->*;junit4-stdalone->*" />
+-      <dependency org="com.carrotsearch.randomizedtesting" name="junit4-ant" rev="${/com.carrotsearch.randomizedtesting/junit4-ant}" transitive="false" conf="default->*;junit4-stdalone->*" />
+-      <dependency org="com.carrotsearch.randomizedtesting" name="randomizedtesting-runner" rev="${/com.carrotsearch.randomizedtesting/randomizedtesting-runner}" transitive="false" conf="default->*;junit4-stdalone->*" />
++      <dependency org="com.carrotsearch.randomizedtesting" name="junit4-ant" rev="${/com.carrotsearch.randomizedtesting/junit4-ant}" transitive="true" conf="default->*;junit4-stdalone->*" />
++      <dependency org="com.carrotsearch.randomizedtesting" name="randomizedtesting-runner" rev="${/com.carrotsearch.randomizedtesting/randomizedtesting-runner}" transitive="true" conf="default->*;junit4-stdalone->*" />
+ 
+       <exclude org="*" ext="*" matcher="regexp" type="${ivy.exclude.types}"/> 
+     </dependencies>
+-- 
+1.8.5.3
+
