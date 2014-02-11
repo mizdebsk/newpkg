@@ -1,6 +1,6 @@
 Name:           maven
-Version:        3.1.1
-Release:        15%{?dist}
+Version:        3.2.0
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -74,6 +74,7 @@ BuildRequires:  plexus-sec-dispatcher
 BuildRequires:  plexus-utils >= 3.0.10
 BuildRequires:  sisu-inject >= 1:0.1
 BuildRequires:  sisu-plexus >= 1:0.1
+BuildRequires:  sisu-mojos
 BuildRequires:  slf4j
 BuildRequires:  xmlunit
 BuildRequires:  mvn(ch.qos.logback:logback-classic)
@@ -150,8 +151,8 @@ Group:          Documentation
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
 
-# fix line endings
-sed -i 's:\r::' *.txt
+# Use Eclipse Sisu plugin
+sed -i s/org.sonatype.plugins/org.eclipse.sisu/ maven-core/pom.xml
 
 # fix for animal-sniffer (we don't generate 1.5 signatures)
 sed -i 's:check-java-1.5-compat:check-java-1.6-compat:' pom.xml
@@ -251,7 +252,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %files -f .mfiles
-%doc LICENSE NOTICE README.txt
+%doc LICENSE NOTICE README.md
 %{_datadir}/%{name}
 %{_bindir}/mvn
 %dir %{_javadir}/%{name}
@@ -268,6 +269,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Feb 11 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.0-1
+- Update to upstream version 3.2.0
+
 * Mon Dec 23 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.1-15
 - Read user and system config files in maven-script
 

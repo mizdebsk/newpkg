@@ -1,7 +1,7 @@
-From 9874d5c9fb80c779682ffc5f8dd45435a17546ce Mon Sep 17 00:00:00 2001
+From c9859a031e75d41fb8199ab6dc7f3019f510fc83 Mon Sep 17 00:00:00 2001
 From: Mikolaj Izdebski <mizdebsk@redhat.com>
 Date: Mon, 12 Aug 2013 08:49:19 +0200
-Subject: [PATCH 3/3] Update Aether to 0.9.0.M3
+Subject: [PATCH 3/4] Update Aether to 0.9.0.M3
 
 ---
  apache-maven/pom.xml          | 6 +++++-
@@ -11,7 +11,7 @@ Subject: [PATCH 3/3] Update Aether to 0.9.0.M3
  4 files changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/apache-maven/pom.xml b/apache-maven/pom.xml
-index 4a53643..0b56fa8 100644
+index e79b5a5..7504e24 100644
 --- a/apache-maven/pom.xml
 +++ b/apache-maven/pom.xml
 @@ -87,7 +87,11 @@
@@ -28,7 +28,7 @@ index 4a53643..0b56fa8 100644
      <dependency>
        <groupId>org.slf4j</groupId>
 diff --git a/maven-aether-provider/pom.xml b/maven-aether-provider/pom.xml
-index a5c460a..62ce127 100644
+index 8a5fc78..7ae72f2 100644
 --- a/maven-aether-provider/pom.xml
 +++ b/maven-aether-provider/pom.xml
 @@ -91,7 +91,12 @@ under the License.
@@ -46,7 +46,7 @@ index a5c460a..62ce127 100644
      </dependency>
      <dependency>
 diff --git a/maven-compat/pom.xml b/maven-compat/pom.xml
-index f4cd5a9..ee6ace7 100644
+index a296c86..a2277b7 100644
 --- a/maven-compat/pom.xml
 +++ b/maven-compat/pom.xml
 @@ -79,7 +79,12 @@
@@ -64,7 +64,7 @@ index f4cd5a9..ee6ace7 100644
      </dependency>
      <dependency>
 diff --git a/pom.xml b/pom.xml
-index 71e6d5a..889ba1d 100644
+index 808924a..366c557 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -58,7 +58,7 @@
@@ -76,7 +76,7 @@ index 71e6d5a..889ba1d 100644
      <slf4jVersion>1.7.5</slf4jVersion>
      <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
      <!-- Control the name of the distribution and information output by mvn -->
-@@ -284,7 +284,12 @@
+@@ -288,7 +288,12 @@
        </dependency>
        <dependency>
          <groupId>org.eclipse.aether</groupId>
@@ -91,5 +91,5 @@ index 71e6d5a..889ba1d 100644
        </dependency>
        <!--  Commons -->
 -- 
-1.8.1.4
+1.8.4.2
 
