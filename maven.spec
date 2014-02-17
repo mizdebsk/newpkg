@@ -1,5 +1,5 @@
 Name:           maven
-Version:        3.2.0
+Version:        3.2.1
 Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 
@@ -269,6 +269,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Feb 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
+- Update to upstream version 3.2.1
+
 * Tue Feb 11 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.0-1
 - Update to upstream version 3.2.0
 
