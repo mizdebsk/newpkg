@@ -1,6 +1,6 @@
 Name:           sisu
 Epoch:          1
-Version:        0.1.1
+Version:        0.2.0
 Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
@@ -12,10 +12,6 @@ URL:            http://eclipse.org/sisu
 
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
-Patch0:         0001-Fix-OSGi-compatibility.patch
-# Incompatible version of Plexus Classworlds
-# Forwarded upstream: https://bugs.eclipse.org/bugs/show_bug.cgi?id=423596
-Patch1:         0002-Fix-compatibility-with-Plexus-Classworlds-2.5.patch
 
 BuildArch:      noarch
 
@@ -52,11 +48,12 @@ BuildRequires:  osgi(org.codehaus.plexus.component-annotations)
 BuildRequires:  osgi(org.codehaus.plexus.utils)
 BuildRequires:  osgi(org.eclipse.jdt.apt.core)
 BuildRequires:  osgi(org.eclipse.osgi)
+BuildRequires:  osgi(org.eclipse.osgi.source)
 BuildRequires:  osgi(org.hamcrest.core)
 BuildRequires:  osgi(org.junit)
 BuildRequires:  osgi(org.sonatype.sisu.guice)
+BuildRequires:  osgi(org.sonatype.sisu.inject.guice-servlet)
 BuildRequires:  osgi(slf4j.api)
-BuildRequires:  osgi(org.eclipse.osgi.source)
 
 
 %description
@@ -119,9 +116,6 @@ This package contains %{summary}.
 tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
 tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
-#patch0 -p1
-%patch1 -p1
-
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
 %mvn_package : __noinstall
@@ -148,7 +142,8 @@ done
 for pom in \
     sisu-inject/org.eclipse.sisu.inject \
     sisu-inject/org.eclipse.sisu.inject.extender \
-    sisu-plexus/org.eclipse.sisu.plexus
+    sisu-plexus/org.eclipse.sisu.plexus \
+    sisu-plexus/org.eclipse.sisu.plexus.extender
 do
     %pom_remove_plugin :animal-sniffer-maven-plugin $pom
 done
@@ -198,6 +193,9 @@ done
 
 
 %changelog
+* Mon Feb 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-1
+- Update to upstream version 0.2.0
+
 * Wed Dec  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.1.1-1
 - Update to upstream version 0.1.1
 
