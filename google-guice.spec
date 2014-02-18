@@ -5,7 +5,7 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.1.9
+Version:        3.1.10
 Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
@@ -226,6 +226,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Tue Feb 18 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.10-1
+- Update to upstream version 3.1.10
+
 * Mon Jan 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.9-1
 - Update to upstream version 3.1.9
 
