@@ -103,6 +103,7 @@ Javadoc for %{name}.
 %mvn_install
 
 %files -f .mfiles
+%dir %{_javadir}/%{name}
 %doc LICENSE NOTICE DEPENDENCIES
 %files scm -f .mfiles-scm
 %files javadoc -f .mfiles-javadoc
