@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -110,6 +110,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Wed Feb 19 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-2
+- Fix unowned directory
+
 * Mon Jan  6 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-1
 - Update to upstream version 2.6
 
