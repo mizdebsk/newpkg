@@ -204,6 +204,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %mvn_install
 
 %files -f .mfiles-sisu-guice
+%dir %{_javadir}/%{name}
 
 %files -n %{short_name}-parent -f .mfiles-guice-parent
 %doc COPYING
