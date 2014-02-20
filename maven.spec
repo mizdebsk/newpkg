@@ -68,7 +68,6 @@ BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
 BuildRequires:  plexus-containers-component-annotations
 BuildRequires:  plexus-containers-component-metadata >= 1.5.5
-BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-interpolation
 BuildRequires:  plexus-sec-dispatcher
 BuildRequires:  plexus-utils >= 3.0.10
@@ -269,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Thu Feb 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
+- Remove BR on plexus-containers-container-default
+
 * Mon Feb 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
 - Update to upstream version 3.2.1
 
