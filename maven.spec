@@ -65,7 +65,7 @@ BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  maven-wagon-file
 BuildRequires:  maven-wagon-http
-BuildRequires:  maven-wagon-http-shared4
+BuildRequires:  maven-wagon-http-shared
 BuildRequires:  maven-wagon-provider-api
 BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
@@ -111,7 +111,7 @@ Requires:       httpcomponents-core
 Requires:       jsr-305
 Requires:       maven-wagon-file
 Requires:       maven-wagon-http
-Requires:       maven-wagon-http-shared4
+Requires:       maven-wagon-http-shared
 Requires:       maven-wagon-provider-api
 Requires:       plexus-cipher
 Requires:       plexus-classworlds
@@ -250,7 +250,7 @@ ln -sf $(build-classpath plexus/classworlds) \
         \
         httpcomponents/httpclient \
         httpcomponents/httpcore \
-        maven-wagon/http-shared4 \
+        maven-wagon/http-shared \
         commons-logging \
         commons-codec \
 )
