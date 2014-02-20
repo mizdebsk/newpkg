@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -93,7 +93,6 @@ This package contains %{summary}.
 
 %package        plexus
 Summary:        Sisu Plexus POM
-Requires:       mvn(javax.enterprise:cdi-api)
 Requires:       mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
 Requires:       mvn(org.codehaus.plexus:plexus-component-annotations)
 Requires:       mvn(org.codehaus.plexus:plexus-classworlds)
@@ -145,6 +144,10 @@ do
     %pom_remove_plugin :animal-sniffer-maven-plugin $pom
 done
 
+for pom in sisu-inject/org.eclipse.sisu.inject.tests/pom.xml sisu-plexus/org.eclipse.sisu.plexus/pom.xml; do
+    %pom_xpath_inject "pom:dependency[pom:artifactId='cdi-api']" '<scope>provided</scope>' $pom
+done
+
 # missing dep org.eclipse.tycho.extras:tycho-sourceref-jgit
 %pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:dependencies" sisu-inject
 %pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:configuration/pom:sourceReferences" sisu-inject
@@ -190,6 +193,9 @@ done
 
 
 %changelog
+* Thu Feb 20 2014 Michal Srb <msrb@redhat.com> - 1:0.2.0-3
+- Remove R on cdi-api
+
 * Thu Feb 20 2014 Michal Srb <msrb@redhat.com> - 1:0.2.0-2
 - Update BR/R for version 0.2.0
 - Enable tests
