@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -16,17 +16,17 @@ Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/
 BuildArch:      noarch
 
 BuildRequires:  maven-local
-BuildRequires:  mvn(com.google.guava:guava)
 BuildRequires:  mvn(com.google.inject:guice)
 BuildRequires:  mvn(javax.enterprise:cdi-api)
 BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-antrun-plugin)
 BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
-BuildRequires:  mvn(org.eclipse.sisu:sisu-inject)
-BuildRequires:  mvn(org.eclipse.sisu:sisu-plexus)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-inject:pom:)
+BuildRequires:  mvn(org.eclipse.sisu:sisu-plexus:pom:)
 BuildRequires:  mvn(org.eclipse.tycho:target-platform-configuration)
 BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
 BuildRequires:  mvn(org.eclipse.tycho:tycho-source-plugin)
@@ -53,6 +53,7 @@ BuildRequires:  osgi(org.hamcrest.core)
 BuildRequires:  osgi(org.junit)
 BuildRequires:  osgi(org.sonatype.sisu.guice)
 BuildRequires:  osgi(org.sonatype.sisu.inject.guice-servlet)
+BuildRequires:  osgi(org.testng)
 BuildRequires:  osgi(slf4j.api)
 
 
@@ -62,8 +63,6 @@ style dependency injection.
 
 %package        inject
 Summary:        Sisu inject POM
-Requires:       mvn(javax.enterprise:cdi-api)
-Requires:       mvn(com.google.inject:guice)
 
 Obsoletes:      %{name}                   < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
@@ -95,8 +94,6 @@ This package contains %{summary}.
 %package        plexus
 Summary:        Sisu Plexus POM
 Requires:       mvn(javax.enterprise:cdi-api)
-Requires:       mvn(com.google.guava:guava)
-Requires:       mvn(org.sonatype.sisu:sisu-guice::no_aop:)
 Requires:       mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
 Requires:       mvn(org.codehaus.plexus:plexus-component-annotations)
 Requires:       mvn(org.codehaus.plexus:plexus-classworlds)
@@ -172,7 +169,7 @@ EOF
 %build
 # Tycho inject dependencies with system scope.  Disable installation
 # of effective POMs until Mvn can handle system-scoped deps.
-%mvn_build -f -i
+%mvn_build -i
 for mod in inject plexus; do
     %mvn_artifact sisu-${mod}/pom.xml
     %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.jar
@@ -193,6 +190,10 @@ done
 
 
 %changelog
+* Thu Feb 20 2014 Michal Srb <msrb@redhat.com> - 1:0.2.0-2
+- Update BR/R for version 0.2.0
+- Enable tests
+
 * Mon Feb 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-1
 - Update to upstream version 0.2.0
 
