@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -63,7 +63,10 @@ BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  maven-wagon >= 2.5-2
+BuildRequires:  maven-wagon-file
+BuildRequires:  maven-wagon-http
+BuildRequires:  maven-wagon-http-shared4
+BuildRequires:  maven-wagon-provider-api
 BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
 BuildRequires:  plexus-containers-component-annotations
@@ -106,7 +109,10 @@ Requires:       guava
 Requires:       httpcomponents-client
 Requires:       httpcomponents-core
 Requires:       jsr-305
-Requires:       maven-wagon
+Requires:       maven-wagon-file
+Requires:       maven-wagon-http
+Requires:       maven-wagon-http-shared4
+Requires:       maven-wagon-provider-api
 Requires:       plexus-cipher
 Requires:       plexus-classworlds
 Requires:       plexus-containers-component-annotations
@@ -268,6 +274,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Thu Feb 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-2
+- Migrate to Wagon subpackages
+
 * Thu Feb 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
 - Remove BR on plexus-containers-container-default
 
