@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -55,11 +55,72 @@ following providers:
 * WebDAV
 * SCM (in progress)
 
+%package provider-api
+Summary:        provider-api module for %{name}
+
+%description provider-api
+provider-api module for %{name}.
+
+%package providers
+Summary:        providers module for %{name}
+
+%description providers
+providers module for %{name}
+
+%package file
+Summary:        file module for %{name}
+
+%description file
+file module for %{name}.
+
+%package ftp
+Summary:        ftp module for %{name}
+
+%description ftp
+ftp module for %{name}.
+
+%package http
+Summary:        http module for %{name}
+
+%description http
+http module for %{name}.
+
+%package http-shared
+Summary:        http-shared module for %{name}
+
+%description http-shared
+http-shared module for %{name}.
+
+%package http-lightweight
+Summary:        http-lightweight module for %{name}
+
+%description http-lightweight
+http-lightweight module for %{name}.
+
 %package scm
 Summary:        scm module for %{name}
 
 %description scm
 scm module for %{name}.
+
+%package ssh-external
+Summary:        ssh-external module for %{name}
+
+%description ssh-external
+ssh-external module for %{name}.
+
+%package ssh-common
+Summary:        ssh-common module for %{name}
+
+%description ssh-common
+ssh-common module for %{name}.
+
+%package ssh
+Summary:        ssh module for %{name}
+
+%description ssh
+ssh module for %{name}.
+
 
 %package javadoc
 Summary:        Javadoc for %{name}
@@ -82,6 +143,8 @@ Javadoc for %{name}.
 %pom_disable_module wagon-tcks
 %pom_disable_module wagon-ssh-common-test wagon-providers/pom.xml
 %pom_disable_module wagon-provider-test
+%pom_remove_dep :wagon-provider-test
+%pom_remove_dep :wagon-provider-test wagon-providers
 
 # missing dependencies
 %pom_disable_module wagon-webdav-jackrabbit wagon-providers
@@ -89,11 +152,10 @@ Javadoc for %{name}.
 %build
 %mvn_file ":wagon-{*}" %{name}/@1
 
-# scm module has a lot of dependencies
-%mvn_package ":wagon-scm" scm
+%mvn_package ":wagon"
 
 # tests are disabled because of missing dependencies
-%mvn_build -f
+%mvn_build -f -s
 
 # Maven requires Wagon HTTP with classifier "shaded"
 %mvn_alias :wagon-http :::shaded:
@@ -105,11 +167,25 @@ Javadoc for %{name}.
 %files -f .mfiles
 %dir %{_javadir}/%{name}
 %doc LICENSE NOTICE DEPENDENCIES
-%files scm -f .mfiles-scm
+%files provider-api -f .mfiles-wagon-provider-api
+%files providers -f .mfiles-wagon-providers
+%files file -f .mfiles-wagon-file
+%files ftp -f .mfiles-wagon-ftp
+%files http -f .mfiles-wagon-http
+%files http-shared -f .mfiles-wagon-http-shared
+%files http-lightweight -f .mfiles-wagon-http-lightweight
+%files scm -f .mfiles-wagon-scm
+%files ssh-external -f .mfiles-wagon-ssh-external
+%files ssh-common -f .mfiles-wagon-ssh-common
+%files ssh -f .mfiles-wagon-ssh
+
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Feb 20 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-3
+- Split into subpackages
+
 * Wed Feb 19 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-2
 - Fix unowned directory
 
