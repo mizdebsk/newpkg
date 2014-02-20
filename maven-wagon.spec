@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -43,6 +43,20 @@ BuildRequires:  mvn(org.slf4j:slf4j-simple)
 
 Obsoletes:      %{name}-manual < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-provider-test < %{epoch}:%{version}-%{release}
+
+# Require all submodules for now until all packages migrate to wagon
+# subpackages.
+Requires:       %{name}-provider-api     = %{version}-%{release}
+Requires:       %{name}-providers        = %{version}-%{release}
+Requires:       %{name}-file             = %{version}-%{release}
+Requires:       %{name}-ftp              = %{version}-%{release}
+Requires:       %{name}-http             = %{version}-%{release}
+Requires:       %{name}-http-shared      = %{version}-%{release}
+Requires:       %{name}-http-lightweight = %{version}-%{release}
+Requires:       %{name}-scm              = %{version}-%{release}
+Requires:       %{name}-ssh-external     = %{version}-%{release}
+Requires:       %{name}-ssh-common       = %{version}-%{release}
+Requires:       %{name}-ssh              = %{version}-%{release}
 
 %description
 Maven Wagon is a transport abstraction that is used in Maven's
@@ -183,6 +197,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Feb 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-4
+- Add requires on all modules to main package
+
 * Thu Feb 20 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-3
 - Split into subpackages
 
