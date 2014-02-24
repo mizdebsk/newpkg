@@ -1,0 +1,28 @@
+From a389420bc523cf178dedd8553c33397da448b9ff Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Mon, 24 Feb 2014 13:59:31 +0100
+Subject: [PATCH] [MNG-5591] Set role hint for ReactorReader to "default"
+
+Sisu uses implicit role hint "default" only for components which class
+names are prefixed with "Default".  Since ReactorReader is not, hole
+hint "default" needs to be explicitly added as argument to @Named.
+---
+ maven-core/src/main/java/org/apache/maven/ReactorReader.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/maven-core/src/main/java/org/apache/maven/ReactorReader.java b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
+index 9aa8385..405d40b 100644
+--- a/maven-core/src/main/java/org/apache/maven/ReactorReader.java
++++ b/maven-core/src/main/java/org/apache/maven/ReactorReader.java
+@@ -46,7 +46,7 @@
+  * 
+  * @author Jason van Zyl
+  */
+-@Named
++@Named( "default" )
+ @SessionScoped
+ class ReactorReader
+     implements WorkspaceReader
+-- 
+1.8.4.2
+
