@@ -1,9 +1,9 @@
-%global vertag M4
+%global vertag v20140226
 
 Name:           aether
 Epoch:          1
 Version:        0.9.0
-Release:        0.5.%{vertag}%{?dist}
+Release:        1%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -179,6 +179,9 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Thu Feb 27 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-1
+- Update to upstream version 0.9.0
+
 * Mon Jan  6 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-0.5.M4
 - Update to upstream version 0.9.0.M4
 - Remove workaround for rhbz#911365
