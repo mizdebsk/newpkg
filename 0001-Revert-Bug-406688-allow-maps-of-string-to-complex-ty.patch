@@ -1,0 +1,97 @@
+From fdbcb51eea40131ed221ecd07e6f33926d14e387 Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Mon, 3 Mar 2014 05:48:15 +0100
+Subject: [PATCH] Revert "Bug 406688: allow maps of string to complex types in
+ mojo configuration"
+
+This reverts commit 5b469c87c134ca9e78883981f138a8972ac31bdc.
+---
+ .../converters/composite/MapConverter.java         | 37 +---------------------
+ 1 file changed, 1 insertion(+), 36 deletions(-)
+
+diff --git a/org.eclipse.sisu.plexus/src/org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java b/org.eclipse.sisu.plexus/src/org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java
+index 277f267..790b6c2 100644
+--- a/org.eclipse.sisu.plexus/src/org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java
++++ b/org.eclipse.sisu.plexus/src/org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java
+@@ -13,7 +13,6 @@
+ package org.codehaus.plexus.component.configurator.converters.composite;
+ 
+ import java.lang.reflect.Modifier;
+-import java.lang.reflect.Type;
+ import java.util.Map;
+ import java.util.Properties;
+ import java.util.TreeMap;
+@@ -21,15 +20,12 @@ import java.util.TreeMap;
+ import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+ import org.codehaus.plexus.component.configurator.ConfigurationListener;
+ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
+-import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
+-import org.codehaus.plexus.component.configurator.converters.ParameterizedConfigurationConverter;
+ import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+ import org.codehaus.plexus.configuration.PlexusConfiguration;
+ 
+ public class MapConverter
+     extends AbstractConfigurationConverter
+-    implements ParameterizedConfigurationConverter
+ {
+     public boolean canConvert( final Class<?> type )
+     {
+@@ -41,15 +37,6 @@ public class MapConverter
+                                      final ExpressionEvaluator evaluator, final ConfigurationListener listener )
+         throws ComponentConfigurationException
+     {
+-        return fromConfiguration( lookup, configuration, type, null, enclosingType, loader, evaluator, listener );
+-    }
+-
+-    public Object fromConfiguration( final ConverterLookup lookup, final PlexusConfiguration configuration,
+-                                     final Class<?> type, final Type[] typeArguments, final Class<?> enclosingType,
+-                                     final ClassLoader loader, final ExpressionEvaluator evaluator,
+-                                     final ConfigurationListener listener )
+-        throws ComponentConfigurationException
+-    {
+         final Object value = fromExpression( configuration, evaluator, type );
+         if ( null != value )
+         {
+@@ -58,23 +45,10 @@ public class MapConverter
+         try
+         {
+             final Map<Object, Object> map = instantiateMap( configuration, type, loader );
+-            final Class<?> elementType = findElementType( typeArguments );
+-            if ( Object.class == elementType || String.class == elementType )
+-            {
+-                for ( int i = 0, size = configuration.getChildCount(); i < size; i++ )
+-                {
+-                    final PlexusConfiguration element = configuration.getChild( i );
+-                    map.put( element.getName(), fromExpression( element, evaluator ) );
+-                }
+-                return map;
+-            }
+-            // handle maps with complex element types...
+-            final ConfigurationConverter converter = lookup.lookupConverterForType( elementType );
+             for ( int i = 0, size = configuration.getChildCount(); i < size; i++ )
+             {
+                 final PlexusConfiguration element = configuration.getChild( i );
+-                map.put( element.getName(), converter.fromConfiguration( lookup, element, elementType, enclosingType,
+-                                                                         loader, evaluator, listener ) );
++                map.put( element.getName(), fromExpression( element, evaluator ) );
+             }
+             return map;
+         }
+@@ -103,13 +77,4 @@ public class MapConverter
+         failIfNotTypeCompatible( impl, type, configuration );
+         return (Map<Object, Object>) impl;
+     }
+-
+-    private static Class<?> findElementType( final Type[] typeArguments )
+-    {
+-        if ( null != typeArguments && typeArguments.length > 1 && typeArguments[1] instanceof Class<?> )
+-        {
+-            return (Class<?>) typeArguments[1];
+-        }
+-        return Object.class;
+-    }
+ }
+-- 
+1.8.4.2
+

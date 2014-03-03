@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -12,6 +12,9 @@ URL:            http://eclipse.org/sisu
 
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
+
+# Revert new feature which introduced a regressionm
+Patch0:         0001-Revert-Bug-406688-allow-maps-of-string-to-complex-ty.patch
 
 BuildArch:      noarch
 
@@ -112,6 +115,10 @@ This package contains %{summary}.
 tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
 tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
+pushd sisu-plexus
+%patch0 -p1
+popd
+
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
 %mvn_package : __noinstall
@@ -193,6 +200,10 @@ done
 
 
 %changelog
+* Mon Mar  3 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-4
+- Revert upstream feature which introduced a regression
+- Resolves: rhbz#1070915
+
 * Thu Feb 20 2014 Michal Srb <msrb@redhat.com> - 1:0.2.0-3
 - Remove R on cdi-api
 
