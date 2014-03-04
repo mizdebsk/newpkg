@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
 Version:        1.8
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Build Helper Maven Plugin
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
@@ -55,6 +55,9 @@ cp %{SOURCE1} LICENSE-2.0.txt
 %doc header.txt LICENSE-2.0.txt
 
 %changelog
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.8-3
+- Use Requires: java-headless rebuild (#1067528)
+
 * Fri Jul 26 2013 Tomas Radej <tradej@redhat.com> - 1.8-2
 - Add missing ASL license text and installed all license files
 
