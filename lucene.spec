@@ -32,7 +32,7 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        4.6.1
+Version:        4.7.0
 Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
@@ -42,10 +42,6 @@ Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
 
 Patch0:         0001-disable-ivy-settings.patch
-# DictionaryBasedBreakIterator was moved into the base RuleBasedBreakIterator
-Patch1:         0001-icu4j_v50.patch
-# ShapeReadWriter was deprecated and renamed, proper update should follow in lucene-4.7
-Patch2:         0001-update-to-spatial4j-0.4.patch
 # upstream randomizedtesting bundles it's deps
 Patch3:         0001-fix-randomizedtesting-deps.patch
 # dependencies on non-maven artifacts (tar.gz files)
@@ -183,6 +179,9 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Tue Mar 04 2014 Michael Simacek <msimacek@redhat.com> - 0:4.7.0-1
+- Update to upstream version 4.7.0
+
 * Mon Feb 10 2014 Michael Simacek <msimacek@redhat.com> - 0:4.6.1-1
 - Update to upstream version 4.6.1
 - Use XMvn to resolve ivy artifacts and for installation
