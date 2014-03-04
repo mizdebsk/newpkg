@@ -204,7 +204,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %mvn_install
 
 %files -f .mfiles-sisu-guice
-%dir %{_javadir}/%{name}
+%dir %{_javadir}/%{short_name}
 
 %files -n %{short_name}-parent -f .mfiles-guice-parent
 %doc COPYING
@@ -227,6 +227,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Tue Mar  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.10-3
+- Fix directory ownership
+
 * Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.1.10-3
 - Use Requires: java-headless rebuild (#1067528)
 
