@@ -1,6 +1,6 @@
 Name:	SimplyHTML		
 Version:	0.16.7
-Release:	3%{?dist}
+Release:	2%{?dist}
 Summary:	Application and a java component for rich text processing
 
 Group:		Development/Libraries
@@ -20,7 +20,7 @@ BuildRequires:	javahelp2
 BuildRequires:	jpackage-utils
 
 Requires:	gnu-regexp
-Requires:	java-headless
+Requires:	java
 Requires:	javahelp2
 Requires:	jpackage-utils
 
@@ -106,9 +106,6 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.16.7-3
-- Use Requires: java-headless rebuild (#1067528)
-
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.16.7-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
