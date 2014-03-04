@@ -71,11 +71,10 @@ BuildRequires:  groovy
 BuildRequires:  mvn(javax.servlet:servlet-api)
 BuildRequires:  mvn(org.antlr:antlr-runtime)
 
-%if %{with test}
+# test deps
 BuildRequires:  junit
 BuildRequires:  randomizedtesting-junit4-ant
 BuildRequires:  randomizedtesting-runner
-%endif
 
 Provides:       lucene-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
