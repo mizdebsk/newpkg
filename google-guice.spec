@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.1.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -227,6 +227,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 3.1.10-3
+- Use Requires: java-headless rebuild (#1067528)
+
 * Wed Feb 19 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.10-2
 - Fix unowned directory
 
