@@ -30,7 +30,7 @@
 
 Name:           junit
 Version:        4.11
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
@@ -54,7 +54,7 @@ BuildRequires:  hamcrest
 BuildRequires:  perl(Digest::MD5)
 
 Requires:       hamcrest
-Requires:       java >= 1:1.6.0
+Requires:       java-headless >= 1:1.6.0
 
 Provides:       junit4 = %{epoch}:%{version}-%{release}
 Obsoletes:      junit4 < %{epoch}:%{version}-%{release}
@@ -155,6 +155,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:4.11-8
+- Use Requires: java-headless rebuild (#1067528)
+
 * Fri Aug 23 2013 Michal Srb <msrb@redhat.com> - 0:4.11-7
 - Drop "-SNAPSHOT" from version ID
 - See: https://lists.fedoraproject.org/pipermail/java-devel/2013-August/004923.html
