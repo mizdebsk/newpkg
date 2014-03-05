@@ -33,7 +33,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -179,6 +179,9 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Wed Mar 05 2014 Roland Grunberg <rgrunber@redhat.com> - 0:4.7.0-2
+- Fix Bundle-RequiredExecutionEnvironment for manifests. (rhbz#1072985)
+
 * Tue Mar 04 2014 Michael Simacek <msimacek@redhat.com> - 0:4.7.0-1
 - Update to upstream version 4.7.0
 
@@ -307,7 +310,7 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 * Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.1-3.2
 - drop repotag
 
-* Thu May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.1-3jpp.1
+* Wed May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.1-3jpp.1
 - fix license tag
 
 * Mon May 19 2008 Lubomir Rintel <lkundrak@v3.sk> - 0:2.3.1-3jpp.0
