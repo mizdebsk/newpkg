@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -197,6 +197,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Mar 06 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:2.6-5
+- Use Requires: java-headless rebuild (#1067528)
+
 * Thu Feb 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-4
 - Add requires on all modules to main package
 
