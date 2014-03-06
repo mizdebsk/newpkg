@@ -33,7 +33,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -179,6 +179,11 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Thu Mar 06 2014 Severin Gehwolf <sgehwolf@redhat.com> - 0:4.7.0-3
+- Fix analyzers-common OSGi metadata: Export o.a.l.a.core and
+  fix Require-Bundle header.
+- Resolves: RHBZ#1073073
+
 * Wed Mar 05 2014 Roland Grunberg <rgrunber@redhat.com> - 0:4.7.0-2
 - Fix Bundle-RequiredExecutionEnvironment for manifests. (rhbz#1072985)
 
