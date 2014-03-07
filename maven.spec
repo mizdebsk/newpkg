@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -178,6 +178,10 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 %pom_remove_plugin :animal-sniffer-maven-plugin
 #fi
 
+# logback is not really needed by maven in typical use cases, so set
+# its scope to provided
+%pom_xpath_inject "pom:dependency[pom:artifactId='logback-classic']" "<scope>provided</scope>" maven-embedder
+
 
 %build
 # Put all JARs in standard location, but create symlinks in Maven lib
@@ -277,6 +281,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Mar  7 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-4
+- Set logback dependency scope to provided
+
 * Mon Feb 24 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-3
 - Add patch for MNG-5591
 
