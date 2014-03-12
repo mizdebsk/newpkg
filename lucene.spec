@@ -33,7 +33,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -49,7 +49,7 @@ Patch4:         0001-disable-mecab.patch
 
 BuildRequires:  git
 BuildRequires:  simple-xml
-BuildRequires:  jpackage-utils
+BuildRequires:  javapackages-tools
 BuildRequires:  ant
 BuildRequires:  regexp
 BuildRequires:  apache-commons-compress
@@ -66,6 +66,7 @@ BuildRequires:  xerces-j2
 BuildRequires:  groovy
 BuildRequires:  mvn(javax.servlet:servlet-api)
 BuildRequires:  mvn(org.antlr:antlr-runtime)
+BuildRequires:  maven-local
 
 # test deps
 BuildRequires:  junit
@@ -81,8 +82,6 @@ Provides:       lucene-contrib = %{version}-%{release}
 Obsoletes:      lucene-contrib < %{version}-%{release}
 
 BuildArch:      noarch
-
-BuildRequires:  maven-local
 
 %description
 Apache Lucene is a high-performance, full-featured text search
@@ -179,6 +178,9 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Wed Mar 12 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.7.0-4
+- Export queryParser and queryParser.classic packages for OSGi.
+
 * Thu Mar 06 2014 Severin Gehwolf <sgehwolf@redhat.com> - 0:4.7.0-3
 - Fix analyzers-common OSGi metadata: Export o.a.l.a.core and
   fix Require-Bundle header.
