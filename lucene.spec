@@ -33,13 +33,14 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Source0:        http://www.apache.org/dist/lucene/java/%{version}/%{name}-%{version}-src.tgz
 Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
+Source3:        lucene-%{version}-queryparser-OSGi-MANIFEST.MF
 
 Patch0:         0001-disable-ivy-settings.patch
 # upstream randomizedtesting bundles it's deps
@@ -144,6 +145,11 @@ cat %{SOURCE2} >> META-INF/MANIFEST.MF
 sed -i '/^\r$/d' META-INF/MANIFEST.MF
 zip -u build/analysis/common/lucene-analyzers-common-%{version}.jar META-INF/MANIFEST.MF
 
+unzip -o build/queryparser/lucene-queryparser-%{version}.jar META-INF/MANIFEST.MF
+cat %{SOURCE3} >> META-INF/MANIFEST.MF
+sed -i '/^\r$/d' META-INF/MANIFEST.MF
+zip -u build/queryparser/lucene-queryparser-%{version}.jar META-INF/MANIFEST.MF
+
 %install
 for module in core benchmark classification codecs demo expressions facet    \
 grouping highlighter join memory misc queries queryparser replicator sandbox \
@@ -178,6 +184,10 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Wed Mar 12 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.7.0-5
+- Add queryparser osgi metadata properly.
+- Export lucene.analysys.standard too.
+
 * Wed Mar 12 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.7.0-4
 - Export queryParser and queryParser.classic packages for OSGi.
 
