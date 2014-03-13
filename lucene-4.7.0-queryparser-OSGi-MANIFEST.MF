@@ -2,8 +2,7 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: org.apache.lucene.queryparser
 Require-Bundle: org.apache.lucene.core;bundle-version="4.7.0"
-Export-Package: org.apache.lucene.analysis.ar;version="4.7.0",
- org.apache.lucene.queryparser.analyzing;version="4.7.0",
+Export-Package: org.apache.lucene.queryparser.analyzing;version="4.7.0",
  org.apache.lucene.queryparser.classic;version="4.7.0",
  org.apache.lucene.queryparser.complexPhrase;version="4.7.0",
  org.apache.lucene.queryparser.ext;version="4.7.0",

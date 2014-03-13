@@ -33,7 +33,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -184,6 +184,9 @@ sed -i "/rawPom/{p;s//effectivePom/g}" .xmvn-reactor
 %doc LICENSE.txt
 
 %changelog
+* Thu Mar 13 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.7.0-6
+- Don't export package that is not in queryparser.
+
 * Wed Mar 12 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.7.0-5
 - Add queryparser osgi metadata properly.
 - Export lucene.analysys.standard too.
