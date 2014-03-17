@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -83,6 +83,7 @@ BuildRequires:  slf4j
 BuildRequires:  xmlunit
 BuildRequires:  mvn(ch.qos.logback:logback-classic)
 BuildRequires:  mvn(org.mockito:mockito-core)
+BuildRequires:  mvn(org.codehaus.modello:modello-maven-plugin)
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
 # workflow requires full JDK, wso we require it here.
@@ -281,6 +282,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Mar 17 2014 Michal Srb <msrb@redhat.com> - 3.2.1-5
+- Add missing BR: modello-maven-plugin
+
 * Fri Mar  7 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-4
 - Set logback dependency scope to provided
 
