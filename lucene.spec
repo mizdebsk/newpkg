@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.7.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -279,10 +279,6 @@ pushd %{name}
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 
-# failing due to old version of nekohtml
-rm benchmark/src/test/org/apache/lucene/benchmark/byTask/feeds/TestHtmlParser.java
-# icu4j in fedora doesn't handle Lao language properly
-rm analysis/icu/src/test/org/apache/lucene/analysis/icu/segmentation/TestICUTokenizer{,Factory}.java
 rm sandbox/src/test/org/apache/lucene/sandbox/queries/regex/TestJakartaRegexpCapabilities.java
 
 # old API
@@ -395,6 +391,9 @@ popd
 %doc LICENSE.txt
 
 %changelog
+* Tue Mar 25 2014 Michael Simacek <msimacek@redhat.com> - 0:4.7.0-8
+- Enable tests that required newer icu4j and nekohtml
+
 * Fri Mar 14 2014 Michael Simacek <msimacek@redhat.com> - 0:4.7.0-7
 - Generate dependencies for POMs
 - Revert to using POM files for build and installation (ivy files don't specify
