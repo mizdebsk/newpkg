@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -26,7 +26,6 @@ BuildRequires:  hamcrest
 BuildRequires:  aqute-bnd
 
 Requires:       jpackage-utils
-Requires:       java
 Requires:       objenesis
 Requires:       cglib
 Requires:       junit4
@@ -92,6 +91,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.9.0-15
+- Use Requires: java-headless rebuild (#1067528)
+
 * Wed Dec 11 2013 Michael Simacek <msimacek@redhat.com> - 1.9.0-14
 - Workaround for NPE in setting NamingPolicy
 
