@@ -1,6 +1,6 @@
 Name:          glassfish-legal
 Version:       1.1
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       Legal License for glassfish code
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
@@ -38,6 +38,9 @@ cp -p src/main/resources/META-INF/LICENSE.txt .
 %doc LICENSE.txt
 
 %changelog
+* Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.1-4
+- Use Requires: java-headless rebuild (#1067528)
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
