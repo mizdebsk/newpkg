@@ -1,6 +1,6 @@
 Name:          spec-version-maven-plugin
 Version:       1.2
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       Spec Version Maven Plugin
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
@@ -63,6 +63,9 @@ sed -i 's/\r//' LICENSE.txt
 %doc LICENSE.txt
 
 %changelog
+* Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.2-4
+- Use Requires: java-headless rebuild (#1067528)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
