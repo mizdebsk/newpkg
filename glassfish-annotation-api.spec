@@ -3,7 +3,7 @@
 %global oname javax.annotation-api
 Name:          glassfish-annotation-api
 Version:       1.2
-Release:       5%{?dist}
+Release:       6%{?dist}
 Summary:       Common Annotations API Specification (JSR 250)
 License:       CDDL or GPLv2 with exceptions
 # http://jcp.org/en/jsr/detail?id=250
@@ -56,6 +56,9 @@ cp -p target/classes/META-INF/LICENSE.txt .
 %doc LICENSE.txt
 
 %changelog
+* Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.2-6
+- Use Requires: java-headless rebuild (#1067528)
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
