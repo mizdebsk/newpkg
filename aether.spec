@@ -1,8 +1,8 @@
-%global vertag v20140226
+%global vertag v20140329
 
 Name:           aether
 Epoch:          1
-Version:        0.9.0
+Version:        0.9.1
 Release:        1%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
@@ -179,6 +179,9 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Tue Apr  1 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.1-1
+- Update to upstream version 0.9.1
+
 * Thu Feb 27 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.9.0-1
 - Update to upstream version 0.9.0
 
