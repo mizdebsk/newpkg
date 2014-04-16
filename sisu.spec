@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -13,8 +13,9 @@ URL:            http://eclipse.org/sisu
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
 
-# Revert new feature which introduced a regressionm
-Patch0:         0001-Revert-Bug-406688-allow-maps-of-string-to-complex-ty.patch
+# Upstream patch to fix a regression
+# See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429369
+Patch0:         0001-Bug-429369-fallback-to-relaxed-unchecked-values-Map-.patch
 
 BuildArch:      noarch
 
@@ -200,6 +201,9 @@ done
 
 
 %changelog
+* Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-5
+- Update upstream patch for bug 429369
+
 * Mon Mar  3 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-4
 - Revert upstream feature which introduced a regression
 - Resolves: rhbz#1070915
