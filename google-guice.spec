@@ -5,8 +5,8 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.1.10
-Release:        3%{?dist}
+Version:        3.2.1
+Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -227,6 +227,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
+- Update to upstream version 3.2.1
+
 * Tue Mar  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.10-3
 - Fix directory ownership
 
