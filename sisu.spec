@@ -19,6 +19,9 @@ Patch0:         0001-Bug-429369-fallback-to-relaxed-unchecked-values-Map-.patch
 
 BuildArch:      noarch
 
+# FIXME: sisu fails to build under Java 8
+BuildRequires:  java-1.7.0-openjdk-devel
+
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.inject:guice)
 BuildRequires:  mvn(javax.enterprise:cdi-api)
@@ -178,6 +181,7 @@ cat <<EOF >pom.xml
 EOF
 
 %build
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0
 # Tycho inject dependencies with system scope.  Disable installation
 # of effective POMs until Mvn can handle system-scoped deps.
 %mvn_build -i
@@ -203,6 +207,7 @@ done
 %changelog
 * Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-5
 - Update upstream patch for bug 429369
+- Force usage of Java 1.7
 
 * Mon Mar  3 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-4
 - Revert upstream feature which introduced a regression
