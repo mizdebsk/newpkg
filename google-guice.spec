@@ -137,6 +137,13 @@ Summary:        Spring extension module for Guice
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Spring module for Guice.
 
+%package -n %{short_name}-testlib
+Summary:        TestLib extension module for Guice
+
+%description -n %{short_name}-testlib
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides TestLib module for Guice.
+
 %package -n %{short_name}-throwingproviders
 Summary:        ThrowingProviders extension module for Guice
 
@@ -178,6 +185,7 @@ This package provides %{summary}.
 
 # remove test dependency to make sure we don't produce requires
 # see #1007498
+%pom_remove_dep :guava-testlib extensions
 %pom_xpath_remove "pom:dependency[pom:classifier[text()='tests']]" extensions
 
 # Don't try to build extension modules unless they are needed
@@ -219,6 +227,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %files -n %{short_name}-persist -f .mfiles-guice-persist
 %files -n %{short_name}-servlet -f .mfiles-guice-servlet
 %files -n %{short_name}-spring -f .mfiles-guice-spring
+%files -n %{short_name}-testlib -f .mfiles-guice-testlib
 %files -n %{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
 %endif # with extensions
 
@@ -229,6 +238,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %changelog
 * Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-1
 - Update to upstream version 3.2.1
+- Add testlib subpackage
 
 * Tue Mar  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.1.10-3
 - Fix directory ownership
