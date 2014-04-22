@@ -13,10 +13,6 @@ URL:            http://eclipse.org/sisu
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
 
-# Upstream patch to fix a regression
-# See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429369
-Patch0:         0001-Bug-429369-fallback-to-relaxed-unchecked-values-Map-.patch
-
 BuildArch:      noarch
 
 # FIXME: sisu fails to build under Java 8
@@ -119,10 +115,6 @@ This package contains %{summary}.
 tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
 tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
-pushd sisu-plexus
-%patch0 -p1
-popd
-
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
 %mvn_package : __noinstall
@@ -207,6 +199,7 @@ done
 %changelog
 * Tue Apr 22 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-1
 - Update to upstream version 0.2.1
+- Remove patch for Eclipse bug 429369
 
 * Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-5
 - Update upstream patch for bug 429369
