@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
-Version:        0.2.0
-Release:        5%{?dist}
+Version:        0.2.1
+Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -205,6 +205,9 @@ done
 
 
 %changelog
+* Tue Apr 22 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-1
+- Update to upstream version 0.2.1
+
 * Wed Apr 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.0-5
 - Update upstream patch for bug 429369
 - Force usage of Java 1.7
