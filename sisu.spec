@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -12,6 +12,8 @@ URL:            http://eclipse.org/sisu
 
 Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
+
+Patch0:         %{name}-OSGi-import-guava.patch
 
 BuildArch:      noarch
 
@@ -115,6 +117,8 @@ This package contains %{summary}.
 tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
 tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
+%patch0
+
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
 %mvn_package : __noinstall
@@ -197,6 +201,9 @@ done
 
 
 %changelog
+* Wed Apr 23 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-2
+- Import guava in OSGi manifest
+
 * Tue Apr 22 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-1
 - Update to upstream version 0.2.1
 - Remove patch for Eclipse bug 429369
