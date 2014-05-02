@@ -31,7 +31,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
 Version:        4.8.0
-Release:        0.1%{?dist}
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -44,7 +44,7 @@ Source3:        lucene-%{version}-queryparser-OSGi-MANIFEST.MF
 Source4:        dev-tools-%{version}.tar.xz
 
 Patch0:         0001-disable-ivy-settings.patch
-Patch1:         0001-Ignore-transitive-deps.patch
+Patch1:         0001-dependency-generation.patch
 
 BuildRequires:  git
 BuildRequires:  ant
@@ -289,9 +289,6 @@ popd
 %mvn_package ":%{name}-analysis-modules-aggregator" %{name}-analysis
 %mvn_package ":%{name}-analyzers-common" %{name}-analysis
 %mvn_package ":{*}-aggregator" @1
-sed -i -e "s/-filter-pom-templates/filter-pom-templates/g" lucene/build.xml
-sed -i -e "s/-filter-pom-templates/filter-pom-templates/g" lucene/common-build.xml
-
 
 
 %build
@@ -306,7 +303,7 @@ done
 
 for module in benchmark misc test-framework demo core/src/java facet \
         analysis/stempel codecs/src/java codecs/src/test queryparser \
-        core/src/test .; do
+        core/src/test memory .; do
     %pom_remove_plugin :forbiddenapis ${module}
 done
 
@@ -395,6 +392,9 @@ popd
 %doc LICENSE.txt
 
 %changelog
+* Fri May 02 2014 Michael Simacek <msimacek@redhat.com> - 0:4.8.0-1
+- Update to upstream release 4.8.0
+
 * Fri May 2 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.8.0-0.1
 - Initial 4.8.0 effort.
 
