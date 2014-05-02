@@ -61,7 +61,7 @@ index b89448c..be99de5 100644
  
    private static final String DEPENDENCY_MANAGEMENT_PROPERTY = "lucene.solr.dependency.management";
    private static final String IVY_USER_DIR_PROPERTY = "ivy.default.ivy.user.dir";
-@@ -467,6 +467,7 @@ public class GetMavenDependenciesTask extends Task {
+@@ -482,6 +482,7 @@ public class GetMavenDependenciesTask extends Task {
    (String groupId, String artifactId, String version) {
      SortedSet<String> transitiveDependencies = new TreeSet<String>();
      //                                      E.g. ~/.ivy2/cache/xerces/xercesImpl/ivy-2.9.1.xml
@@ -69,7 +69,7 @@ index b89448c..be99de5 100644
      File ivyXmlFile = new File(new File(new File(ivyCacheDir, groupId), artifactId), "ivy-" + version + ".xml");
      if ( ! ivyXmlFile.exists()) {
        throw new BuildException("File not found: " + ivyXmlFile.getPath());
-@@ -487,6 +488,7 @@ public class GetMavenDependenciesTask extends Task {
+@@ -502,6 +502,7 @@ public class GetMavenDependenciesTask extends Task {
                                + groupId + ':' + artifactId + ':' + version + " from "
                                + ivyXmlFile.getAbsolutePath(), e);
      }

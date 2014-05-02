@@ -1,0 +1,32 @@
+From 45492c938ffe0292a4f6198d4551cedf6cd69499 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Thu, 1 May 2014 14:32:53 +0300
+Subject: [PATCH] Ignore transitive deps.
+
+---
+ .../java/org/apache/lucene/dependencies/GetMavenDependenciesTask.java   | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/src/java/org/apache/lucene/dependencies/GetMavenDependenciesTask.java b/tools/src/java/org/apache/lucene/dependencies/GetMavenDependenciesTask.java
+index 2069c7d..d891bc5 100644
+--- a/tools/src/java/org/apache/lucene/dependencies/GetMavenDependenciesTask.java
++++ b/tools/src/java/org/apache/lucene/dependencies/GetMavenDependenciesTask.java
+@@ -481,6 +481,7 @@ public class GetMavenDependenciesTask extends Task {
+   private Collection<String> getTransitiveDependenciesFromIvyCache
+   (String groupId, String artifactId, String version) {
+     SortedSet<String> transitiveDependencies = new TreeSet<>();
++    /*
+     //                                      E.g. ~/.ivy2/cache/xerces/xercesImpl/ivy-2.9.1.xml
+     File ivyXmlFile = new File(new File(new File(ivyCacheDir, groupId), artifactId), "ivy-" + version + ".xml");
+     if ( ! ivyXmlFile.exists()) {
+@@ -502,6 +503,7 @@ public class GetMavenDependenciesTask extends Task {
+                               + groupId + ':' + artifactId + ':' + version + " from "
+                               + ivyXmlFile.getAbsolutePath(), e);
+     }
++    */
+     return transitiveDependencies;
+   }
+ 
+-- 
+1.9.0
+
