@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -16,9 +16,6 @@ Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/
 Patch0:         %{name}-OSGi-import-guava.patch
 
 BuildArch:      noarch
-
-# FIXME: sisu fails to build under Java 8
-BuildRequires:  java-1.7.0-openjdk-devel
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.inject:guice)
@@ -177,7 +174,6 @@ cat <<EOF >pom.xml
 EOF
 
 %build
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0
 # Tycho inject dependencies with system scope.  Disable installation
 # of effective POMs until Mvn can handle system-scoped deps.
 %mvn_build -i
@@ -201,6 +197,9 @@ done
 
 
 %changelog
+* Wed May 07 2014 Michael Simacek <msimacek@redhat.com> - 1:0.2.1-3
+- Build with Java 8
+
 * Wed Apr 23 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-2
 - Import guava in OSGi manifest
 
