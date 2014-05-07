@@ -28,14 +28,17 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+%{?scl:%scl_package lucene}
+%{!?scl:%global pkg_name %{name}}
+
 Summary:        High-performance, full-featured text search engine
-Name:           lucene
+Name:           %{?scl_prefix}lucene
 Version:        4.8.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
-Source0:        http://www.apache.org/dist/lucene/java/%{version}/%{name}-%{version}-src.tgz
+Source0:        http://www.apache.org/dist/lucene/java/%{version}/lucene-%{version}-src.tgz
 Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
 Source3:        lucene-%{version}-queryparser-OSGi-MANIFEST.MF
@@ -48,10 +51,16 @@ Patch1:         0001-dependency-generation.patch
 
 BuildRequires:  git
 BuildRequires:  ant
-BuildRequires:  ivy-local
-BuildRequires:  icu4j
+%{!?scl:BuildRequires:  ivy-local}
+%{?scl:BuildRequires:  apache-ivy}
+BuildRequires:  %{?scl_prefix}icu4j
 BuildRequires:  httpcomponents-client
-BuildRequires:  jetty
+BuildRequires:  jetty-continuation
+BuildRequires:  jetty-http
+BuildRequires:  jetty-io
+BuildRequires:  jetty-server
+BuildRequires:  jetty-servlet
+BuildRequires:  jetty-util
 BuildRequires:  morfologik-stemming
 BuildRequires:  uimaj
 BuildRequires:  uima-addons
@@ -67,13 +76,15 @@ BuildRequires:  junit
 BuildRequires:  randomizedtesting-junit4-ant
 BuildRequires:  randomizedtesting-runner
 
-Provides:       lucene-core = %{epoch}:%{version}-%{release}
+%{?scl:Requires: %scl_runtime}
+
+Provides:       %{name}-core = %{epoch}:%{version}-%{release}
 # previously used by eclipse but no longer needed
-Obsoletes:      lucene-devel < %{epoch}:%{version}-%{release}
-Obsoletes:      lucene-demo < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-devel < %{epoch}:%{version}-%{release}
+Obsoletes:      %{name}-demo  < %{epoch}:%{version}-%{release}
 # previously distributed separately, but merged into main package
-Provides:       lucene-contrib = %{version}-%{release}
-Obsoletes:      lucene-contrib < %{version}-%{release}
+Provides:       %{name}-contrib = %{version}-%{release}
+Obsoletes:      %{name}-contrib < %{version}-%{release}
 
 BuildArch:      noarch
 
@@ -84,16 +95,16 @@ for nearly any application that requires full-text search, especially
 cross-platform.
 
 %package parent
-Summary:      Parent POM for %{name}
+Summary:      Parent POM for Lucene
 
 %description parent
-Parent POM for %{name}.
+Parent POM for Lucene.
 
 %package solr-grandparent
-Summary:      %{name}-solr grandparent POM
+Summary:      Lucene Solr grandparent POM
 
 %description solr-grandparent
-%{name}-solr grandparent POM.
+Lucene Solr grandparent POM.
 
 %package benchmark
 Summary:      Lucene Benchmarking Module
@@ -264,17 +275,17 @@ Summary:        Javadoc for Lucene
 %{summary}.
 
 %prep
-%autosetup -S git
+%autosetup -n %{pkg_name}-%{version} -S git
 
 # dependency generator expects that the directory name is just lucene
-mkdir %{name}
+mkdir %{pkg_name}
 find -maxdepth 1 ! -name CHANGES.txt ! -name LICENSE.txt ! -name README.txt \
     ! -name NOTICE.txt ! -name MIGRATE.txt  ! -name ivy-settings.xml \
-    ! -path %{name} -exec mv \{} %{name}/ \;
+    ! -path %{pkg_name} -exec mv \{} %{pkg_name}/ \;
 
 tar xf %{SOURCE4}
 
-pushd %{name}
+pushd %{pkg_name}
 
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
@@ -284,21 +295,24 @@ rm sandbox/src/test/org/apache/lucene/sandbox/queries/regex/TestJakartaRegexpCap
 # old API
 rm -r replicator/src/test/*
 
+# Because ivy-local is not available before F21
+%{?scl:ln -s %{_sysconfdir}/ivy/ivysettings.xml}
+
 popd
 
-%mvn_package ":%{name}-analysis-modules-aggregator" %{name}-analysis
-%mvn_package ":%{name}-analyzers-common" %{name}-analysis
+%mvn_package ":%{pkg_name}-analysis-modules-aggregator" %{pkg_name}-analysis
+%mvn_package ":%{pkg_name}-analyzers-common" %{pkg_name}-analysis
 %mvn_package ":{*}-aggregator" @1
 
 
 %build
-pushd %{name}
+pushd %{pkg_name}
 # generate dependencies
 ant filter-pom-templates -Divy.mode=local -Dversion=%{version}
 
 # fix source dir + move to expected place
-for pom in `find build/poms/%{name} -name pom.xml`; do
-    sed 's/\${module-path}/${basedir}/g' "$pom" > "${pom##build/poms/%{name}/}"
+for pom in `find build/poms/%{pkg_name} -name pom.xml`; do
+    sed 's/\${module-path}/${basedir}/g' "$pom" > "${pom##build/poms/%{pkg_name}/}"
 done
 
 for module in benchmark misc test-framework demo core/src/java facet \
@@ -323,9 +337,12 @@ mv lucene/build/poms/pom.xml .
 %pom_remove_plugin :gmaven-plugin
 %pom_remove_plugin :forbiddenapis
 
-%mvn_build -s
+%{?scl:scl enable %{scl} - <<"EOF"}
+# For some reason TestHtmlParser.testTurkish fails when building inside SCLs
+%mvn_build -s %{?scl:-- -Dmaven.test.failure.ignore=true}
+%{?scl:EOF}
 
-pushd %{name}
+pushd %{pkg_name}
 
 # add missing OSGi metadata to manifests
 mkdir META-INF
@@ -347,51 +364,57 @@ zip -u queryparser/target/lucene-queryparser-%{version}.jar META-INF/MANIFEST.MF
 popd
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+
 # suggest provides spellchecker
-%mvn_alias :%{name}-suggest :%{name}-spellchecker
+%mvn_alias :%{pkg_name}-suggest :%{pkg_name}-spellchecker
 
 # compatibility with existing packages
-%mvn_alias :%{name}-analyzers-common :%{name}-analyzers
+%mvn_alias :%{pkg_name}-analyzers-common :%{pkg_name}-analyzers
 
 %mvn_install
+%{?scl:EOF}
 
-%files -f .mfiles-%{name}-core
-%dir %{_javadir}/%{name}
+%files -f .mfiles-%{pkg_name}-core
+%dir %{_javadir}/%{pkg_name}
 %doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt MIGRATE.txt
 
-%files parent -f .mfiles-%{name}-parent
-%files solr-grandparent -f .mfiles-%{name}-solr-grandparent
-%files benchmark -f .mfiles-%{name}-benchmark
-%files replicator -f .mfiles-%{name}-replicator
-%files grouping -f .mfiles-%{name}-grouping
-%files highlighter -f .mfiles-%{name}-highlighter
-%files misc -f .mfiles-%{name}-misc
-%files test-framework -f .mfiles-%{name}-test-framework
-%files memory -f .mfiles-%{name}-memory
-%files expressions -f .mfiles-%{name}-expressions
-%files demo -f .mfiles-%{name}-demo
-%files classification -f .mfiles-%{name}-classification
-%files join -f .mfiles-%{name}-join
-%files suggest -f .mfiles-%{name}-suggest
-%files facet -f .mfiles-%{name}-facet
-%files analysis -f .mfiles-%{name}-analysis
-%files sandbox -f .mfiles-%{name}-sandbox
-%files queries -f .mfiles-%{name}-queries
-%files spatial -f .mfiles-%{name}-spatial
-%files codecs -f .mfiles-%{name}-codecs
-%files queryparser -f .mfiles-%{name}-queryparser
-%files analyzers-smartcn -f .mfiles-%{name}-analyzers-smartcn
-%files analyzers-phonetic -f .mfiles-%{name}-analyzers-phonetic
-%files analyzers-icu -f .mfiles-%{name}-analyzers-icu
-%files analyzers-morfologik -f .mfiles-%{name}-analyzers-morfologik
-%files analyzers-uima -f .mfiles-%{name}-analyzers-uima
-%files analyzers-kuromoji -f .mfiles-%{name}-analyzers-kuromoji
-%files analyzers-stempel -f .mfiles-%{name}-analyzers-stempel
+%files parent -f .mfiles-%{pkg_name}-parent
+%files solr-grandparent -f .mfiles-%{pkg_name}-solr-grandparent
+%files benchmark -f .mfiles-%{pkg_name}-benchmark
+%files replicator -f .mfiles-%{pkg_name}-replicator
+%files grouping -f .mfiles-%{pkg_name}-grouping
+%files highlighter -f .mfiles-%{pkg_name}-highlighter
+%files misc -f .mfiles-%{pkg_name}-misc
+%files test-framework -f .mfiles-%{pkg_name}-test-framework
+%files memory -f .mfiles-%{pkg_name}-memory
+%files expressions -f .mfiles-%{pkg_name}-expressions
+%files demo -f .mfiles-%{pkg_name}-demo
+%files classification -f .mfiles-%{pkg_name}-classification
+%files join -f .mfiles-%{pkg_name}-join
+%files suggest -f .mfiles-%{pkg_name}-suggest
+%files facet -f .mfiles-%{pkg_name}-facet
+%files analysis -f .mfiles-%{pkg_name}-analysis
+%files sandbox -f .mfiles-%{pkg_name}-sandbox
+%files queries -f .mfiles-%{pkg_name}-queries
+%files spatial -f .mfiles-%{pkg_name}-spatial
+%files codecs -f .mfiles-%{pkg_name}-codecs
+%files queryparser -f .mfiles-%{pkg_name}-queryparser
+%files analyzers-smartcn -f .mfiles-%{pkg_name}-analyzers-smartcn
+%files analyzers-phonetic -f .mfiles-%{pkg_name}-analyzers-phonetic
+%files analyzers-icu -f .mfiles-%{pkg_name}-analyzers-icu
+%files analyzers-morfologik -f .mfiles-%{pkg_name}-analyzers-morfologik
+%files analyzers-uima -f .mfiles-%{pkg_name}-analyzers-uima
+%files analyzers-kuromoji -f .mfiles-%{pkg_name}-analyzers-kuromoji
+%files analyzers-stempel -f .mfiles-%{pkg_name}-analyzers-stempel
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE.txt
 
 %changelog
+* Fri May 02 2014 Mat Booth <mat.booth@redhat.com> - 0:4.8.0-2
+- SCL-ize package
+
 * Fri May 02 2014 Michael Simacek <msimacek@redhat.com> - 0:4.8.0-1
 - Update to upstream release 4.8.0
 
