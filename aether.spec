@@ -3,13 +3,15 @@
 Name:           aether
 Epoch:          1
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
 BuildArch:      noarch
 
 Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
+
+Patch1:         0001-Revert-Bug-433953-Remove-support-for-Plexus-IoC-fram.patch
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.inject:guice::no_aop:)
@@ -126,6 +128,7 @@ for Aether.
 
 %prep
 %setup -q -n %{name}-%{version}.%{vertag}
+%patch1 -p1
 
 # Remove clirr plugin
 %pom_remove_plugin :clirr-maven-plugin
@@ -179,6 +182,9 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Wed May 21 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.0-2
+- Bring back Plexus support
+
 * Tue May 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.0-1
 - Update to upstream version 1.0.0
 
