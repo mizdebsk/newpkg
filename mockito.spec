@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -14,6 +14,7 @@ Patch3:         fix-bnd-config.patch
 Patch4:         %{name}-matcher.patch
 # Workaround for NPE in setting NamingPolicy in cglib
 Patch5:         setting-naming-policy.patch
+Patch6:         mockito-junit4.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils
@@ -21,14 +22,14 @@ BuildRequires:  java-devel
 BuildRequires:  ant
 BuildRequires:  objenesis
 BuildRequires:  cglib
-BuildRequires:  junit4
+BuildRequires:  junit
 BuildRequires:  hamcrest
 BuildRequires:  aqute-bnd
 
 Requires:       jpackage-utils
 Requires:       objenesis
 Requires:       cglib
-Requires:       junit4
+Requires:       junit
 Requires:       hamcrest
 
 %description
@@ -55,6 +56,7 @@ sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-c
 %patch3
 %patch4 -p1
 %patch5 -p1
+%patch6 -p2
 
 %build
 build-jar-repository lib/compile objenesis
@@ -91,6 +93,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Thu May 22 2014 Severin Gehwolf <sgehwolf@redhat.com> - 1.9.0-16
+- Use junit R/BR over junit4.
+
 * Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 1.9.0-15
 - Use Requires: java-headless rebuild (#1067528)
 
