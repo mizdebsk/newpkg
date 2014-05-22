@@ -18,3 +18,5 @@ dev-tools.tar.xz
 /*.src.rpm
 /.build-*.log
 /.project
+/dev-tools-4.8.1.tar.xz
+/lucene-4.8.1-src.tgz
