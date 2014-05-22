@@ -1,6 +1,6 @@
 Name:           junit
 Version:        4.11
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -106,6 +106,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Thu May 22 2014 Alexander Kurtakov <akurtako@redhat.com> 4.11-10
+- Update OSGi manifest to state 4.11.
+
 * Wed May 21 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.11-9
 - Update to current packaging guidelines
 - Drop old Obsoletes/Provides for junit4 rename
