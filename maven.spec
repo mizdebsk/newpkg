@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Java project management and project comprehension tool
 
 Group:          Development/Tools
@@ -64,7 +64,6 @@ BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit4
 BuildRequires:  maven-wagon-file
 BuildRequires:  maven-wagon-http
 BuildRequires:  maven-wagon-http-shared
@@ -282,6 +281,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon May 26 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-6
+- Remove BuildRequires on maven-surefire-provider-junit4
+
 * Mon Mar 17 2014 Michal Srb <msrb@redhat.com> - 3.2.1-5
 - Add missing BR: modello-maven-plugin
 
