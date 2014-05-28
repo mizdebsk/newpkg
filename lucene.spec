@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           %{?scl_prefix}lucene
 Version:        4.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -412,6 +412,9 @@ popd
 %doc LICENSE.txt
 
 %changelog
+* Wed May 28 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:4.8.1-2
+- Rebuild to regenerate Maven auto-requires
+
 * Thu May 22 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.8.1-1
 - Update to 4.8.1.
 
