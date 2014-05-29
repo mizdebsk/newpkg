@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -17,7 +17,7 @@ Patch0:         %{name}-OSGi-import-guava.patch
 
 BuildArch:      noarch
 
-BuildRequires:  maven-local
+BuildRequires:  maven-local >= 4
 BuildRequires:  mvn(com.google.inject:guice)
 BuildRequires:  mvn(javax.enterprise:cdi-api)
 BuildRequires:  mvn(junit:junit)
@@ -117,10 +117,12 @@ tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 %patch0
 
 %mvn_file ":{*}" @1
-%mvn_package ":*{inject,plexus}" @1
+%mvn_package ":*{inject,plexus}:jar:{}:" @1
 %mvn_package : __noinstall
 
+%pom_disable_module org.eclipse.sisu.inject.site sisu-inject
 %pom_disable_module org.eclipse.sisu.inject.tests sisu-inject
+%pom_disable_module org.eclipse.sisu.plexus.site sisu-plexus
 %pom_disable_module org.eclipse.sisu.plexus.tests sisu-plexus
 
 for target in \
@@ -174,13 +176,7 @@ cat <<EOF >pom.xml
 EOF
 
 %build
-# Tycho inject dependencies with system scope.  Disable installation
-# of effective POMs until Mvn can handle system-scoped deps.
-%mvn_build -i
-for mod in inject plexus; do
-    %mvn_artifact sisu-${mod}/pom.xml
-    %mvn_artifact sisu-${mod}/org.eclipse.sisu.${mod}/pom.xml sisu-${mod}/org.eclipse.sisu.${mod}/target/org.eclipse.sisu.${mod}-%{version}.jar
-done
+%mvn_build
 
 %install
 %mvn_install
@@ -197,6 +193,9 @@ done
 
 
 %changelog
+* Thu May 29 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-4
+- Build with XMvn 2.0.0
+
 * Wed May 07 2014 Michael Simacek <msimacek@redhat.com> - 1:0.2.1-3
 - Build with Java 8
 
