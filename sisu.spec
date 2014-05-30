@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -117,7 +117,8 @@ tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 %patch0
 
 %mvn_file ":{*}" @1
-%mvn_package ":*{inject,plexus}:jar:{}:" @1
+# Install JARs and POMs only
+%mvn_package ":*{inject,plexus}:{jar,pom}:{}:" @1
 %mvn_package : __noinstall
 
 %pom_disable_module org.eclipse.sisu.inject.site sisu-inject
@@ -193,6 +194,9 @@ EOF
 
 
 %changelog
+* Fri May 30 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-5
+- Install JARs and POMs only
+
 * Thu May 29 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-4
 - Build with XMvn 2.0.0
 
