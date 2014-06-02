@@ -1,7 +1,7 @@
-From c9859a031e75d41fb8199ab6dc7f3019f510fc83 Mon Sep 17 00:00:00 2001
+From f287858ef2b0a2cc924e902298eea66ed7c6b82e Mon Sep 17 00:00:00 2001
 From: Mikolaj Izdebski <mizdebsk@redhat.com>
 Date: Mon, 12 Aug 2013 08:49:19 +0200
-Subject: [PATCH 3/4] Update Aether to 0.9.0.M3
+Subject: [PATCH 3/6] Update Aether to 0.9.0.M3
 
 ---
  apache-maven/pom.xml          | 6 +++++-
@@ -11,7 +11,7 @@ Subject: [PATCH 3/4] Update Aether to 0.9.0.M3
  4 files changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/apache-maven/pom.xml b/apache-maven/pom.xml
-index e79b5a5..7504e24 100644
+index 0ff2e9a..26c6a82 100644
 --- a/apache-maven/pom.xml
 +++ b/apache-maven/pom.xml
 @@ -87,7 +87,11 @@
@@ -28,7 +28,7 @@ index e79b5a5..7504e24 100644
      <dependency>
        <groupId>org.slf4j</groupId>
 diff --git a/maven-aether-provider/pom.xml b/maven-aether-provider/pom.xml
-index 8a5fc78..7ae72f2 100644
+index f9f1673..6273e66 100644
 --- a/maven-aether-provider/pom.xml
 +++ b/maven-aether-provider/pom.xml
 @@ -91,7 +91,12 @@ under the License.
@@ -46,7 +46,7 @@ index 8a5fc78..7ae72f2 100644
      </dependency>
      <dependency>
 diff --git a/maven-compat/pom.xml b/maven-compat/pom.xml
-index a296c86..a2277b7 100644
+index 7ee01a0..e075387 100644
 --- a/maven-compat/pom.xml
 +++ b/maven-compat/pom.xml
 @@ -79,7 +79,12 @@
@@ -64,7 +64,7 @@ index a296c86..a2277b7 100644
      </dependency>
      <dependency>
 diff --git a/pom.xml b/pom.xml
-index 808924a..366c557 100644
+index b3f710f..04a6e4c 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -58,7 +58,7 @@
@@ -91,5 +91,5 @@ index 808924a..366c557 100644
        </dependency>
        <!--  Commons -->
 -- 
-1.8.4.2
+1.9.0
 

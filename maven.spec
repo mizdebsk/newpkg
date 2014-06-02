@@ -1,28 +1,27 @@
 Name:           maven
 Version:        3.2.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Java project management and project comprehension tool
-
-Group:          Development/Tools
 License:        ASL 2.0
 URL:            http://maven.apache.org/
+
 Source0:        http://archive.apache.org/dist/%{name}/%{name}-3/%{version}/source/apache-%{name}-%{version}-src.tar.gz
 Source1:        maven-bash-completion
 Source2:        mvn.1
-
-# 2xx for created non-buildable sources
 Source200:      %{name}-script
 
-# Patch1XX could be upstreamed probably
-Patch100:       0005-Use-generics-in-modello-generated-code.patch
-Patch101:       0001-Migrate-from-easymock-1-to-easymock-3.patch
-
+# Could be upstreamed probably
+Patch0001:      0001-Use-generics-in-modello-generated-code.patch
+# Could be upstreamed probably
+Patch0002:      0002-Migrate-from-easymock-1-to-easymock-3.patch
 # Forwarded upstream (MNG-5502)
-Patch200:       0001-Update-Aether-to-0.9.0.M3.patch
+Patch0003:      0003-Update-Aether-to-0.9.0.M3.patch
 # Forwarded upstream (MNG-5534)
-Patch201:       0001-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
-# Forwarded upstream (MNG-5591)
-Patch202:       0001-MNG-5591-Set-role-hint-for-ReactorReader-to-default.patch
+Patch0004:      0004-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
+# Forwarded upstream (MNG-5591, accepted)
+Patch0005:      0005-MNG-5591-use-reactor-hint-for-reactor-WorkspaceReade.patch
+# Backported from upstream commit bef7fac
+Patch0006:      0006-MNG-5613-fix-NullPointerException-when-error-occur-d.patch
 
 BuildArch:      noarch
 
@@ -150,11 +149,12 @@ Group:          Documentation
 
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
-%patch100 -p1
-%patch101 -p1
-%patch200 -p1
-%patch201 -p1
-%patch202 -p1
+%patch0001 -p1
+%patch0002 -p1
+%patch0003 -p1
+%patch0004 -p1
+%patch0005 -p1
+%patch0006 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -281,6 +281,10 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Jun  2 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-7
+- Clean up patches
+- Add patch for MNG-5613
+
 * Mon May 26 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-6
 - Remove BuildRequires on maven-surefire-provider-junit4
 
