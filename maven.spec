@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -186,7 +186,7 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 %build
 # Put all JARs in standard location, but create symlinks in Maven lib
 # directory so that Plexus Classworlds can find them.
-%mvn_file ":{*}" %{name}/@1 %{_datadir}/%{name}/lib/@1
+%mvn_file ":{*}:jar" %{name}/@1 %{_datadir}/%{name}/lib/@1
 
 %mvn_build -- -Dproject.build.sourceEncoding=UTF-8
 
@@ -281,6 +281,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Jun  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-9
+- Install additional lib symlinks only for JAR files
+
 * Wed Jun  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-8
 - Fix dangling symlinks in Maven lib dir
 - Resolves: rhbz#1104396
