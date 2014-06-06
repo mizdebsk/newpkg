@@ -5,8 +5,8 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.2.1
-Release:        2%{?dist}
+Version:        3.2.2
+Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 Group:          Development/Libraries
 License:        ASL 2.0
@@ -236,6 +236,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Fri Jun  6 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.2-1
+- Update to upstream version 3.2.2
+
 * Wed May 28 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.1-2
 - Rebuild to regenerate Maven auto-requires
 
