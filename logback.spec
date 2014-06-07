@@ -1,6 +1,6 @@
 Name:           logback
 Version:        1.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
@@ -198,6 +198,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Mon Feb 24 2014 Orion Poplawski <orion@cora.nwra.com> - 1.1.1-1
 - Update to 1.1.1
 
