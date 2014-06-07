@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        16%{?dist}
+Release:        17%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -93,6 +93,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Thu May 22 2014 Severin Gehwolf <sgehwolf@redhat.com> - 1.9.0-16
 - Use junit R/BR over junit4.
 
