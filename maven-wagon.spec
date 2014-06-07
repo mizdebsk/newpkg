@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -197,6 +197,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.6-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Wed May 28 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.6-6
 - Rebuild to regenerate Maven auto-requires
 
