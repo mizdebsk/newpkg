@@ -1,6 +1,6 @@
 Name:          hppc
 Version:       0.5.3
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
@@ -125,6 +125,9 @@ sed -i 's/\r//' CHANGES
 %doc LICENSE
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.5.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sun Dec 29 2013 gil cattaneo <puntogil@libero.it> 0.5.3-2
 - add templateprocessor sub-package
 
