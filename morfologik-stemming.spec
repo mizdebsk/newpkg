@@ -1,6 +1,6 @@
 Name:          morfologik-stemming
 Version:       1.8.3
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       Morfologik stemming library
 License:       BSD
 URL:           http://morfologik.blogspot.com/
@@ -73,6 +73,9 @@ sed -i "s|org.junit.internal.matchers.StringContains|org.hamcrest.core.StringCon
 %doc morfologik.LICENSE
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sat Jan 11 2014 gil cattaneo <puntogil@libero.it> 1.8.3-1
 - update to 1.8.3
 
