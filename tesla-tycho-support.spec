@@ -1,6 +1,6 @@
 Name:           tesla-tycho-support
 Version:        0.0.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Tesla Tycho Base
 License:        EPL
 URL:            https://github.com/tesla/tycho-support/
@@ -49,5 +49,8 @@ cp -p %{SOURCE1} .
 %doc epl-v10.html
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.0.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Tue Jan 28 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.7-1
 - Initial packaging
