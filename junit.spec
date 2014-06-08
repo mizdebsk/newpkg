@@ -1,6 +1,7 @@
 Name:           junit
-Version:        4.11
+Version:        4.12
 Release:        11%{?dist}
+Epoch:          1
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -106,6 +107,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Sun Jun  8 2014 Peter Robinson <pbrobinson@fedoraproject.org> 4.11-12
+- Re-add Epoch. Once you have it you can't remove it as it breaks upgrade paths
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.11-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
