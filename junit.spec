@@ -1,6 +1,6 @@
 Name:           junit
-Version:        4.12
-Release:        11%{?dist}
+Version:        4.11
+Release:        12%{?dist}
 Epoch:          1
 Summary:        Java regression test package
 License:        CPL
