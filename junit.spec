@@ -1,6 +1,6 @@
 Name:           junit
 Version:        4.11
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -106,6 +106,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.11-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Thu May 22 2014 Alexander Kurtakov <akurtako@redhat.com> 4.11-10
 - Update OSGi manifest to state 4.11.
 
