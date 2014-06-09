@@ -167,6 +167,8 @@ EOF
 # disable for now
 %pom_disable_module logback-site
 
+%pom_xpath_remove "pom:build/pom:extensions"
+
 %build
 
 %mvn_package ":%{name}-access" access
