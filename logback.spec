@@ -126,6 +126,8 @@ sed -i 's#<artifactId>servlet-api#<artifactId>tomcat-servlet-api#' $(find . -nam
 sed -i 's#javax.servlet.*;version="2.5"#javax.servlet.*;version="3.0"#' %{name}-access/pom.xml
 sed -i 's#<version>2.5</version>#<version>${tomcat.version}</version>#' pom.xml
 
+sed -i 's#<version>1.2.14</version>#<version>1.2.17</version>#' %{name}-examples/pom.xml
+
 rm -r %{name}-*/src/test/java/*
 # remove test deps
 # ch.qos.logback:logback-core:test-jar
