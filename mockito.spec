@@ -80,10 +80,8 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.mockito:mockito-all"
 
-%files
+%files -f .mfiles
 %{_javadir}/%{name}.jar
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
 %doc NOTICE
 %doc LICENSE
 
@@ -93,6 +91,11 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Mon Jun 09 2014 Omair Majid <omajid@redhat.com> - 1.9.0-17
+- Use .mfiles to pick up xmvn metadata
+- Don't use obsolete _mavenpomdir and _mavendepmapfragdir macros
+- Fix FTBFS
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.0-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
