@@ -1,7 +1,6 @@
 Name:           junit
 Version:        4.11
-Release:        12%{?dist}
-Epoch:          1
+Release:        13%{?dist}
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -107,6 +106,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.11-13
+- Remove epoch
+
 * Sun Jun  8 2014 Peter Robinson <pbrobinson@fedoraproject.org> 4.11-12
 - Re-add Epoch. Once you have it you can't remove it as it breaks upgrade paths
 
