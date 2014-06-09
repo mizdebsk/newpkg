@@ -1,6 +1,7 @@
 Name:           junit
+Epoch:          1
 Version:        4.11
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
@@ -43,7 +44,7 @@ Javadoc for %{name}.
 
 %package demo
 Summary:        Demos for %{name}
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
@@ -106,6 +107,9 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.11-14
+- Add epoch as workaround for a bug in koji-shadow
+
 * Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.11-13
 - Remove epoch
 
