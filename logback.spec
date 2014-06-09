@@ -13,7 +13,7 @@ BuildRequires: java-devel >= 1:1.6.0
 
 # Required libraries
 BuildRequires: mvn(javax.mail:mail)
-BuildRequires: mvn(log4j:log4j)
+BuildRequires: mvn(log4j:log4j:1.2.17)
 BuildRequires: mvn(org.apache.geronimo.specs:geronimo-jms_1.1_spec)
 BuildRequires: mvn(org.apache.tomcat:tomcat-catalina)
 BuildRequires: mvn(org.apache.tomcat:tomcat-servlet-api)
