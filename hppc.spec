@@ -1,6 +1,6 @@
 Name:          hppc
 Version:       0.5.3
-Release:       3%{?dist}
+Release:       4%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
@@ -16,7 +16,7 @@ BuildRequires: mvn(commons-io:commons-io)
 BuildRequires: mvn(org.apache.ant:ant)
 BuildRequires: mvn(org.apache.ant:ant-junit)
 BuildRequires: mvn(org.apache.velocity:velocity)
-BuildRequires: mvn(org.sonatype.oss:oss-parent)
+BuildRequires: mvn(org.sonatype.oss:oss-parent:pom:)
 
 %if 0
 # hppc-benchmarks deps
@@ -125,6 +125,9 @@ sed -i 's/\r//' CHANGES
 %doc LICENSE
 
 %changelog
+* Tue Jun 17 2014 gil cattaneo <puntogil@libero.it> 0.5.3-4
+- fix BR list
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.5.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
