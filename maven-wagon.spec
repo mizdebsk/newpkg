@@ -2,7 +2,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -30,7 +30,7 @@ BuildRequires:  mvn(org.apache.maven.scm:maven-scm-api)
 BuildRequires:  mvn(org.apache.maven.scm:maven-scm-provider-cvsexe)
 BuildRequires:  mvn(org.apache.maven.scm:maven-scm-provider-svnexe)
 BuildRequires:  mvn(org.apache.maven.scm:maven-scm-test)
-BuildRequires:  mvn(org.apache.maven:maven-parent)
+BuildRequires:  mvn(org.apache.maven:maven-parent:pom:)
 BuildRequires:  mvn(org.apache.sshd:sshd-core)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-interactivity-api)
@@ -71,6 +71,7 @@ following providers:
 
 %package provider-api
 Summary:        provider-api module for %{name}
+Requires:       %{name} = %{version}-%{release}
 
 %description provider-api
 provider-api module for %{name}.
@@ -197,6 +198,10 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Fri Jun 27 2014 Michael Simacek <msimacek@redhat.com>
+- Require main package from provider-api
+- Fix maven-parent BR
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.6-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
