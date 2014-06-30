@@ -1,8 +1,9 @@
 %global bname     wagon
+%global split_verrel 2.6-4
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        8%{?dist}
+Release:        9%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -71,7 +72,7 @@ following providers:
 
 %package provider-api
 Summary:        provider-api module for %{name}
-Requires:       %{name} = %{version}-%{release}
+Obsoletes:      %{name} < %{split_verrel}
 
 %description provider-api
 provider-api module for %{name}.
@@ -180,9 +181,9 @@ Javadoc for %{name}.
 %mvn_install
 
 %files -f .mfiles
-%dir %{_javadir}/%{name}
 %doc LICENSE NOTICE DEPENDENCIES
 %files provider-api -f .mfiles-wagon-provider-api
+%dir %{_javadir}/%{name}
 %files providers -f .mfiles-wagon-providers
 %files file -f .mfiles-wagon-file
 %files ftp -f .mfiles-wagon-ftp
@@ -198,6 +199,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Mon Jun 30 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-9
+- Obsolete main package instead of requiring it
+
 * Fri Jun 27 2014 Michael Simacek <msimacek@redhat.com>
 - Require main package from provider-api
 - Fix maven-parent BR
