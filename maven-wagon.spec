@@ -3,7 +3,7 @@
 
 Name:           maven-%{bname}
 Version:        2.6
-Release:        9%{?dist}
+Release:        10%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -11,6 +11,7 @@ URL:            http://maven.apache.org/wagon
 Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{version}/wagon-%{version}-source-release.zip
 
 Patch0:         0001-Port-to-jetty-9.patch
+Patch1:         0001-Replace-plexus-maven-plugin-with-plexus-component-me.patch
 
 BuildArch:      noarch
 
@@ -41,6 +42,9 @@ BuildRequires:  mvn(org.jsoup:jsoup)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-log4j12)
 BuildRequires:  mvn(org.slf4j:slf4j-simple)
+BuildRequires:  mvn(org.apache.jackrabbit:jackrabbit-webdav)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
+BuildRequires:  mvn(biz.aQute:bnd)
 
 Obsoletes:      %{name}-manual < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-provider-test < %{epoch}:%{version}-%{release}
@@ -137,6 +141,12 @@ Summary:        ssh module for %{name}
 %description ssh
 ssh module for %{name}.
 
+%package webdav-jackrabbit
+Summary:        webdav-jackrabbit module for %{name}
+
+%description webdav-jackrabbit
+webdav-jackrabbit module for %{name}.
+
 
 %package javadoc
 Summary:        Javadoc for %{name}
@@ -148,6 +158,7 @@ Javadoc for %{name}.
 %setup -q -n wagon-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 %pom_remove_plugin :animal-sniffer-maven-plugin
 %pom_remove_dep :wagon-tck-http wagon-providers/wagon-http
@@ -161,9 +172,6 @@ Javadoc for %{name}.
 %pom_disable_module wagon-provider-test
 %pom_remove_dep :wagon-provider-test
 %pom_remove_dep :wagon-provider-test wagon-providers
-
-# missing dependencies
-%pom_disable_module wagon-webdav-jackrabbit wagon-providers
 
 %build
 %mvn_file ":wagon-{*}" %{name}/@1
@@ -194,11 +202,15 @@ Javadoc for %{name}.
 %files ssh-external -f .mfiles-wagon-ssh-external
 %files ssh-common -f .mfiles-wagon-ssh-common
 %files ssh -f .mfiles-wagon-ssh
+%files webdav-jackrabbit -f .mfiles-wagon-webdav-jackrabbit
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Thu Aug 21 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-10
+- Enable webdav-jackrabbit module
+
 * Mon Jun 30 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-9
 - Obsolete main package instead of requiring it
 
