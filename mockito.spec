@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.9.0
-Release:        17%{?dist}
+Release:        18%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -91,6 +91,10 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Mon Aug 25 2014 Darryl L. Pierce <dpierce@redhat.com> - 1.9.0-18
+- First build for EPEL7
+- Resolves: BZ#1110030
+
 * Mon Jun 09 2014 Omair Majid <omajid@redhat.com> - 1.9.0-17
 - Use .mfiles to pick up xmvn metadata
 - Don't use obsolete _mavenpomdir and _mavendepmapfragdir macros
