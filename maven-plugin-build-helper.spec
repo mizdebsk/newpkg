@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
-Version:        1.9
-Release:        2%{?dist}
+Version:        1.9.1
+Release:        1%{?dist}
 Summary:        Build Helper Maven Plugin
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
@@ -57,6 +57,9 @@ cp %{SOURCE1} LICENSE-2.0.txt
 %doc header.txt LICENSE-2.0.txt
 
 %changelog
+* Thu Sep 04 2014 Michal Srb <msrb@redhat.com> - 1.9.1-1
+- Update to upstream version 1.9.1
+
 * Mon Jun 09 2014 Michal Srb <msrb@redhat.com> - 1.9-2
 - Regenerate BR
 
