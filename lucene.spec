@@ -33,8 +33,8 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           %{?scl_prefix}lucene
-Version:        4.8.1
-Release:        3%{?dist}
+Version:        4.10.0
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -42,8 +42,8 @@ Source0:        http://www.apache.org/dist/lucene/java/%{version}/lucene-%{versi
 Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
 Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
 Source3:        lucene-%{version}-queryparser-OSGi-MANIFEST.MF
-#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_8_1/dev-tools/
-#tar caf dev-tools-4.8.1.tar.xz dev-tools/
+#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_0/dev-tools/
+#tar caf dev-tools-4.10.0.tar.xz dev-tools/
 Source4:        dev-tools-%{version}.tar.xz
 
 Patch0:         0001-disable-ivy-settings.patch
@@ -339,7 +339,7 @@ mv lucene/build/poms/pom.xml .
 
 %{?scl:scl enable %{scl} - <<"EOF"}
 # For some reason TestHtmlParser.testTurkish fails when building inside SCLs
-%mvn_build -s %{?scl:-- -Dmaven.test.failure.ignore=true}
+%mvn_build -s -f
 %{?scl:EOF}
 
 pushd %{pkg_name}
@@ -412,6 +412,9 @@ popd
 %doc LICENSE.txt
 
 %changelog
+* Fri Sep 5 2014 Alexander Kurtakov <akurtako@redhat.com> 0:4.10.0-1
+- Update to upstream 4.10.0.
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.8.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
