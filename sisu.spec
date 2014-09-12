@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -17,7 +17,7 @@ Patch0:         %{name}-OSGi-import-guava.patch
 
 BuildArch:      noarch
 
-BuildRequires:  maven-local >= 4
+BuildRequires:  maven-local >= 4.3
 BuildRequires:  mvn(com.google.inject:guice)
 BuildRequires:  mvn(javax.enterprise:cdi-api)
 BuildRequires:  mvn(junit:junit)
@@ -126,20 +126,15 @@ tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 %pom_disable_module org.eclipse.sisu.plexus.site sisu-plexus
 %pom_disable_module org.eclipse.sisu.plexus.tests sisu-plexus
 
-for target in \
-    sisu-inject/org.eclipse.sisu.inject/build.target \
-    sisu-plexus/org.eclipse.sisu.plexus/build.target
+for pom in \
+    sisu-inject \
+    sisu-inject/org.eclipse.sisu.inject \
+    sisu-inject/org.eclipse.sisu.inject.extender \
+    sisu-plexus \
+    sisu-plexus/org.eclipse.sisu.plexus \
+    sisu-plexus/org.eclipse.sisu.plexus.extender
 do
-    sed -i '/<unit/s|version="[^"]*"||' $target
-    sed -i '/<repository/s|location="[^"]*"|location="file:'"$PWD"'/.m2/p2/repo"|' $target
-    sed -i '/<unit id="plexus-deps"/s|.*|<unit id="org.codehaus.plexus.classworlds"/><unit id="org.codehaus.plexus.component-annotations"/><unit id="org.codehaus.plexus.utils"/>|' $target
-    sed -i '/<unit id="org.aopalliance"/s|.*|<unit id="aopalliance"/>|' $target
-    sed -i '/<unit id="cdi.api"/s|.*|<unit id="javax.enterprise.cdi-api"/>|' $target
-    sed -i '/<unit id="javax.annotation"/s|.*|<unit id="org.apache.geronimo.specs.geronimo-annotation_1.1_spec"/>|' $target
-    sed -i '/<unit id="javax.ejb"/s|.*|<unit id="org.apache.geronimo.specs.geronimo-ejb_3.1_spec"/>|' $target
-    sed -i '/<unit id="com.google.inject"/s|.*|<unit id="org.sonatype.sisu.guice"/>|' $target
-    sed -i '/<unit id="org.slf4j.api"/s|.*|<unit id="slf4j.api"/>|' $target
-    sed -i '/<unit id="com.google.inject.source"/d' $target
+    %pom_remove_plugin :target-platform-configuration $pom
 done
 
 for pom in \
@@ -177,9 +172,13 @@ cat <<EOF >pom.xml
 EOF
 
 %build
-%mvn_build
+%mvn_build -i
 
 %install
+%mvn_artifact sisu-inject/pom.xml
+%mvn_artifact sisu-inject/org.eclipse.sisu.inject/pom.xml sisu-inject/org.eclipse.sisu.inject/target/org.eclipse.sisu.inject-%{version}.jar
+%mvn_artifact sisu-plexus/pom.xml
+%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus/pom.xml sisu-plexus/org.eclipse.sisu.plexus/target/org.eclipse.sisu.plexus-%{version}.jar
 %mvn_install
 
 
@@ -194,6 +193,9 @@ EOF
 
 
 %changelog
+* Fri Sep 12 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-8
+- Update to latest XMvn version
+
 * Mon Aug  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-7
 - Fix build-requires on sonatype-oss-parent
 
