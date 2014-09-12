@@ -41,7 +41,6 @@ BuildRequires:  mvn(org.jacoco:jacoco-maven-plugin)
 BuildRequires:  mvn(org.osgi:org.osgi.core)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
-BuildRequires:  mvn(org.sonatype.plugins:nexus-staging-maven-plugin)
 BuildRequires:  mvn(org.sonatype.sisu:sisu-guice::no_aop:)
 
 BuildRequires:  osgi(aopalliance)
