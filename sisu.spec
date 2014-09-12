@@ -14,6 +14,8 @@ Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
 
 Patch0:         %{name}-OSGi-import-guava.patch
+Patch1:         %{name}-java8.patch
+Patch2:         %{name}-ignored-tests.patch
 
 BuildArch:      noarch
 
@@ -115,6 +117,8 @@ tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
 tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 
 %patch0
+%patch1
+%patch2
 
 %mvn_file ":{*}" @1
 # Install JARs and POMs only
@@ -122,9 +126,10 @@ tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 %mvn_package : __noinstall
 
 %pom_disable_module org.eclipse.sisu.inject.site sisu-inject
-%pom_disable_module org.eclipse.sisu.inject.tests sisu-inject
 %pom_disable_module org.eclipse.sisu.plexus.site sisu-plexus
-%pom_disable_module org.eclipse.sisu.plexus.tests sisu-plexus
+
+%pom_add_dep net.sf.cglib:cglib::test sisu-inject/org.eclipse.sisu.inject.tests
+%pom_add_dep net.sf.cglib:cglib::test sisu-plexus/org.eclipse.sisu.plexus.tests
 
 for pom in \
     sisu-inject \
@@ -195,6 +200,7 @@ EOF
 %changelog
 * Fri Sep 12 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-8
 - Update to latest XMvn version
+- Enable tests
 
 * Mon Aug  4 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-7
 - Fix build-requires on sonatype-oss-parent

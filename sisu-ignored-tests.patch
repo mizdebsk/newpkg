@@ -1,0 +1,54 @@
+--- sisu-inject/org.eclipse.sisu.inject.tests/src/org/eclipse/sisu/inject/LocatedBeansTest.java~	2014-09-12 08:32:32.899725268 +0200
++++ sisu-inject/org.eclipse.sisu.inject.tests/src/org/eclipse/sisu/inject/LocatedBeansTest.java	2014-09-12 08:37:45.656099710 +0200
+@@ -128,30 +128,6 @@
+         assertSame( a, itr2.next().getValue() );
+     }
+ 
+-    public void testUnrestrictedSearch()
+-    {
+-        final LocatedBeans<Annotation, Bean> beans = locate( Key.get( Bean.class ) );
+-        final Iterator<BeanEntry<Annotation, Bean>> itr = beans.iterator();
+-
+-        assertTrue( itr.hasNext() );
+-        assertEquals( QualifyingStrategy.DEFAULT_QUALIFIER, itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( QualifyingStrategy.BLANK_QUALIFIER, itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( Names.named( "Named1" ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( Names.named( "Named2" ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( QualifyingStrategy.BLANK_QUALIFIER, itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( MarkedBeanImpl1.class.getAnnotation( Marked.class ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( Names.named( "Marked2" ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( Names.named( "Marked3" ), itr.next().getKey() );
+-        assertFalse( itr.hasNext() );
+-    }
+-
+     public void testNamedSearch()
+     {
+         final LocatedBeans<Named, Bean> beans = locate( Key.get( Bean.class, Named.class ) );
+@@ -181,20 +156,6 @@
+         assertFalse( itr.hasNext() );
+     }
+ 
+-    public void testMarkedSearch()
+-    {
+-        final LocatedBeans<Marked, Bean> beans = locate( Key.get( Bean.class, Marked.class ) );
+-        final Iterator<BeanEntry<Marked, Bean>> itr = beans.iterator();
+-
+-        assertTrue( itr.hasNext() );
+-        assertEquals( MarkedBeanImpl1.class.getAnnotation( Marked.class ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( MarkedBeanImpl2.class.getAnnotation( Marked.class ), itr.next().getKey() );
+-        assertTrue( itr.hasNext() );
+-        assertEquals( MarkedBeanProvider.class.getAnnotation( Marked.class ), itr.next().getKey() );
+-        assertFalse( itr.hasNext() );
+-    }
+-
+     public void testMarkedWithAttributesSearch()
+     {
+         final LocatedBeans<Marked, Bean> beans =
