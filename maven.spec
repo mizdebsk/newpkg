@@ -14,9 +14,9 @@ Source200:      %{name}-script
 Patch0001:      0001-Use-generics-in-modello-generated-code.patch
 # Could be upstreamed probably
 Patch0002:      0002-Migrate-from-easymock-1-to-easymock-3.patch
-# Forwarded upstream (MNG-5502)
+# Merged upstream (MNG-5502)
 Patch0003:      0003-Update-Aether-to-0.9.0.M3.patch
-# Forwarded upstream (MNG-5534)
+# Merged upstream (MNG-5534)
 Patch0004:      0004-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
 
 BuildArch:      noarch
