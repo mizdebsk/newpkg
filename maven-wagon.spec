@@ -2,8 +2,8 @@
 %global split_verrel 2.6-4
 
 Name:           maven-%{bname}
-Version:        2.6
-Release:        10%{?dist}
+Version:        2.7
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -161,6 +161,7 @@ Javadoc for %{name}.
 %patch1 -p1
 
 %pom_remove_plugin :animal-sniffer-maven-plugin
+%pom_remove_plugin :maven-enforcer-plugin wagon-providers/wagon-webdav-jackrabbit
 %pom_remove_dep :wagon-tck-http wagon-providers/wagon-http
 
 # correct groupId for jetty
@@ -208,6 +209,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Wed Sep 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.7-1
+- Update to upstream version 2.7
+
 * Thu Aug 21 2014 Michael Simacek <msimacek@redhat.com> - 0:2.6-10
 - Enable webdav-jackrabbit module
 
