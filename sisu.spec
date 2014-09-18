@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -102,10 +102,6 @@ This package contains %{summary}.
 
 %package        plexus
 Summary:        Sisu Plexus POM
-Requires:       mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
-Requires:       mvn(org.codehaus.plexus:plexus-component-annotations)
-Requires:       mvn(org.codehaus.plexus:plexus-classworlds)
-Requires:       mvn(org.codehaus.plexus:plexus-utils)
 
 %description    plexus
 This package contains %{summary}.
@@ -203,6 +199,10 @@ EOF
 
 
 %changelog
+* Thu Sep 18 2014 Michal Srb <msrb@redhat.com> - 1:0.2.1-9
+- Rebuild to fix metadata
+- Remove explicit Requires
+
 * Fri Sep 12 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-8
 - Update to latest XMvn version
 - Enable tests
