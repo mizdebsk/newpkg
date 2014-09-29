@@ -1,25 +1,22 @@
 Name:           maven
 Version:        3.2.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
+BuildArch:      noarch
 
 Source0:        http://archive.apache.org/dist/%{name}/%{name}-3/%{version}/source/apache-%{name}-%{version}-src.tar.gz
 Source1:        maven-bash-completion
 Source2:        mvn.1
 Source200:      %{name}-script
 
-# Could be upstreamed probably
-Patch0001:      0001-Use-generics-in-modello-generated-code.patch
-# Could be upstreamed probably
-Patch0002:      0002-Migrate-from-easymock-1-to-easymock-3.patch
+# Forwarded upstream (MNG-5696)
+Patch0001:      0001-MNG-5696-Remove-dependency-on-Easymock.patch
 # Merged upstream (MNG-5502)
-Patch0003:      0003-Update-Aether-to-0.9.0.M3.patch
+Patch0002:      0002-Update-Aether-to-0.9.0.M3.patch
 # Merged upstream (MNG-5534)
-Patch0004:      0004-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
-
-BuildArch:      noarch
+Patch0003:      0003-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
 
 # If XMvn is part of the same RPM transaction then it should be
 # installed first to avoid triggering rhbz#1014355.
@@ -148,7 +145,6 @@ Group:          Documentation
 %patch0001 -p1
 %patch0002 -p1
 %patch0003 -p1
-%patch0004 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -274,6 +270,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Sep 29 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.3-2
+- Update patches
+
 * Fri Aug 22 2014 Michal Srb <msrb@redhat.com> - 3.2.3-1
 - Update to upstream version 3.2.3
 
