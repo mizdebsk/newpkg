@@ -1,7 +1,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.2.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -16,6 +16,7 @@ Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/
 Patch0:         %{name}-OSGi-import-guava.patch
 Patch1:         %{name}-java8.patch
 Patch2:         %{name}-ignored-tests.patch
+Patch3:         %{name}-plexus-utils-3.0.18.patch
 
 BuildArch:      noarch
 
@@ -120,6 +121,7 @@ tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
 %patch0
 %patch1
 %patch2
+%patch3
 
 %mvn_file ":{*}" @1
 # Install JARs and POMs only
@@ -199,6 +201,9 @@ EOF
 
 
 %changelog
+* Tue Sep 30 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-10
+- Port to plexus-utils 3.0.18
+
 * Thu Sep 18 2014 Michal Srb <msrb@redhat.com> - 1:0.2.1-9
 - Rebuild to fix metadata
 - Remove explicit Requires
