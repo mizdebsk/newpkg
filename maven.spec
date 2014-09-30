@@ -11,7 +11,7 @@ Source1:        maven-bash-completion
 Source2:        mvn.1
 Source200:      %{name}-script
 
-# Forwarded upstream (MNG-5696)
+# Merged upstream (MNG-5696)
 Patch0001:      0001-MNG-5696-Remove-dependency-on-Easymock.patch
 # Merged upstream (MNG-5502)
 Patch0002:      0002-Update-Aether-to-0.9.0.M3.patch
