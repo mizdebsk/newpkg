@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -116,13 +116,6 @@ Requires:       plexus-utils
 Requires:       sisu-inject
 Requires:       sisu-plexus
 Requires:       slf4j
-
-# for noarch->arch change
-Obsoletes:      %{name} < 0:%{version}-%{release}
-
-# maven2 bin package no longer exists.
-Obsoletes:      maven2 < 2.2.1-99
-Provides:       maven2 = %{version}-%{release}
 
 # Temporary fix for broken sisu
 Requires:       cdi-api
@@ -270,6 +263,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Tue Oct 14 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.3-3
+- Remove legacy Obsoletes/Provides for maven2
+
 * Mon Sep 29 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.3-2
 - Update patches
 
