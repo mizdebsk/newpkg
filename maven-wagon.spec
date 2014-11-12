@@ -2,7 +2,7 @@
 %global split_verrel 2.6-4
 
 Name:           maven-%{bname}
-Version:        2.7
+Version:        2.8
 Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
@@ -209,6 +209,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Wed Nov 12 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.8-1
+- Update to upstream version 2.8
+
 * Wed Sep 17 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.7-1
 - Update to upstream version 2.7
 
