@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -196,7 +196,7 @@ install -d -m 755 %{buildroot}%{_mandir}/man1
 
 install -p -m 755 %{SOURCE200} %{buildroot}%{_bindir}/mvn
 install -p -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1
-install -p -m 644 %{SOURCE1} %{buildroot}%{_datadir}/bash-completion/completions/%{name}
+install -p -m 644 %{SOURCE1} %{buildroot}%{_datadir}/bash-completion/completions/mvn
 mv $M2_HOME/bin/m2.conf %{buildroot}%{_sysconfdir}
 ln -sf %{_sysconfdir}/m2.conf %{buildroot}%{_datadir}/%{name}/bin/m2.conf
 mv $M2_HOME/conf/settings.xml %{buildroot}%{_sysconfdir}/%{name}
@@ -255,7 +255,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 %config(noreplace) %{_sysconfdir}/m2.conf
 %config(noreplace) %{_sysconfdir}/%{name}/settings.xml
 %config(noreplace) %{_sysconfdir}/%{name}/logging/simplelogger.properties
-%{_datadir}/bash-completion/completions/%{name}
+%{_datadir}/bash-completion/completions/mvn
 %{_mandir}/man1/mvn.1.gz
 
 %files javadoc -f .mfiles-javadoc
@@ -263,6 +263,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Sat Dec  6 2014 Ville Skyttä <ville.skytta@iki.fi> - 3.2.3-4
+- Fix bash completion filename
+
 * Tue Oct 14 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.3-3
 - Remove legacy Obsoletes/Provides for maven2
 
