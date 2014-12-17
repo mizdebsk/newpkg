@@ -1,15 +1,10 @@
 Name:          hppc
-Version:       0.5.3
-Release:       4%{?dist}
+Version:       0.6.1
+Release:       1%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
-# NOTE newer relase use guava >= 14.x
 Source0:       https://github.com/carrotsearch/hppc/archive/%{version}.tar.gz
-
-Patch0:        %{name}-0.4.3-remove-retrotranslator.patch
-
-BuildRequires: java-devel
 
 BuildRequires: mvn(com.google.guava:guava)
 BuildRequires: mvn(commons-io:commons-io)
@@ -31,14 +26,11 @@ BuildRequires: mvn(it.unimi.dsi:fastutil)
 # http://gil.fedorapeople.org/trove-3.0.3-1.fc16.src.rpm
 # http://gil.fedorapeople.org/trove.spec
 BuildRequires: mvn(net.sf.trove4j:trove4j:3.0.3)
-# https://bugzilla.redhat.com/show_bug.cgi?id=1000416
 BuildRequires: mvn(org.apache.mahout:mahout-collections)
 
 # test deps
-# https://bugzilla.redhat.com/show_bug.cgi?id=1002166
 BuildRequires: mvn(com.carrotsearch:junit-benchmarks)
 BuildRequires: mvn(junit:junit)
-# https://bugzilla.redhat.com/show_bug.cgi?id=1002157
 BuildRequires: mvn(com.carrotsearch.randomizedtesting:junit4-maven-plugin)
 BuildRequires: mvn(com.carrotsearch.randomizedtesting:randomizedtesting-runner)
 %endif
@@ -71,9 +63,6 @@ This package contains javadoc for HPPC.
 %setup -q
 find . -name "*.class" -print -delete
 find . -name "*.jar" -print -delete
-
-# remove retrotranslator and backport-util-concurrent
-%patch0 -p0
 
 # remove ant-trax and ant-nodeps, fix jdk tools JAR location
 %pom_xpath_remove "pom:project/pom:build/pom:pluginManagement/pom:plugins/pom:plugin[pom:artifactId = 'maven-antrun-plugin']/pom:dependencies/pom:dependency[pom:groupId = 'org.apache.ant']"
@@ -125,6 +114,9 @@ sed -i 's/\r//' CHANGES
 %doc LICENSE
 
 %changelog
+* Wed Dec 17 2014 gil cattaneo <puntogil@libero.it> 0.6.1-1
+- update to 0.6.1
+
 * Tue Jun 17 2014 gil cattaneo <puntogil@libero.it> 0.5.3-4
 - fix BR list
 
