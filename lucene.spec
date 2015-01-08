@@ -70,6 +70,7 @@ BuildRequires:  xerces-j2
 BuildRequires:  mvn(javax.servlet:servlet-api)
 BuildRequires:  mvn(org.antlr:antlr-runtime)
 BuildRequires:  maven-local
+BuildRequires:  apache-parent
 
 # test-framework deps
 BuildRequires:  junit
