@@ -1,6 +1,6 @@
 Name:           logback
-Version:        1.1.1
-Release:        2%{?dist}
+Version:        1.1.2
+Release:        1%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
@@ -17,8 +17,6 @@ BuildRequires: mvn(log4j:log4j:1.2.17)
 BuildRequires: mvn(org.apache.geronimo.specs:geronimo-jms_1.1_spec)
 BuildRequires: mvn(org.apache.tomcat:tomcat-catalina)
 BuildRequires: mvn(org.apache.tomcat:tomcat-servlet-api)
-# require groovy 2.0.7
-BuildRequires: mvn(org.codehaus.groovy:groovy)
 BuildRequires: mvn(org.codehaus.janino:janino)
 BuildRequires: mvn(org.eclipse.jetty:jetty-server)
 BuildRequires: mvn(org.fusesource:fusesource-pom:pom:)
@@ -26,9 +24,17 @@ BuildRequires: mvn(org.fusesource.jansi:jansi)
 BuildRequires: mvn(org.slf4j:slf4j-api)
 BuildRequires: mvn(org.slf4j:slf4j-ext)
 
+%if %{?fedora} > 21
+# use groovy 2.x
+BuildRequires: mvn(org.codehaus.groovy:groovy-all)
+BuildRequires: mvn(org.ow2.asm:asm-all)
+%else
+# use groovy 1.8.9
+BuildRequires: mvn(org.codehaus.groovy:groovy:1.8.9)
+BuildRequires: mvn(asm:asm-all)
+%endif
 # groovy-all embedded libraries
 BuildRequires: mvn(antlr:antlr)
-BuildRequires: mvn(asm:asm-all)
 BuildRequires: mvn(commons-cli:commons-cli)
 BuildRequires: mvn(org.slf4j:slf4j-nop)
 
@@ -120,6 +126,12 @@ rm -f docs/manual/.htaccess docs/css/site.css # Zero-length file
 
 sed -i 's#<artifactId>groovy-all</artifactId#<artifactId>groovy</artifactId#' $(find . -name "pom.xml")
 
+# Fix build with groovy2
+%if %{?fedora} > 21
+sed -i 's#groupId>asm#groupId>org.ow2.asm#' %{name}-classic/pom.xml
+sed -i 's#artifactId>groovy#artifactId>groovy-all#' %{name}-classic/pom.xml
+%endif
+
 # force tomcat apis
 sed -i 's#<groupId>javax.servlet#<groupId>org.apache.tomcat#' $(find . -name "pom.xml")
 sed -i 's#<artifactId>servlet-api#<artifactId>tomcat-servlet-api#' $(find . -name "pom.xml")
@@ -202,6 +214,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Fri Jan 09 2015 gil cattaneo <puntogil@libero.it> 1.1.2-1
+- Update to 1.1.2
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
