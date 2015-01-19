@@ -1,6 +1,6 @@
 Name:           maven
-Version:        3.2.3
-Release:        4%{?dist}
+Version:        3.2.5
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -10,13 +10,6 @@ Source0:        http://archive.apache.org/dist/%{name}/%{name}-3/%{version}/sour
 Source1:        maven-bash-completion
 Source2:        mvn.1
 Source200:      %{name}-script
-
-# Merged upstream (MNG-5696)
-Patch0001:      0001-MNG-5696-Remove-dependency-on-Easymock.patch
-# Merged upstream (MNG-5502)
-Patch0002:      0002-Update-Aether-to-0.9.0.M3.patch
-# Merged upstream (MNG-5534)
-Patch0003:      0003-Update-to-Sisu-0.1.0-and-Guice-3.1.6.patch
 
 # If XMvn is part of the same RPM transaction then it should be
 # installed first to avoid triggering rhbz#1014355.
@@ -135,9 +128,6 @@ Group:          Documentation
 
 %prep
 %setup -q -n apache-%{name}-%{version}%{?ver_add}
-%patch0001 -p1
-%patch0002 -p1
-%patch0003 -p1
 
 # not really used during build, but a precaution
 rm maven-ant-tasks-*.jar
@@ -157,7 +147,6 @@ sed -i -e s:'-classpath "${M2_HOME}"/boot/plexus-classworlds-\*.jar':'-classpath
 
 # Disable QA plugins which are not useful for us
 %pom_remove_plugin :animal-sniffer-maven-plugin
-%pom_remove_plugin :maven-enforcer-plugin
 %pom_remove_plugin :apache-rat-plugin
 
 # logback is not really needed by maven in typical use cases, so set
@@ -263,6 +252,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Jan 19 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.5-1
+- Update to upstream version 3.2.5
+
 * Sat Dec  6 2014 Ville Skyttä <ville.skytta@iki.fi> - 3.2.3-4
 - Fix bash completion filename
 
