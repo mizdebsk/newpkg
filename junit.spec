@@ -1,28 +1,21 @@
 Name:           junit
 Epoch:          1
-Version:        4.11
-Release:        14%{?dist}
+Version:        4.12
+Release:        1%{?dist}
 Summary:        Java regression test package
-License:        CPL
+License:        EPL
 URL:            http://www.junit.org/
 BuildArch:      noarch
 
 # ./clean-tarball.sh %{version}
 Source0:        %{name}-%{version}-clean.tar.gz
-Source2:        junit-OSGi-MANIFEST.MF
 Source3:        create-tarball.sh
 
-# Removing hamcrest source jar references (not available and/or necessary)
-Patch0:         %{name}-no-hamcrest-src.patch
-
-BuildRequires:  ant
-BuildRequires:  ant-contrib
-BuildRequires:  java-devel
+BuildRequires:  maven-local
 BuildRequires:  hamcrest
-BuildRequires:  perl(Digest::MD5)
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 
-Requires:       hamcrest
-Requires:       java-headless
+Obsoletes:      %{name}-demo < 4.12
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
@@ -42,71 +35,60 @@ Summary:        Javadoc for %{name}
 %description javadoc
 Javadoc for %{name}.
 
-%package demo
-Summary:        Demos for %{name}
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-
-%description demo
-Demonstrations and samples for %{name}.
-
 %prep
 %setup -q -n %{name}-r%{version}
-%patch0 -p1
-
-cp build/maven/junit-pom-template.xml pom.xml
-# fix placeholder version in pom
-%pom_xpath_set pom:project/pom:version "%{version}"
-
-ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.3.jar
 
 # InaccessibleBaseClassTest fails with Java 8
 sed -i /InaccessibleBaseClassTest/d src/test/java/org/junit/tests/AllTests.java
 
-%build
-ant dist -Dversion-status=
+%pom_remove_plugin :replacer
+sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >src/main/java/junit/runner/Version.java
 
-# inject OSGi manifest
-mkdir -p META-INF
-cp -p %{SOURCE2} META-INF/MANIFEST.MF
-touch META-INF/MANIFEST.MF
-zip -u %{name}%{version}/%{name}-%{version}.jar META-INF/MANIFEST.MF
+%pom_remove_plugin :animal-sniffer-maven-plugin
+
+# Removing hamcrest source jar references (not available and/or necessary)
+%pom_remove_plugin :maven-javadoc-plugin
+
+# Add proper Apache Felix Bundle Plugin instructions
+# so that we get a reasonable OSGi manifest.
+%pom_xpath_inject pom:project "<packaging>bundle</packaging>"
+%pom_xpath_inject pom:build/pom:plugins "
+    <plugin>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>maven-bundle-plugin</artifactId>
+      <extensions>true</extensions>
+      <configuration>
+        <instructions>
+          <Bundle-SymbolicName>org.junit</Bundle-SymbolicName>
+          <_nouses>true</_nouses>
+        </instructions>
+      </configuration>
+    </plugin>"
+
+%mvn_file : %{name}
+
+%build
+%mvn_build
 
 %install
-# jars
-install -d -m 755 %{buildroot}%{_javadir}
-install -m 644 %{name}%{version}/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
-
-# pom
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -m 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
-%add_maven_depmap
-
-# javadoc
-install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
-cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}
-
-# demo
-install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/%{name} 
-
-cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
-
+%mvn_install
 
 %files -f .mfiles
-%doc LICENSE README CODING_STYLE
+%doc LICENSE-junit.txt README.md
 
-%files demo
-%doc LICENSE
-%{_datadir}/%{name}
-
-%files javadoc
-%doc LICENSE
-%doc %{_javadocdir}/%{name}
+%files javadoc -f .mfiles-javadoc
+%doc LICENSE-junit.txt
 
 %files manual
-%doc LICENSE README CODING_STYLE
-%doc junit%{version}/doc/*
+%doc LICENSE-junit.txt
+%doc doc/*
 
 %changelog
+* Mon Jan 19 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.12-1
+- Update to upstream version 4.12
+- Build with Maven
+- Remove demo package
+
 * Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.11-14
 - Add epoch as workaround for a bug in koji-shadow
 
