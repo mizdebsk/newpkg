@@ -1,7 +1,7 @@
 Name:           junit
 Epoch:          1
 Version:        4.12
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java regression test package
 License:        EPL
 URL:            http://www.junit.org/
@@ -60,6 +60,7 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
       <configuration>
         <instructions>
           <Bundle-SymbolicName>org.junit</Bundle-SymbolicName>
+          <Export-Package>{local-packages},!org.hamcrest*,*;x-internal:=true</Export-Package>
           <_nouses>true</_nouses>
         </instructions>
       </configuration>
@@ -84,6 +85,10 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
 %doc doc/*
 
 %changelog
+* Wed Jan 21 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.12-2
+- Export internal OSGi packages and mark them with x-internal
+- Resolves: rhbz#1184144
+
 * Mon Jan 19 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.12-1
 - Update to upstream version 4.12
 - Build with Maven
