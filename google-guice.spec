@@ -5,10 +5,9 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.2.4
+Version:        3.2.5
 Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
-Group:          Development/Libraries
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
 # ./create-tarball.sh %%{version}
@@ -151,11 +150,17 @@ Summary:        ThrowingProviders extension module for Guice
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides ThrowingProviders module for Guice.
 
+%package -n %{short_name}-bom
+Summary:        Bill of Materials for Guice
+
+%description -n %{short_name}-bom
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Bill of Materials module for Guice.
+
 %endif # with extensions
 
 %package javadoc
 Summary:        API documentation for Guice
-Group:          Documentation
 Provides:       %{short_name}-javadoc = %{version}-%{release}
 
 %description javadoc
@@ -180,19 +185,19 @@ This package provides %{summary}.
 # maven-javadoc-plugin to generate javadocs with default style.
 %pom_remove_plugin :maven-javadoc-plugin
 
-%pom_remove_dep javax.persistence:persistence-api extensions/persist
-%pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.0-api extensions/persist
-
 # remove test dependency to make sure we don't produce requires
 # see #1007498
 %pom_remove_dep :guava-testlib extensions
 %pom_xpath_remove "pom:dependency[pom:classifier[text()='tests']]" extensions
+
+%pom_set_parent org.sonatype.sisu.inject:guice-parent:%{version} jdk8-tests
 
 # Don't try to build extension modules unless they are needed
 %if %{without extensions}
 %pom_disable_module extensions
 %endif
 
+%mvn_package :jdk8-tests __noinstall
 
 %build
 %if %{with extensions}
@@ -205,7 +210,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
 %mvn_file  ":sisu-guice" %{short_name}/%{name} %{name}
 %mvn_alias ":sisu-guice" "com.google.inject:guice"
-# Skip tests because of missing dependency (hsqldb-j5).
+# Skip tests because of missing dependency guice-testlib
 %mvn_build -f -s
 
 %install
@@ -229,6 +234,7 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 %files -n %{short_name}-spring -f .mfiles-guice-spring
 %files -n %{short_name}-testlib -f .mfiles-guice-testlib
 %files -n %{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
+%files -n %{short_name}-bom -f .mfiles-guice-bom
 %endif # with extensions
 
 %files javadoc -f .mfiles-javadoc
@@ -236,6 +242,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Fri Jan 23 2015 Michael Simacek <msimacek@redhat.com> - 3.2.5-1
+- Update to upstream version 3.2.5
+
 * Mon Sep 29 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.4-1
 - Update to upstream version 3.2.4
 

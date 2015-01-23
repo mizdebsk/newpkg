@@ -7,7 +7,7 @@ cd ./sisu-guice
 git checkout sisu-guice-${1}
 git branch unbundled-guice-${1}
 git checkout unbundled-guice-${1}
-rm -rf $(ls . | grep -E -v 'core|extensions|pom|COPYING')
+rm -rf $(ls . | grep -E -v 'core|extensions|pom|bom|jdk8-tests|COPYING')
 find . -name "*.jar" -delete
 find . -name "*.class" -delete
 git commit -a -m "Remove unneeded stuff"
