@@ -1,6 +1,6 @@
 Name:           tesla-tycho-support
 Version:        0.0.7
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Tesla Tycho Base
 License:        EPL
 URL:            https://github.com/tesla/tycho-support/
@@ -31,6 +31,8 @@ cp -p %{SOURCE1} .
 %pom_remove_plugin :maven-upload-plugin
 %pom_remove_plugin :feature-zip-plugin
 
+%mvn_alias : io.takari.tycho:
+
 %build
 %mvn_build
 
@@ -41,6 +43,9 @@ cp -p %{SOURCE1} .
 %doc epl-v10.html
 
 %changelog
+* Tue Jan 27 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.7-4
+- Add alias io.takari.tycho:tycho-support
+
 * Tue Sep  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.7-3
 - Don't inject feclipse-maven-plugin any longer
 
