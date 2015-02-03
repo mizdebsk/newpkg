@@ -3,7 +3,7 @@
 %global oname javax.annotation-api
 Name:          glassfish-annotation-api
 Version:       1.2
-Release:       7%{?dist}
+Release:       8%{?dist}
 Summary:       Common Annotations API Specification (JSR 250)
 License:       CDDL or GPLv2 with exceptions
 # http://jcp.org/en/jsr/detail?id=250
@@ -12,7 +12,6 @@ URL:           http://glassfish.java.net/
 # tar czf glassfish-annotation-api-1.2-src-svn.tar.gz glassfish-annotation-api-1.2
 Source0:       %{name}-%{namedversion}-src-svn.tar.gz
 
-BuildRequires: java-devel
 BuildRequires: jvnet-parent
 BuildRequires: glassfish-legal
 
@@ -37,10 +36,10 @@ This package contains javadoc for %{name}.
 %setup -q -n %{name}-%{namedversion}
 
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
+%mvn_file :%{oname} %{name}
 
 %build
 
-%mvn_file :%{oname} %{name}
 %mvn_build
 
 sed -i 's/\r//' target/classes/META-INF/LICENSE.txt
@@ -50,12 +49,15 @@ cp -p target/classes/META-INF/LICENSE.txt .
 %mvn_install
 
 %files -f .mfiles
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %changelog
+* Tue Feb 03 2015 gil cattaneo <puntogil@libero.it> 1.2-8
+- introduce license macro
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
