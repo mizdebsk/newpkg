@@ -1,6 +1,6 @@
 Name:          glassfish-master-pom
 Version:       8
-Release:       5%{?dist}
+Release:       6%{?dist}
 Summary:       Master POM for Glassfish Maven projects
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
@@ -11,7 +11,6 @@ Source0:       %{name}-%{version}-src-svn.tar.gz
 # glassfish-master-pom package don't include the license file
 Source1:       glassfish-LICENSE.txt
 
-BuildRequires: java-devel
 BuildRequires: maven-local
 BuildArch:     noarch
 
@@ -34,9 +33,12 @@ sed -i 's/\r//' LICENSE.txt
 %mvn_install
 
 %files -f .mfiles
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %changelog
+* Tue Feb 03 2015 gil cattaneo <puntogil@libero.it> 8-6
+- introduce license macro
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 8-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
