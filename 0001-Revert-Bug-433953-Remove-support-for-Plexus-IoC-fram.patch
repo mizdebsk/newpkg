@@ -1,6 +1,6 @@
-From 7c7d1f459729d60cc4fa96ad723fbfcefaffc9ef Mon Sep 17 00:00:00 2001
+From b74b2f6299605ec0dfca4aabb21fb3fe13844d47 Mon Sep 17 00:00:00 2001
 From: Mikolaj Izdebski <mizdebsk@redhat.com>
-Date: Wed, 21 May 2014 10:08:34 +0200
+Date: Wed, 4 Feb 2015 07:26:24 +0100
 Subject: [PATCH] Revert "Bug 433953 - Remove support for Plexus IoC framework"
 
 This reverts commit c5edb824e8ae5336cf10fc8cbe745a01ca760d6d.
@@ -51,7 +51,7 @@ This reverts commit c5edb824e8ae5336cf10fc8cbe745a01ca760d6d.
  create mode 100644 aether-transport-http/src/test/java/org/eclipse/aether/transport/http/PlexusSupportTest.java
 
 diff --git a/aether-connector-basic/pom.xml b/aether-connector-basic/pom.xml
-index ee208a8..08429a3 100644
+index 747f9dc..5363540 100644
 --- a/aether-connector-basic/pom.xml
 +++ b/aether-connector-basic/pom.xml
 @@ -51,6 +51,17 @@
@@ -231,7 +231,7 @@ index 0000000..e57e508
 +
 +}
 diff --git a/aether-impl/pom.xml b/aether-impl/pom.xml
-index 9627aff..a39794f 100644
+index cad3afd..832ed85 100644
 --- a/aether-impl/pom.xml
 +++ b/aether-impl/pom.xml
 @@ -51,6 +51,18 @@
@@ -843,7 +843,7 @@ index 561ba8c..7bce2be 100644
          throws RepositoryOfflineException
      {
 diff --git a/aether-impl/src/main/java/org/eclipse/aether/internal/impl/DefaultRemoteRepositoryManager.java b/aether-impl/src/main/java/org/eclipse/aether/internal/impl/DefaultRemoteRepositoryManager.java
-index ccb618a..fa2cf89 100644
+index 8a54d62..7b13b3f 100644
 --- a/aether-impl/src/main/java/org/eclipse/aether/internal/impl/DefaultRemoteRepositoryManager.java
 +++ b/aether-impl/src/main/java/org/eclipse/aether/internal/impl/DefaultRemoteRepositoryManager.java
 @@ -1,5 +1,5 @@
@@ -853,16 +853,16 @@ index ccb618a..fa2cf89 100644
   * All rights reserved. This program and the accompanying materials
   * are made available under the terms of the Eclipse Public License v1.0
   * which accompanies this distribution, and is available at
-@@ -17,6 +17,8 @@ import java.util.ListIterator;
+@@ -18,6 +18,8 @@ import java.util.ListIterator;
  import javax.inject.Inject;
  import javax.inject.Named;
  
 +import org.codehaus.plexus.component.annotations.Component;
 +import org.codehaus.plexus.component.annotations.Requirement;
+ import org.eclipse.aether.RepositoryCache;
  import org.eclipse.aether.RepositorySystemSession;
  import org.eclipse.aether.impl.RemoteRepositoryManager;
- import org.eclipse.aether.impl.UpdatePolicyAnalyzer;
-@@ -38,14 +40,18 @@ import org.eclipse.aether.util.StringUtils;
+@@ -40,6 +42,7 @@ import org.eclipse.aether.util.StringUtils;
  /**
   */
  @Named
@@ -870,6 +870,9 @@ index ccb618a..fa2cf89 100644
  public class DefaultRemoteRepositoryManager
      implements RemoteRepositoryManager, Service
  {
+@@ -77,10 +80,13 @@ public class DefaultRemoteRepositoryManager
+ 
+     }
  
 +    @Requirement( role = LoggerFactory.class )
      private Logger logger = NullLoggerFactory.LOGGER;
@@ -881,7 +884,7 @@ index ccb618a..fa2cf89 100644
      private ChecksumPolicyProvider checksumPolicyProvider;
  
      public DefaultRemoteRepositoryManager()
-@@ -75,6 +81,12 @@ public class DefaultRemoteRepositoryManager
+@@ -110,6 +116,12 @@ public class DefaultRemoteRepositoryManager
          return this;
      }
  
@@ -1616,7 +1619,7 @@ index 0000000..26324ef
 +
 +}
 diff --git a/aether-transport-classpath/pom.xml b/aether-transport-classpath/pom.xml
-index b980591..8d7dc0e 100644
+index 41d0506..c7775cb 100644
 --- a/aether-transport-classpath/pom.xml
 +++ b/aether-transport-classpath/pom.xml
 @@ -51,6 +51,17 @@
@@ -1746,7 +1749,7 @@ index 0000000..c984df6
 +
 +}
 diff --git a/aether-transport-file/pom.xml b/aether-transport-file/pom.xml
-index 35bf5b1..0d4a252 100644
+index 40a2190..2a30814 100644
 --- a/aether-transport-file/pom.xml
 +++ b/aether-transport-file/pom.xml
 @@ -51,6 +51,17 @@
@@ -1872,7 +1875,7 @@ index 0000000..f579995
 +
 +}
 diff --git a/aether-transport-http/pom.xml b/aether-transport-http/pom.xml
-index feb9adb..c911c0e 100644
+index e86dcc7..e7432ea 100644
 --- a/aether-transport-http/pom.xml
 +++ b/aether-transport-http/pom.xml
 @@ -68,6 +68,17 @@
@@ -2043,5 +2046,5 @@ index 5d91358..be57919 100644
       * Sets the wagon provider to use to acquire and release wagon instances.
       * 
 -- 
-1.9.0
+2.1.0
 

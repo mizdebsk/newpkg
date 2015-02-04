@@ -1,9 +1,9 @@
-%global vertag v20140518
+%global vertag v20141111
 
 Name:           aether
 Epoch:          1
-Version:        1.0.0
-Release:        3%{?dist}
+Version:        1.0.1
+Release:        1%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -182,6 +182,9 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Wed Feb  4 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.1-1
+- Update to upstream version 1.0.1
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.0.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
