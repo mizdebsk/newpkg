@@ -1,7 +1,11 @@
+# Release type, either "milestone" or "release"
+%global reltype milestone
+%global reltag .M1
+
 Name:           sisu
 Epoch:          1
-Version:        0.2.1
-Release:        10%{?dist}
+Version:        0.3.0
+Release:        0.1%{?reltag}%{?dist}
 Summary:        Eclipse dependency injection framework
 # bundled asm is under BSD
 # See also: https://fedorahosted.org/fpc/ticket/346
@@ -10,8 +14,8 @@ URL:            http://eclipse.org/sisu
 
 # TODO: unbundle asm
 
-Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.inject-%{version}.tar.bz2
-Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/releases/%{version}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}.tar.bz2
+Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{name}.inject-%{version}%{?reltag}.tar.bz2
+Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}%{?reltag}.tar.bz2
 
 Patch0:         %{name}-OSGi-import-guava.patch
 Patch1:         %{name}-java8.patch
@@ -115,8 +119,8 @@ This package contains %{summary}.
 
 %prep
 %setup -q -c -T
-tar xf %{SOURCE0} && mv releases/* sisu-inject && rmdir releases
-tar xf %{SOURCE1} && mv releases/* sisu-plexus && rmdir releases
+tar xf %{SOURCE0} && mv %{reltype}s/* sisu-inject && rmdir %{reltype}s
+tar xf %{SOURCE1} && mv %{reltype}s/* sisu-plexus && rmdir %{reltype}s
 
 %patch0
 %patch1
@@ -184,9 +188,9 @@ EOF
 
 %install
 %mvn_artifact sisu-inject/pom.xml
-%mvn_artifact sisu-inject/org.eclipse.sisu.inject/pom.xml sisu-inject/org.eclipse.sisu.inject/target/org.eclipse.sisu.inject-%{version}.jar
+%mvn_artifact sisu-inject/org.eclipse.sisu.inject/pom.xml sisu-inject/org.eclipse.sisu.inject/target/org.eclipse.sisu.inject-%{version}%{?reltag}.jar
 %mvn_artifact sisu-plexus/pom.xml
-%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus/pom.xml sisu-plexus/org.eclipse.sisu.plexus/target/org.eclipse.sisu.plexus-%{version}.jar
+%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus/pom.xml sisu-plexus/org.eclipse.sisu.plexus/target/org.eclipse.sisu.plexus-%{version}%{?reltag}.jar
 %mvn_install
 
 
@@ -201,6 +205,9 @@ EOF
 
 
 %changelog
+* Wed Feb  4 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-0.1.M1
+- Update to upstream milestone 0.3.0.M1
+
 * Tue Sep 30 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.2.1-10
 - Port to plexus-utils 3.0.18
 
