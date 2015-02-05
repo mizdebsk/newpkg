@@ -1,6 +1,6 @@
 Name:          hppc
 Version:       0.6.1
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
@@ -16,7 +16,6 @@ BuildRequires: mvn(org.sonatype.oss:oss-parent:pom:)
 %if 0
 # hppc-benchmarks deps
 # http://gil.fedorapeople.org/caliper-1.0-0.1.20120909SNAPSHOT.fc16.src.rpm
-# http://gil.fedorapeople.org/caliper.spec
 BuildRequires: mvn(com.google.caliper:caliper:0.5-rc1)
 BuildRequires: mvn(com.google.code.gson:gson)
 BuildRequires: mvn(com.h2database:h2)
@@ -24,7 +23,6 @@ BuildRequires: mvn(commons-io:commons-io)
 BuildRequires: mvn(commons-lang:commons-lang)
 BuildRequires: mvn(it.unimi.dsi:fastutil)
 # http://gil.fedorapeople.org/trove-3.0.3-1.fc16.src.rpm
-# http://gil.fedorapeople.org/trove.spec
 BuildRequires: mvn(net.sf.trove4j:trove4j:3.0.3)
 BuildRequires: mvn(org.apache.mahout:mahout-collections)
 
@@ -93,11 +91,12 @@ find . -name "*.jar" -print -delete
 
 sed -i 's/\r//' CHANGES
 
-%build
-
 %mvn_file :%{name} %{name}
 %mvn_file :%{name}-templateprocessor %{name}-templateprocessor
 %mvn_package :%{name}-templateprocessor %{name}-templateprocessor
+
+%build
+
 # Disable test for now. Unavailable test deps
 %mvn_build -f
 
@@ -105,15 +104,19 @@ sed -i 's/\r//' CHANGES
 %mvn_install
 
 %files -f .mfiles
-%doc CHANGES LICENSE README
+%doc CHANGES README
+%license LICENSE
 
 %files templateprocessor -f .mfiles-%{name}-templateprocessor
-%doc LICENSE
+%license LICENSE
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE
+%license LICENSE
 
 %changelog
+* Thu Feb 05 2015 gil cattaneo <puntogil@libero.it> 0.6.1-2
+- introduce license macro
+
 * Wed Dec 17 2014 gil cattaneo <puntogil@libero.it> 0.6.1-1
 - update to 0.6.1
 
