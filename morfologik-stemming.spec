@@ -1,18 +1,16 @@
 Name:          morfologik-stemming
 Version:       1.8.3
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       Morfologik stemming library
 License:       BSD
 URL:           http://morfologik.blogspot.com/
 Source0:       https://github.com/morfologik/morfologik-stemming/archive/%{version}.tar.gz
 
-BuildRequires: java-devel
-
 BuildRequires: mvn(com.carrotsearch:hppc)
 BuildRequires: mvn(com.google.guava:guava)
 BuildRequires: mvn(commons-cli:commons-cli)
 BuildRequires: mvn(commons-lang:commons-lang)
-BuildRequires: mvn(org.sonatype.oss:oss-parent)
+BuildRequires: mvn(org.sonatype.oss:oss-parent:pom:)
 
 %if 0
 # test deps
@@ -67,12 +65,16 @@ sed -i "s|org.junit.internal.matchers.StringContains|org.hamcrest.core.StringCon
 
 %files -f .mfiles
 %dir %{_javadir}/%{name}
-%doc CHANGES CONTRIBUTOR README morfologik.LICENSE
+%doc CHANGES CONTRIBUTOR README
+%license morfologik.LICENSE
 
 %files javadoc -f .mfiles-javadoc
-%doc morfologik.LICENSE
+%license morfologik.LICENSE
 
 %changelog
+* Tue Feb 10 2015 gil cattaneo <puntogil@libero.it> 1.8.3-3
+- introduce license macro
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
