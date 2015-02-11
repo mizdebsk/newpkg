@@ -1,6 +1,6 @@
 Name:          spec-version-maven-plugin
 Version:       1.2
-Release:       5%{?dist}
+Release:       6%{?dist}
 Summary:       Spec Version Maven Plugin
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
@@ -11,9 +11,8 @@ Source0:       %{name}-%{version}-src-svn.tar.gz
 # spec-version-maven-plugin package don't include the license file
 Source1:       glassfish-LICENSE.txt
 
-BuildRequires: java-devel
-BuildRequires: mvn(net.java:jvnet-parent)
 
+BuildRequires: mvn(net.java:jvnet-parent:pom:)
 BuildRequires: mvn(org.apache.maven:maven-core)
 BuildRequires: mvn(org.apache.maven:maven-model)
 BuildRequires: mvn(org.apache.maven:maven-plugin-api)
@@ -57,12 +56,15 @@ sed -i 's/\r//' LICENSE.txt
 %mvn_install
 
 %files -f .mfiles
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %changelog
+* Wed Feb 11 2015 gil cattaneo <puntogil@libero.it> 1.2-6
+- introduce license macro
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
