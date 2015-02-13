@@ -1,6 +1,6 @@
 Name:           logback
 Version:        1.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
@@ -200,20 +200,24 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}-%{version}/examples
 cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{name}-%{version}/examples
 
 %files -f .mfiles
-%doc LICENSE.txt README.txt docs/*
+%doc README.txt docs/*
+%license LICENSE.txt
 %dir %{_javadir}/%{name}
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %files access -f .mfiles-access
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %files examples -f .mfiles-examples
-%doc LICENSE.txt
+%license LICENSE.txt
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Fri Feb 13 2015 gil cattaneo <puntogil@libero.it> 1.1.2-2
+- introduce license macro
+
 * Fri Jan 09 2015 gil cattaneo <puntogil@libero.it> 1.1.2-1
 - Update to 1.1.2
 
