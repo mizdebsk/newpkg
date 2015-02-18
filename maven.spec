@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -53,6 +53,7 @@ BuildRequires:  maven-wagon-file
 BuildRequires:  maven-wagon-http
 BuildRequires:  maven-wagon-http-shared
 BuildRequires:  maven-wagon-provider-api
+BuildRequires:  objectweb-asm
 BuildRequires:  plexus-cipher
 BuildRequires:  plexus-classworlds
 BuildRequires:  plexus-containers-component-annotations
@@ -100,6 +101,7 @@ Requires:       maven-wagon-file
 Requires:       maven-wagon-http
 Requires:       maven-wagon-http-shared
 Requires:       maven-wagon-provider-api
+Requires:       objectweb-asm
 Requires:       plexus-cipher
 Requires:       plexus-classworlds
 Requires:       plexus-containers-component-annotations
@@ -231,6 +233,7 @@ ln -sf $(build-classpath plexus/classworlds) \
         maven-wagon/http-shared \
         commons-logging \
         commons-codec \
+        objectweb-asm/asm \
 )
 
 
@@ -252,6 +255,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Feb 18 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.5-2
+- Add objectweb-asm to plexus.core
+
 * Mon Jan 19 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.5-1
 - Update to upstream version 3.2.5
 
