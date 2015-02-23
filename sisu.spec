@@ -1,11 +1,11 @@
 # Release type, either "milestone" or "release"
-%global reltype milestone
-%global reltag .M1
+%global reltype release
+#global reltag .M1
 
 Name:           sisu
 Epoch:          1
 Version:        0.3.0
-Release:        0.2%{?reltag}%{?dist}
+Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 License:        EPL
 URL:            http://eclipse.org/sisu
@@ -14,7 +14,6 @@ Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/
 Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}%{?reltag}.tar.bz2
 
 Patch0:         %{name}-OSGi-import-guava.patch
-Patch1:         %{name}-java8.patch
 Patch2:         %{name}-ignored-tests.patch
 Patch3:         %{name}-plexus-utils-3.0.18.patch
 
@@ -119,7 +118,6 @@ tar xf %{SOURCE0} && mv %{reltype}s/* sisu-inject && rmdir %{reltype}s
 tar xf %{SOURCE1} && mv %{reltype}s/* sisu-plexus && rmdir %{reltype}s
 
 %patch0
-%patch1
 %patch2
 %patch3
 
@@ -208,6 +206,9 @@ EOF
 
 
 %changelog
+* Mon Feb 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-1
+- Update to upstream version 0.3.0
+
 * Wed Feb 18 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-0.2.M1
 - Unbundle ASM
 - Resolves: rhbz#1085903
