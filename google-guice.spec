@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        3.2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
@@ -28,7 +28,6 @@ BuildRequires:  slf4j
 %if %{with extensions}
 BuildRequires:  hibernate-jpa-2.0-api
 BuildRequires:  springframework-beans
-BuildRequires:  tomcat-servlet-3.0-api
 %endif
 
 # Test dependencies:
@@ -242,6 +241,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Fri Mar 6 2015 Alexander Kurtakov <akurtako@redhat.com> 3.2.5-2
+- Drop gone tomcat-servlet-3.0-api BR, builds fine without it.
+
 * Fri Jan 23 2015 Michael Simacek <msimacek@redhat.com> - 3.2.5-1
 - Update to upstream version 3.2.5
 
