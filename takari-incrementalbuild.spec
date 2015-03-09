@@ -86,11 +86,8 @@ rm -rf incrementalbuild/src/main/java/io/takari/incrementalbuild/maven/testing
 
 
 %files -f .mfiles
-%license LICENSE.txt
-%doc README.md
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE.txt
 
 %changelog
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 0.10.0-2
