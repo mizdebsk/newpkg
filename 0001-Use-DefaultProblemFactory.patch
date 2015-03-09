@@ -1,0 +1,34 @@
+From ef32255dad2566f12236914046b91fbcc571e45a Mon Sep 17 00:00:00 2001
+From: Michael Simacek <msimacek@redhat.com>
+Date: Fri, 6 Mar 2015 17:05:38 +0100
+Subject: [PATCH] Use DefaultProblemFactory
+
+---
+ .../main/java/io/takari/maven/plugins/compile/jdt/CompilerJdt.java    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/takari-lifecycle-plugin/src/main/java/io/takari/maven/plugins/compile/jdt/CompilerJdt.java b/takari-lifecycle-plugin/src/main/java/io/takari/maven/plugins/compile/jdt/CompilerJdt.java
+index 2427f5e..c4df92b 100644
+--- a/takari-lifecycle-plugin/src/main/java/io/takari/maven/plugins/compile/jdt/CompilerJdt.java
++++ b/takari-lifecycle-plugin/src/main/java/io/takari/maven/plugins/compile/jdt/CompilerJdt.java
+@@ -60,7 +60,7 @@ import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+ import org.eclipse.jdt.internal.compiler.impl.IrritantSet;
+ import org.eclipse.jdt.internal.compiler.problem.DefaultProblem;
+ import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
+-import org.eclipse.jdt.internal.core.builder.ProblemFactory;
++import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+ 
+ import com.google.common.base.Stopwatch;
+ 
+@@ -177,7 +177,7 @@ public class CompilerJdt extends AbstractCompiler implements ICompilerRequestor
+     compilerOptions.verbose = isVerbose();
+     compilerOptions.suppressWarnings = true;
+     compilerOptions.setShowWarnings(isShowWarnings());
+-    IProblemFactory problemFactory = ProblemFactory.getProblemFactory(Locale.getDefault());
++    IProblemFactory problemFactory = new DefaultProblemFactory(Locale.getDefault());
+     Classpath namingEnvironment = createClasspath();
+     Compiler compiler = new Compiler(namingEnvironment, errorHandlingPolicy, compilerOptions, this, problemFactory);
+     compiler.options.produceReferenceInfo = true;
+-- 
+2.1.0
+
