@@ -1,4 +1,4 @@
-%bcond_with bootstrap
+%bcond_without bootstrap
 %global artifact_name io.takari.incrementalbuild
 
 Name:           takari-incrementalbuild
