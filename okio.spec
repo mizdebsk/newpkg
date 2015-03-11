@@ -32,7 +32,8 @@ sed -i /IgnoreJRERequirement/d okio/src/main/java/okio/{DeflaterSink,Okio}.java
 sed -i /writeWithTimeout/s/./@org.junit.Ignore/ okio/src/test/java/okio/SocketTimeoutTest.java
 
 %build
-%mvn_build
+# Tests require networking
+%mvn_build -f
 
 %install
 %mvn_install
