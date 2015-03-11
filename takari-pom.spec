@@ -35,7 +35,7 @@ cp -p %{SOURCE1} .
 %mvn_install
 
 %files -f .mfiles
-%doc epl-v10.html
+%license epl-v10.html
 
 %changelog
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 15-2
