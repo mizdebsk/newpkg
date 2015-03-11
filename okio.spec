@@ -1,5 +1,5 @@
 Name:           okio
-Version:        1.0.1
+Version:        1.2.0
 Release:        1%{?dist}
 Summary:        Java I/O library
 License:        ASL 2.0
@@ -46,5 +46,8 @@ sed -i /writeWithTimeout/s/./@org.junit.Ignore/ okio/src/test/java/okio/SocketTi
 %doc LICENSE.txt
 
 %changelog
+* Wed Mar 11 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.2.0-1
+- Update to upstream version 1.2.0
+
 * Fri Sep 26 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.0.1-1
 - Initial packaging
