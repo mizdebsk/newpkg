@@ -10,6 +10,7 @@ URL:            http://takari.io
 BuildArch:      noarch
 
 Source0:        https://github.com/takari/%{artifact_name}/archive/%{artifact_name}-%{version}.tar.gz
+Source1:        http://www.eclipse.org/legal/epl-v10.html
 
 Patch0:         0001-Workaround-for-mtime-truncation.patch
 
@@ -51,8 +52,9 @@ This package provides %{summary}.
 
 %prep
 %setup -q -n %{artifact_name}-%{artifact_name}-%{version}
-
 %patch0 -p1
+
+cp -a %{SOURCE1} .
 
 # XXX skip ITs for now
 %pom_disable_module incrementalbuild-its
@@ -86,8 +88,10 @@ rm -rf incrementalbuild/src/main/java/io/takari/incrementalbuild/maven/testing
 
 
 %files -f .mfiles
+%license epl-v10.html
 
 %files javadoc -f .mfiles-javadoc
+%license epl-v10.html
 
 %changelog
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 0.10.0-2
