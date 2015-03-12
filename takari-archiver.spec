@@ -4,6 +4,8 @@ Name:           takari-archiver
 Version:        0.1.8
 Release:        2%{?dist}
 Summary:        Takari Archiver
+# License information can be found in effective POM.
+# For more info, see https://bugzilla.redhat.com/show_bug.cgi?id=1200768#c4
 License:        EPL
 URL:            http://takari.io
 BuildArch:      noarch
