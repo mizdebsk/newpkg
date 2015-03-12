@@ -12,7 +12,11 @@ BuildArch:      noarch
 Source0:        %{name}-%{version}-clean.tar.xz
 Source1:        create-tarball.sh
 
+# Replace use of bundled jgit class with jnr-posix.
+Patch0:         takari-archiver-unbundle-jgit.patch
+
 BuildRequires:  maven-local
+BuildRequires:  mvn(com.github.jnr:jnr-posix)
 BuildRequires:  mvn(com.google.guava:guava)
 BuildRequires:  mvn(javax.inject:javax.inject)
 BuildRequires:  mvn(junit:junit)
@@ -37,6 +41,7 @@ This package provides %{summary}.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %if %{with bootstrap}
 %pom_remove_parent
@@ -66,6 +71,7 @@ This package provides %{summary}.
 %changelog
 * Thu Mar 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.1.8-2
 - Remove bundled JARs
+- Unbundle part of jgit
 
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 0.1.8-1
 - Initial packaging
