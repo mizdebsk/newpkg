@@ -4,11 +4,13 @@ Name:           takari-lifecycle
 Version:        1.10.2
 Release:        3%{?dist}
 Summary:        Optimized replacement for the Maven default lifecycle
-License:        EPL
+# Everything is under EPL, but one file (AetherUtils.java) is under both EPL and ASL 2.0
+License:        EPL and ASL 2.0
 URL:            http://takari.io
 BuildArch:      noarch
 
 Source0:        https://github.com/takari/%{name}/archive/%{name}-%{version}.tar.gz
+Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
 # ProblemFactory class is not exported by JDT
 Patch0:         0001-Use-DefaultProblemFactory.patch
@@ -74,8 +76,9 @@ This package provides %{summary}.
 
 %prep
 %setup -q -n %{name}-%{name}-%{version}
-
 %patch0 -p1
+
+cp %{SOURCE1} .
 
 # Replace bundled test dependency with symlink to system JAR
 ln -sf %{_javadir}/commons-lang.jar takari-lifecycle-plugin/src/test/jars/commons-lang-2.0.jar
@@ -123,16 +126,17 @@ ln -sf %{_javadir}/commons-lang.jar takari-lifecycle-plugin/src/test/jars/common
 
 
 %files -f .mfiles
-%license LICENSE.txt
+%license LICENSE.txt LICENSE-2.0.txt
 %doc README.md
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE.txt
+%license LICENSE.txt LICENSE-2.0.txt
 
 
 %changelog
 * Thu Mar 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.10.2-3
 - Replace bundled test dependency with symlink to system JAR
+- Add Apache license text
 
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 1.10.2-2
 - Working build
