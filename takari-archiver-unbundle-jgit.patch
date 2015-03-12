@@ -458,7 +458,7 @@ index c552837..c3fdf9c 100644
      }
      source.close();
 diff --git a/src/main/java/io/tesla/proviso/archive/source/FileEntry.java b/src/main/java/io/tesla/proviso/archive/source/FileEntry.java
-index 8e96055..0b69b40 100644
+index 8e96055..347180e 100644
 --- a/src/main/java/io/tesla/proviso/archive/source/FileEntry.java
 +++ b/src/main/java/io/tesla/proviso/archive/source/FileEntry.java
 @@ -1,19 +1,22 @@
@@ -491,21 +491,20 @@ index 8e96055..0b69b40 100644
    @Override
    public int getFileMode() {
 -    return FileMode.getFileMode(file);
-+    return POSIX.stat(file.getPath()).mode();
++    return POSIX.stat(file.getPath()).mode() & 0777;
    }
  
    @Override
-@@ -56,6 +59,7 @@ public class FileEntry implements Entry {
+@@ -56,6 +59,6 @@ public class FileEntry implements Entry {
  
    @Override
    public boolean isExecutable() {
 -    return FileMode.EXECUTABLE_FILE.equals(getFileMode());
-+    int mode = getFileMode();
-+    return (mode & 0170000) == 0100000 && (mode & 0111) != 0;
++    return (getFileMode() & 0111) != 0;
    }
  }
 diff --git a/src/main/java/io/tesla/proviso/archive/zip/ZipArchiveSource.java b/src/main/java/io/tesla/proviso/archive/zip/ZipArchiveSource.java
-index 84ff685..61d8bee 100644
+index 84ff685..7487e5c 100644
 --- a/src/main/java/io/tesla/proviso/archive/zip/ZipArchiveSource.java
 +++ b/src/main/java/io/tesla/proviso/archive/zip/ZipArchiveSource.java
 @@ -1,7 +1,6 @@
@@ -524,7 +523,7 @@ index 84ff685..61d8bee 100644
 -      return FileMode.EXECUTABLE_FILE.equals(getFileMode());
 +      int mode = getFileMode();
 +      System.out.println(">>>> " + mode);
-+      return (mode & 0170000) == 0100000 && (mode & 0111) != 0;
++      return (mode & 0111) != 0;
      }
    }
  
