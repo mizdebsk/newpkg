@@ -2,7 +2,7 @@
 
 Name:           takari-lifecycle
 Version:        1.10.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Optimized replacement for the Maven default lifecycle
 License:        EPL
 URL:            http://takari.io
@@ -77,6 +77,9 @@ This package provides %{summary}.
 
 %patch0 -p1
 
+# Replace bundled test dependency with symlink to system JAR
+ln -sf %{_javadir}/commons-lang.jar takari-lifecycle-plugin/src/test/jars/commons-lang-2.0.jar
+
 # XXX skip ITs for now
 %pom_disable_module takari-lifecycle-plugin-its
 
@@ -128,6 +131,9 @@ This package provides %{summary}.
 
 
 %changelog
+* Thu Mar 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.10.2-3
+- Replace bundled test dependency with symlink to system JAR
+
 * Fri Mar 06 2015 Michael Simacek <msimacek@redhat.com> - 1.10.2-2
 - Working build
 
