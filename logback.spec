@@ -1,12 +1,14 @@
 Name:           logback
 Version:        1.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
 Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 # use antrun-plugin instead of gmaven
 Patch0:         %{name}-1.0.10-antrunplugin.patch
+# servlet 3.1 support
+Patch1:         %{name}-1.1.2-servlet.patch
 
 # Java dependencies
 BuildRequires: java-devel >= 1:1.6.0
@@ -113,6 +115,8 @@ find . -name "*.cmd" -delete
 find . -name "*.jar" -delete
 
 %patch0 -p0
+sed -i 's|source="1.5" target="1.5"|source="1.6" target="1.6"|' %{name}-classic/pom.xml
+%patch1 -p1
 
 %pom_remove_plugin :maven-source-plugin
 %pom_remove_plugin :findbugs-maven-plugin
@@ -135,7 +139,7 @@ sed -i 's#artifactId>groovy#artifactId>groovy-all#' %{name}-classic/pom.xml
 # force tomcat apis
 sed -i 's#<groupId>javax.servlet#<groupId>org.apache.tomcat#' $(find . -name "pom.xml")
 sed -i 's#<artifactId>servlet-api#<artifactId>tomcat-servlet-api#' $(find . -name "pom.xml")
-sed -i 's#javax.servlet.*;version="2.5"#javax.servlet.*;version="3.0"#' %{name}-access/pom.xml
+sed -i 's#javax.servlet.*;version="2.5"#javax.servlet.*;version="3.1"#' %{name}-access/pom.xml
 sed -i 's#<version>2.5</version>#<version>${tomcat.version}</version>#' pom.xml
 
 sed -i 's#<version>1.2.14</version>#<version>1.2.17</version>#' %{name}-examples/pom.xml
@@ -215,6 +219,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Fri Mar 13 2015 gil cattaneo <puntogil@libero.it> 1.1.2-3
+- add support for servlet 3.1
+
 * Fri Feb 13 2015 gil cattaneo <puntogil@libero.it> 1.1.2-2
 - introduce license macro
 

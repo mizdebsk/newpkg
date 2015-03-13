@@ -1,0 +1,40 @@
+diff -Nru logback-1.1.2/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletInputStream.java logback-1.1.2.servlet/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletInputStream.java
+--- logback-1.1.2/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletInputStream.java	2013-09-07 12:44:46.000000000 +0200
++++ logback-1.1.2.servlet/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletInputStream.java	2015-03-13 13:55:28.799820693 +0100
+@@ -30,6 +30,18 @@
+     duplicateInputStream(request);
+   }
+ 
++  public void setReadListener(javax.servlet.ReadListener listener) {
++    throw new UnsupportedOperationException("Not implemented yet.");
++  }
++
++  public boolean isReady() {
++    return false;
++  }
++
++  public boolean isFinished() {
++    return false;
++  }
++
+   @Override
+   public int read() throws IOException {
+     return in.read();
+diff -Nru logback-1.1.2/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletOutputStream.java logback-1.1.2.servlet/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletOutputStream.java
+--- logback-1.1.2/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletOutputStream.java	2013-09-07 12:44:46.000000000 +0200
++++ logback-1.1.2.servlet/logback-access/src/main/java/ch/qos/logback/access/servlet/TeeServletOutputStream.java	2015-03-13 13:50:11.893356202 +0100
+@@ -24,6 +24,14 @@
+   final ServletOutputStream underlyingStream;
+   final ByteArrayOutputStream baosCopy;
+ 
++  public void setWriteListener(javax.servlet.WriteListener listener) {
++    throw new UnsupportedOperationException("Not implemented yet.");
++  }
++
++  public boolean isReady() {
++    return false;
++  }
++
+   TeeServletOutputStream(ServletResponse httpServletResponse)
+       throws IOException {
+     // System.out.println("TeeServletOutputStream.constructor() called");
