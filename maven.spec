@@ -1,5 +1,5 @@
 Name:           maven
-Version:        3.3.0
+Version:        3.3.1
 Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
@@ -255,6 +255,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Mar 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.1-1
+- Update to upstream version 3.3.1
+
 * Thu Mar 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.0-1
 - Update to upstream version 3.3.0
 
