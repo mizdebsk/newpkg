@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.3.1
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -216,11 +216,8 @@ ln -sf $(build-classpath plexus/classworlds) \
         aopalliance \
         cdi-api \
         commons-cli \
-        commons-io \
-        commons-lang \
         guava \
         atinject \
-        jsoup/jsoup \
         geronimo-annotation \
         jsr-305 \
         org.eclipse.sisu.inject \
@@ -243,6 +240,9 @@ ln -sf $(build-classpath plexus/classworlds) \
         commons-logging \
         commons-codec \
         objectweb-asm/asm \
+        commons-io \
+        commons-lang \
+        jsoup/jsoup \
 )
 
 
@@ -264,7 +264,7 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
-* Mon Mar 16 2015 Michal Srb <msrb@redhat.com> - 3.3.1-2
+* Mon Mar 16 2015 Michal Srb <msrb@redhat.com> - 3.3.1-1
 - Add commons-io, commons-lang and jsoup to plexus.core (Resolves: rhbz#1202286)
 
 * Fri Mar 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.1-1
