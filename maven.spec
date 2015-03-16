@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -25,6 +25,8 @@ BuildRequires:  aether-util >= 1:0
 BuildRequires:  aether-transport-wagon >= 1:0
 BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
+BuildRequires:  apache-commons-io
+BuildRequires:  apache-commons-lang
 BuildRequires:  apache-commons-codec
 BuildRequires:  apache-commons-jxpath
 BuildRequires:  apache-commons-logging
@@ -37,6 +39,7 @@ BuildRequires:  google-guice >= 3.1.6
 BuildRequires:  hamcrest
 BuildRequires:  httpcomponents-core
 BuildRequires:  httpcomponents-client
+BuildRequires:  jsoup
 BuildRequires:  jsr-305
 BuildRequires:  junit
 BuildRequires:  maven-assembly-plugin
@@ -88,6 +91,8 @@ Requires:       aether-transport-wagon
 Requires:       aether-util
 Requires:       aopalliance
 Requires:       apache-commons-cli
+Requires:       apache-commons-io
+Requires:       apache-commons-lang
 Requires:       apache-commons-codec
 Requires:       apache-commons-logging
 Requires:       atinject
@@ -96,6 +101,7 @@ Requires:       google-guice
 Requires:       guava
 Requires:       httpcomponents-client
 Requires:       httpcomponents-core
+Requires:       jsoup
 Requires:       jsr-305
 Requires:       maven-wagon-file
 Requires:       maven-wagon-http
@@ -210,8 +216,11 @@ ln -sf $(build-classpath plexus/classworlds) \
         aopalliance \
         cdi-api \
         commons-cli \
+        commons-io \
+        commons-lang \
         guava \
         atinject \
+        jsoup/jsoup \
         geronimo-annotation \
         jsr-305 \
         org.eclipse.sisu.inject \
@@ -255,6 +264,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Mar 16 2015 Michal Srb <msrb@redhat.com> - 3.3.1-2
+- Add commons-io, commons-lang and jsoup to plexus.core (Resolves: rhbz#1202286)
+
 * Fri Mar 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.1-1
 - Update to upstream version 3.3.1
 
