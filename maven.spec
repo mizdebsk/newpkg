@@ -209,15 +209,19 @@ ln -sf $(build-classpath plexus/classworlds) \
 (cd %{buildroot}%{_datadir}/%{name}/lib
     build-jar-repository -s -p . \
         aether/aether-api \
-        aether/aether-connector-basic aether/aether-transport-wagon \
+        aether/aether-connector-basic \
         aether/aether-impl \
         aether/aether-spi \
+        aether/aether-transport-wagon \
         aether/aether-util \
         aopalliance \
         cdi-api \
         commons-cli \
+        commons-io \
+        commons-lang \
         guava \
         atinject \
+        jsoup/jsoup \
         geronimo-annotation \
         jsr-305 \
         org.eclipse.sisu.inject \
@@ -232,17 +236,14 @@ ln -sf $(build-classpath plexus/classworlds) \
         slf4j/simple \
         maven-wagon/file \
         maven-wagon/http-shaded \
+        maven-wagon/http-shared \
         maven-wagon/provider-api \
         \
         httpcomponents/httpclient \
         httpcomponents/httpcore \
-        maven-wagon/http-shared \
         commons-logging \
         commons-codec \
         objectweb-asm/asm \
-        commons-io \
-        commons-lang \
-        jsoup/jsoup \
 )
 
 
