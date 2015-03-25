@@ -1,6 +1,6 @@
 Name:	SimplyHTML		
 Version:	0.16.7
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Application and a java component for rich text processing
 
 License:	GPLv2 and BSD
@@ -65,12 +65,6 @@ cp -a dist/lib/SimplyHTMLHelp.jar %{buildroot}%{_javadir}/%{name}/%{name}-help.j
 mkdir -p %{buildroot}%{_javadocdir}/%{name}
 cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}
 
-# Workaround for RPM bug #646523 - can't change symlink to directory
-# TODO: Remove this in F-23
-%pretrans javadoc -p <lua>
-dir = "%{_javadocdir}/%{name}"
-dummy = posix.readlink(dir) and os.remove(dir)
-
 %files
 %{_javadir}/%{name}
 %{_bindir}/simplyhtml*
@@ -82,6 +76,9 @@ dummy = posix.readlink(dir) and os.remove(dir)
 
 
 %changelog
+* Wed Mar 25 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.7-5
+- Remove workarunds for RPM bug #646523
+
 * Fri Jun 06 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.16.7-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
