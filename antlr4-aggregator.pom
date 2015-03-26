@@ -1,0 +1,12 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.fedoraproject.maven</groupId>
+  <artifactId>aggregator-project</artifactId>
+  <version>dummy</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>antlr4-maven-plugin</module>
+    <module>tool</module>
+    <module>runtime/Java</module>
+  </modules>
+</project>
