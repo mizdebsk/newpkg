@@ -1,6 +1,6 @@
 Name:           logback
 Version:        1.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
@@ -9,6 +9,7 @@ Source0:        http://logback.qos.ch/dist/%{name}-%{version}.tar.gz
 Patch0:         %{name}-1.0.10-antrunplugin.patch
 # servlet 3.1 support
 Patch1:         %{name}-1.1.2-servlet.patch
+Patch2:         %{name}-1.1.2-jetty9.3.0.patch
 
 # Java dependencies
 BuildRequires: java-devel >= 1:1.6.0
@@ -21,6 +22,7 @@ BuildRequires: mvn(org.apache.tomcat:tomcat-catalina)
 BuildRequires: mvn(org.apache.tomcat:tomcat-servlet-api)
 BuildRequires: mvn(org.codehaus.janino:janino)
 BuildRequires: mvn(org.eclipse.jetty:jetty-server)
+BuildRequires: mvn(org.eclipse.jetty:jetty-util)
 BuildRequires: mvn(org.fusesource:fusesource-pom:pom:)
 BuildRequires: mvn(org.fusesource.jansi:jansi)
 BuildRequires: mvn(org.slf4j:slf4j-api)
@@ -117,6 +119,7 @@ find . -name "*.jar" -delete
 %patch0 -p0
 sed -i 's|source="1.5" target="1.5"|source="1.6" target="1.6"|' %{name}-classic/pom.xml
 %patch1 -p1
+%patch2 -p1
 
 %pom_remove_plugin :maven-source-plugin
 %pom_remove_plugin :findbugs-maven-plugin
@@ -219,6 +222,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Fri Mar 27 2015 gil cattaneo <puntogil@libero.it> 1.1.2-4
+- add support for jetty 9.3.0
+
 * Fri Mar 13 2015 gil cattaneo <puntogil@libero.it> 1.1.2-3
 - add support for servlet 3.1
 
