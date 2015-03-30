@@ -74,6 +74,7 @@ cp -a %{SOURCE1} runtime/Java/pom.xml
 cp -a %{SOURCE2} tool/pom.xml
 cp -a %{SOURCE3} antlr4-maven-plugin/pom.xml
 cp -a %{SOURCE4} pom.xml
+find -name \*.jar -delete
 
 %mvn_package :aggregator-project __noinstall
 
