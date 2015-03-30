@@ -2,7 +2,7 @@
 
 Name:           antlr4
 Version:        4.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java parser generator
 License:        BSD
 URL:            http://www.antlr.org/
@@ -106,5 +106,8 @@ sed -i "s,<path>,&$PWD," usr/share/maven-metadata/*
 %license LICENSE.txt
 
 %changelog
+* Mon Mar 30 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.5-2
+- Post-review cleanup
+
 * Thu Mar 26 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.5-1
 - Initial packaging
