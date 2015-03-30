@@ -1,6 +1,6 @@
 Name:           sisu-mojos
 Version:        0.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Sisu plugin for Apache Maven
 License:        EPL
 URL:            http://www.eclipse.org/sisu
@@ -17,7 +17,7 @@ BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
 BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.inject)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-nop)
-BuildRequires:  mvn(org.sonatype.oss:oss-parent)
+BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
 BuildRequires:  mvn(org.sonatype.sisu:sisu-guice)
 
 Obsoletes:      sisu-maven-plugin < 1:0.1
@@ -53,6 +53,9 @@ mv releases/%{version}/* .
 %doc LICENSE.txt
 
 %changelog
+* Mon Mar 30 2015 Michael Simacek <msimacek@redhat.com> - 0.1.0-4
+- Fix parent POM BR
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
