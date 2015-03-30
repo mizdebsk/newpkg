@@ -90,7 +90,7 @@ sed -i "s,<path>,&$PWD," usr/share/maven-metadata/*
 %install
 %mvn_install
 
-%jpackage_script org.antlr.v4.Tool "" "" antlr4/antlr4:antlr3-runtime:antlr4/antlr4-runtime:stringtemplate4::treelayout %{name} true
+%jpackage_script org.antlr.v4.Tool "" "" antlr4/antlr4:antlr3-runtime:antlr4/antlr4-runtime:stringtemplate4:treelayout %{name} true
 
 %files -f .mfiles-antlr4
 %{_bindir}/%{name}
