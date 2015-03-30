@@ -70,10 +70,10 @@ This package contains %{summary}.
 
 %prep
 %setup -q
-cp %{SOURCE1} runtime/Java/pom.xml
-cp %{SOURCE2} tool/pom.xml
-cp %{SOURCE3} antlr4-maven-plugin/pom.xml
-cp %{SOURCE4} pom.xml
+cp -a %{SOURCE1} runtime/Java/pom.xml
+cp -a %{SOURCE2} tool/pom.xml
+cp -a %{SOURCE3} antlr4-maven-plugin/pom.xml
+cp -a %{SOURCE4} pom.xml
 
 %mvn_package :aggregator-project __noinstall
 
