@@ -2,7 +2,7 @@
 %global split_verrel 2.6-4
 
 Name:           maven-%{bname}
-Version:        2.8
+Version:        2.9
 Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
@@ -11,7 +11,6 @@ URL:            http://maven.apache.org/wagon
 Source0:        http://repo1.maven.org/maven2/org/apache/maven/wagon/wagon/%{version}/wagon-%{version}-source-release.zip
 
 Patch0:         0001-Port-to-jetty-9.patch
-Patch1:         0001-Replace-plexus-maven-plugin-with-plexus-component-me.patch
 
 BuildArch:      noarch
 
@@ -158,7 +157,6 @@ Javadoc for %{name}.
 %setup -q -n wagon-%{version}
 
 %patch0 -p1
-%patch1 -p1
 
 %pom_remove_plugin :animal-sniffer-maven-plugin
 %pom_remove_plugin :maven-enforcer-plugin wagon-providers/wagon-webdav-jackrabbit
@@ -209,6 +207,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Tue Apr 21 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.9-1
+- Update to upstream version 2.9
+
 * Wed Nov 12 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.8-1
 - Update to upstream version 2.8
 

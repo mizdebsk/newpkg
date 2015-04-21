@@ -1,4 +1,4 @@
-From d89d4d0b98803a920bd2d7629b300846f0ca8127 Mon Sep 17 00:00:00 2001
+From 5cb833d14c6752642812122c249b71bd3b1fb99d Mon Sep 17 00:00:00 2001
 From: Michal Srb <msrb@redhat.com>
 Date: Wed, 27 Feb 2013 12:38:47 +0100
 Subject: [PATCH] Port to jetty 9
@@ -9,7 +9,7 @@ Subject: [PATCH] Port to jetty 9
  2 files changed, 78 insertions(+), 49 deletions(-)
 
 diff --git a/wagon-provider-test/pom.xml b/wagon-provider-test/pom.xml
-index 771ca5a..65c1174 100644
+index cf9a53d..439a476 100644
 --- a/wagon-provider-test/pom.xml
 +++ b/wagon-provider-test/pom.xml
 @@ -51,8 +51,34 @@ under the License.
@@ -50,10 +50,10 @@ index 771ca5a..65c1174 100644
  
    </dependencies>
 diff --git a/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java b/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
-index ffe49b4..575ba90 100644
+index acdab16..78ecbc5 100644
 --- a/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
 +++ b/wagon-provider-test/src/main/java/org/apache/maven/wagon/http/HttpWagonTestCase.java
-@@ -33,20 +33,25 @@ import org.apache.maven.wagon.resource.Resource;
+@@ -34,20 +34,25 @@ import org.apache.maven.wagon.resource.Resource;
  import org.codehaus.plexus.util.FileUtils;
  import org.codehaus.plexus.util.IOUtil;
  import org.codehaus.plexus.util.StringUtils;
@@ -93,7 +93,7 @@ index ffe49b4..575ba90 100644
  
  import javax.servlet.ServletException;
  import javax.servlet.ServletInputStream;
-@@ -96,7 +101,7 @@ public abstract class HttpWagonTestCase
+@@ -99,7 +104,7 @@ public abstract class HttpWagonTestCase
          server = new Server( 0 );
  
          PutHandler putHandler = new PutHandler( repositoryDirectory );
@@ -102,7 +102,7 @@ index ffe49b4..575ba90 100644
  
          createContext( server, repositoryDirectory );
  
-@@ -114,14 +119,14 @@ public abstract class HttpWagonTestCase
+@@ -117,14 +122,14 @@ public abstract class HttpWagonTestCase
          {
              return 0;
          }
@@ -120,7 +120,7 @@ index ffe49b4..575ba90 100644
          ServletHolder servletHolder = new ServletHolder( new DefaultServlet() );
          root.addServlet( servletHolder, "/*" );
      }
-@@ -161,7 +166,7 @@ public abstract class HttpWagonTestCase
+@@ -164,7 +169,7 @@ public abstract class HttpWagonTestCase
          server.start();
  
          wagon.connect(
@@ -129,7 +129,7 @@ index ffe49b4..575ba90 100644
  
          wagon.getToStream( "resource", new ByteArrayOutputStream() );
  
-@@ -193,7 +198,7 @@ public abstract class HttpWagonTestCase
+@@ -196,7 +201,7 @@ public abstract class HttpWagonTestCase
          server.start();
  
          wagon.connect(
@@ -138,7 +138,7 @@ index ffe49b4..575ba90 100644
  
          wagon.getToStream( "resource", new ByteArrayOutputStream() );
  
-@@ -212,7 +217,7 @@ public abstract class HttpWagonTestCase
+@@ -265,7 +270,7 @@ public abstract class HttpWagonTestCase
  
      protected String getRepositoryUrl( Server server )
      {
@@ -147,7 +147,7 @@ index ffe49b4..575ba90 100644
          return getProtocol() + "://localhost:" + localPort;
      }
  
-@@ -490,7 +495,7 @@ public abstract class HttpWagonTestCase
+@@ -543,7 +548,7 @@ public abstract class HttpWagonTestCase
          Server server = new Server( getTestRepositoryPort() );
  
          String localRepositoryPath = FileTestUtils.getTestOutputDir().toString();
@@ -156,43 +156,43 @@ index ffe49b4..575ba90 100644
          root.setResourceBase( localRepositoryPath );
          ServletHolder servletHolder = new ServletHolder( new DefaultServlet() );
          servletHolder.setInitParameter( "gzip", "true" );
-@@ -593,7 +598,7 @@ public abstract class HttpWagonTestCase
+@@ -679,7 +684,7 @@ public abstract class HttpWagonTestCase
              protocol = "https";
          }
  
 -        String redirectUrl = protocol + "://localhost:" + server.getConnectors()[0].getLocalPort();
 +        String redirectUrl = protocol + "://localhost:" + ((NetworkConnector) (server.getConnectors()[0])).getLocalPort();
  
-         RedirectHandler redirectHandler = new RedirectHandler( "Found", 303, redirectUrl, null );
- 
-@@ -659,7 +664,7 @@ public abstract class HttpWagonTestCase
+         RedirectHandler redirectHandler =
+             new RedirectHandler( "Found", HttpServletResponse.SC_SEE_OTHER, redirectUrl, null );
+@@ -744,7 +749,7 @@ public abstract class HttpWagonTestCase
              protocol = "https";
          }
  
 -        String redirectUrl = protocol + "://localhost:" + server.getConnectors()[0].getLocalPort();
 +        String redirectUrl = protocol + "://localhost:" + ((NetworkConnector) (server.getConnectors()[0])).getLocalPort();
  
-         RedirectHandler redirectHandler = new RedirectHandler( "Found", 303, redirectUrl, null );
- 
-@@ -727,7 +732,7 @@ public abstract class HttpWagonTestCase
+         RedirectHandler redirectHandler =
+             new RedirectHandler( "Found", HttpServletResponse.SC_SEE_OTHER, redirectUrl, null );
+@@ -811,7 +816,7 @@ public abstract class HttpWagonTestCase
              protocol = "https";
          }
  
 -        String redirectUrl = protocol + "://localhost:" + realServer.getConnectors()[0].getLocalPort();
 +        String redirectUrl = protocol + "://localhost:" + ((NetworkConnector) (realServer.getConnectors()[0])).getLocalPort();
  
-         RedirectHandler redirectHandler = new RedirectHandler( "Found", 303, redirectUrl, repositoryDirectory );
- 
-@@ -898,7 +903,7 @@ public abstract class HttpWagonTestCase
+         RedirectHandler redirectHandler =
+             new RedirectHandler( "Found", HttpServletResponse.SC_SEE_OTHER, redirectUrl, repositoryDirectory );
+@@ -991,7 +996,7 @@ public abstract class HttpWagonTestCase
              protocol = "https";
          }
  
 -        String redirectUrl = protocol + "://localhost:" + realServer.getConnectors()[0].getLocalPort();
 +        String redirectUrl = protocol + "://localhost:" + ((NetworkConnector) (realServer.getConnectors()[0])).getLocalPort();
  
-         RedirectHandler redirectHandler = new RedirectHandler( "Found", 303, redirectUrl, repositoryDirectory );
- 
-@@ -1023,13 +1028,13 @@ public abstract class HttpWagonTestCase
+         RedirectHandler redirectHandler =
+             new RedirectHandler( "Found", HttpServletResponse.SC_SEE_OTHER, redirectUrl, repositoryDirectory );
+@@ -1122,13 +1127,13 @@ public abstract class HttpWagonTestCase
              this.repositoryDirectory = repositoryDirectory;
          }
  
@@ -208,7 +208,7 @@ index ffe49b4..575ba90 100644
                  handlerRequestResponses.add(
                      new HandlerRequestResponse( req.getMethod(), ( (Response) resp ).getStatus(),
                                                  req.getRequestURI() ) );
-@@ -1057,7 +1062,7 @@ public abstract class HttpWagonTestCase
+@@ -1158,7 +1163,7 @@ public abstract class HttpWagonTestCase
  
          proxyServer.start();
  
@@ -217,7 +217,7 @@ index ffe49b4..575ba90 100644
  
          System.out.println(
              "start proxy on host/port " + proxyInfo.getHost() + "/" + proxyInfo.getPort() + " with non proxyHosts "
-@@ -1183,7 +1188,7 @@ public abstract class HttpWagonTestCase
+@@ -1342,7 +1347,7 @@ public abstract class HttpWagonTestCase
  
              assertEquals( "top secret", IOUtil.toString( in ) );
  
@@ -226,7 +226,7 @@ index ffe49b4..575ba90 100644
              testPreemptiveAuthenticationGet( securityHandler, supportPreemptiveAuthenticationGet() );
  
          }
-@@ -1234,7 +1239,7 @@ public abstract class HttpWagonTestCase
+@@ -1393,7 +1398,7 @@ public abstract class HttpWagonTestCase
  
              assertEquals( "top secret", out.toString( "US-ASCII" ) );
  
@@ -235,7 +235,7 @@ index ffe49b4..575ba90 100644
              testPreemptiveAuthenticationGet( securityHandler, supportPreemptiveAuthenticationGet() );
          }
          finally
-@@ -1324,9 +1329,9 @@ public abstract class HttpWagonTestCase
+@@ -1483,9 +1488,9 @@ public abstract class HttpWagonTestCase
  
          SecurityHandler sh = createSecurityHandler();
  
@@ -247,7 +247,7 @@ index ffe49b4..575ba90 100644
          root.setResourceBase( localRepositoryPath );
          ServletHolder servletHolder = new ServletHolder( new DefaultServlet() );
          root.addServlet( servletHolder, "/*" );
-@@ -1749,7 +1754,7 @@ public abstract class HttpWagonTestCase
+@@ -1908,7 +1913,7 @@ public abstract class HttpWagonTestCase
              this.status = status;
          }
  
@@ -256,7 +256,7 @@ index ffe49b4..575ba90 100644
              throws IOException, ServletException
          {
              if ( status != 0 )
-@@ -1805,11 +1810,11 @@ public abstract class HttpWagonTestCase
+@@ -1968,11 +1973,11 @@ public abstract class HttpWagonTestCase
              this.resourceBase = repositoryDirectory;
          }
  
@@ -264,13 +264,13 @@ index ffe49b4..575ba90 100644
 +        public void handle( String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response )
              throws IOException, ServletException
          {
-             Request base_request =
+             Request baseRequest =
 -                request instanceof Request ? (Request) request : HttpConnection.getCurrentConnection().getRequest();
 +                request instanceof Request ? (Request) request : HttpConnection.getCurrentConnection().getHttpChannel().getRequest();
  
-             if ( base_request.isHandled() || !"PUT".equals( base_request.getMethod() ) )
+             if ( baseRequest.isHandled() || !"PUT".equals( baseRequest.getMethod() ) )
              {
-@@ -1854,7 +1859,7 @@ public abstract class HttpWagonTestCase
+@@ -2017,7 +2022,7 @@ public abstract class HttpWagonTestCase
  
          List<HandlerRequestResponse> handlerRequestResponses = new ArrayList<HandlerRequestResponse>();
  
@@ -279,16 +279,16 @@ index ffe49b4..575ba90 100644
              throws IOException, ServletException
          {
              System.out.println( " handle proxy request" );
-@@ -1870,7 +1875,7 @@ public abstract class HttpWagonTestCase
+@@ -2035,7 +2040,7 @@ public abstract class HttpWagonTestCase
              }
              handlerRequestResponses.add(
-                 new HandlerRequestResponse( request.getMethod(), 200, request.getRequestURI() ) );
+                 new HandlerRequestResponse( request.getMethod(), HttpServletResponse.SC_OK, request.getRequestURI() ) );
 -            super.handle( target, request, response, dispatch );
 +            super.handle( target, baseRequest, request, response );
          }
      }
  
-@@ -1885,7 +1890,7 @@ public abstract class HttpWagonTestCase
+@@ -2054,7 +2059,7 @@ public abstract class HttpWagonTestCase
          {
          }
  
@@ -297,7 +297,7 @@ index ffe49b4..575ba90 100644
              throws IOException, ServletException
          {
              headers = new HashMap<String, String>();
-@@ -1920,31 +1925,29 @@ public abstract class HttpWagonTestCase
+@@ -2102,10 +2107,9 @@ public abstract class HttpWagonTestCase
          cm.setPathSpec( "/*" );
  
          TestSecurityHandler sh = new TestSecurityHandler();
@@ -311,7 +311,9 @@ index ffe49b4..575ba90 100644
          sh.setConstraintMappings( new ConstraintMapping[]{ cm } );
          return sh;
      }
- 
+@@ -2115,22 +2119,21 @@ public abstract class HttpWagonTestCase
+      */
+     @SuppressWarnings( "checkstyle:visibilitymodifier" )
      public static class TestSecurityHandler
 -        extends SecurityHandler
 +        extends ConstraintSecurityHandler
@@ -334,7 +336,7 @@ index ffe49b4..575ba90 100644
 -
      }
  
-     public static class HandlerRequestResponse
+     /**
 -- 
-1.9.3
+2.1.0
 
