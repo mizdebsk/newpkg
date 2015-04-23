@@ -4,12 +4,13 @@
 Name:           tycho-pomless
 Version:        0.0.1
 Release:        0.1.git%{shortcommit}%{?dist}
-Summary:        XXX
+Summary:        POM-less Tycho build extension
 License:        EPL
 URL:            https://github.com/jsievers/tycho-pomless
 BuildArch:      noarch
 
 Source0:        https://github.com/jsievers/tycho-pomless/archive/%{commit}/tycho-pomless-%{shortcommit}.tar.gz
+Source1:        http://www.eclipse.org/legal/epl-v10.html
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(cglib:cglib)
@@ -24,7 +25,9 @@ BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
 BuildRequires:  mvn(org.eclipse.tycho:org.eclipse.osgi)
 
 %description
-XXX
+This a maven build extension which enables (almost) pom-less Tycho
+builds.  It derives the Maven POM model from an OSGi MANIFEST with the
+mapping rules known from Tycho already.
 
 %package javadoc
 Summary:        API documentation for %{name}
@@ -34,6 +37,7 @@ This package provides %{summary}.
 
 %prep
 %setup -q -n %{name}-%{commit}
+cp -a %{SOURCE1} .
 %pom_add_dep cglib:cglib::test
 
 %build
@@ -51,10 +55,10 @@ ln -s %{_javadir}/eclipse/osgi.jar %{buildroot}%{_datadir}/xmvn/lib/ext/
 %files -f .mfiles
 %doc README.md
 %{_datadir}/xmvn/lib/ext/*
-# TODO license
+%license epl-v10.html
 
 %files javadoc -f .mfiles-javadoc
-# TODO license
+%license epl-v10.html
 
 %changelog
 * Thu Apr 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.0.1-0.1.git91b0b65
