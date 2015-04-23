@@ -5,7 +5,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Eclipse dependency injection framework
 License:        EPL
 URL:            http://eclipse.org/sisu
@@ -71,7 +71,7 @@ Java dependency injection framework with backward support for plexus and bean
 style dependency injection.
 
 %package        inject
-Summary:        Sisu inject POM
+Summary:        Sisu inject
 
 Obsoletes:      %{name}                   < %{epoch}:%{version}-%{release}
 Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
@@ -101,9 +101,15 @@ Obsoletes:      %{name}-spi-registry      < %{epoch}:%{version}-%{release}
 This package contains %{summary}.
 
 %package        plexus
-Summary:        Sisu Plexus POM
+Summary:        Sisu Plexus
 
 %description    plexus
+This package contains %{summary}.
+
+%package        tests
+Summary:        Sisu tests
+
+%description    tests
 This package contains %{summary}.
 
 %package        javadoc
@@ -129,9 +135,7 @@ sed -i 's/Import-Package: /&org.objectweb.asm;version="5",/' sisu-inject/org.ecl
 %pom_add_dep org.ow2.asm:asm sisu-plexus/org.eclipse.sisu.plexus.tests
 
 %mvn_file ":{*}" @1
-# Install JARs and POMs only
-%mvn_package ":*{inject,plexus}:{jar,pom}:{}:" @1
-%mvn_package : __noinstall
+%mvn_package ":*{inject,plexus,tests}" @1
 
 %pom_disable_module org.eclipse.sisu.inject.site sisu-inject
 %pom_disable_module org.eclipse.sisu.plexus.site sisu-plexus
@@ -190,8 +194,10 @@ EOF
 %install
 %mvn_artifact sisu-inject/pom.xml
 %mvn_artifact sisu-inject/org.eclipse.sisu.inject/pom.xml sisu-inject/org.eclipse.sisu.inject/target/org.eclipse.sisu.inject-%{version}%{?reltag}.jar
+%mvn_artifact sisu-inject/org.eclipse.sisu.inject.tests/pom.xml sisu-inject/org.eclipse.sisu.inject.tests/target/org.eclipse.sisu.inject.tests-%{version}%{?reltag}.jar
 %mvn_artifact sisu-plexus/pom.xml
 %mvn_artifact sisu-plexus/org.eclipse.sisu.plexus/pom.xml sisu-plexus/org.eclipse.sisu.plexus/target/org.eclipse.sisu.plexus-%{version}%{?reltag}.jar
+%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus.tests/pom.xml sisu-plexus/org.eclipse.sisu.plexus.tests/target/org.eclipse.sisu.plexus.tests-%{version}%{?reltag}.jar
 %mvn_install
 
 
@@ -199,13 +205,17 @@ EOF
 %doc sisu-inject/LICENSE.txt
 
 %files plexus -f .mfiles-plexus
-%doc sisu-inject/LICENSE.txt
+
+%files tests -f .mfiles-tests
 
 %files javadoc -f .mfiles-javadoc
 %doc sisu-inject/LICENSE.txt
 
 
 %changelog
+* Thu Apr 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-2
+- Install test artifacts
+
 * Mon Feb 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-1
 - Update to upstream version 0.3.0
 
