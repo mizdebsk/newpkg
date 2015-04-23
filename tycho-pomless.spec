@@ -42,8 +42,15 @@ This package provides %{summary}.
 %install
 %mvn_install
 
+# Install extension JAR with deps into XMvn ext directory
+install -d -m 755 %{buildroot}%{_datadir}/xmvn/lib/ext/
+ln -s %{_javadir}/%{name}/%{name}.jar %{buildroot}%{_datadir}/xmvn/lib/ext/
+ln -s %{_javadir}/tesla-polyglot/polyglot-common.jar %{buildroot}%{_datadir}/xmvn/lib/ext/
+ln -s %{_javadir}/eclipse/osgi.jar %{buildroot}%{_datadir}/xmvn/lib/ext/
+
 %files -f .mfiles
 %doc README.md
+%{_datadir}/xmvn/lib/ext/*
 # TODO license
 
 %files javadoc -f .mfiles-javadoc
