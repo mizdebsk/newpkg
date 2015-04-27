@@ -5,8 +5,8 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.2.5
-Release:        2%{?dist}
+Version:        3.2.6
+Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 License:        ASL 2.0
 URL:            https://github.com/sonatype/sisu-%{short_name}
@@ -171,6 +171,8 @@ This package provides %{summary}.
 
 # We don't have struts2 in Fedora yet.
 %pom_disable_module struts2 extensions
+# Android-specific extension
+%pom_disable_module dagger-adapter extensions
 
 # Remove additional build profiles, which we don't use anyways
 # and which are only pulling additional dependencies.
@@ -241,6 +243,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Mon Apr 27 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.6-1
+- Update to upstream version 3.2.6
+
 * Fri Mar 6 2015 Alexander Kurtakov <akurtako@redhat.com> 3.2.5-2
 - Drop gone tomcat-servlet-3.0-api BR, builds fine without it.
 
