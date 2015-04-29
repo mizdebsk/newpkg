@@ -1,20 +1,19 @@
 Name:           mockito
-Version:        1.9.0
-Release:        18%{?dist}
+Version:        1.10.19
+Release:        1%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
-URL:            http://code.google.com/p/mockito/
+URL:            http://mockito.org
 Source0:        mockito-%{version}.tar.xz
 Source1:        make-mockito-sourcetarball.sh
 Patch0:         fixup-ant-script.patch
-Patch1:         fix-cglib-refs.patch
-Patch2:         maven-cglib-dependency.patch
-Patch3:         fix-bnd-config.patch
-Patch4:         %{name}-matcher.patch
+Patch1:         fix-bnd-config.patch
+Patch2:         %{name}-matcher.patch
 # Workaround for NPE in setting NamingPolicy in cglib
-Patch5:         setting-naming-policy.patch
-Patch6:         mockito-junit4.patch
+Patch3:         setting-naming-policy.patch
+# because we have old objenesis
+Patch4:         fix-incompatible-types.patch
 
 BuildArch:      noarch
 BuildRequires:  jpackage-utils
@@ -40,7 +39,6 @@ errors.
 
 %package javadoc
 Summary:        Javadocs for %{name}
-Group:          Documentation
 Requires:       jpackage-utils
 
 %description javadoc
@@ -50,13 +48,15 @@ This package contains the API documentation for %{name}.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 # Set Bundle-Version properly
 sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
-%patch3
+%patch2 -p1
+%patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p2
+
+%pom_add_dep net.sf.cglib:cglib maven/mockito-core.pom
+find . -name "*.java" -exec sed -i "s|org\.mockito\.cglib|net\.sf\.cglib|g" {} +
+mkdir -p lib/compile
 
 %build
 build-jar-repository lib/compile objenesis
@@ -91,6 +91,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Wed Apr 29 2015 Michal Srb <msrb@redhat.com> - 1.10.19-1
+- Update to 1.10.19
+
 * Mon Aug 25 2014 Darryl L. Pierce <dpierce@redhat.com> - 1.9.0-18
 - First build for EPEL7
 - Resolves: BZ#1110030
