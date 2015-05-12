@@ -3,7 +3,7 @@
 
 Name:           maven-%{bname}
 Version:        2.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -41,7 +41,6 @@ BuildRequires:  mvn(org.jsoup:jsoup)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-log4j12)
 BuildRequires:  mvn(org.slf4j:slf4j-simple)
-BuildRequires:  mvn(org.apache.jackrabbit:jackrabbit-webdav)
 BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
 BuildRequires:  mvn(biz.aQute:bnd)
 
@@ -76,6 +75,7 @@ following providers:
 %package provider-api
 Summary:        provider-api module for %{name}
 Obsoletes:      %{name} < %{split_verrel}
+Obsoletes:      %{name}-webdav-jackrabbit < 2.9-2
 
 %description provider-api
 provider-api module for %{name}.
@@ -140,13 +140,6 @@ Summary:        ssh module for %{name}
 %description ssh
 ssh module for %{name}.
 
-%package webdav-jackrabbit
-Summary:        webdav-jackrabbit module for %{name}
-
-%description webdav-jackrabbit
-webdav-jackrabbit module for %{name}.
-
-
 %package javadoc
 Summary:        Javadoc for %{name}
 
@@ -159,7 +152,6 @@ Javadoc for %{name}.
 %patch0 -p1
 
 %pom_remove_plugin :animal-sniffer-maven-plugin
-%pom_remove_plugin :maven-enforcer-plugin wagon-providers/wagon-webdav-jackrabbit
 %pom_remove_dep :wagon-tck-http wagon-providers/wagon-http
 
 # correct groupId for jetty
@@ -171,6 +163,9 @@ Javadoc for %{name}.
 %pom_disable_module wagon-provider-test
 %pom_remove_dep :wagon-provider-test
 %pom_remove_dep :wagon-provider-test wagon-providers
+
+# missing dependencies
+%pom_disable_module wagon-webdav-jackrabbit wagon-providers
 
 %build
 %mvn_file ":wagon-{*}" %{name}/@1
@@ -201,12 +196,14 @@ Javadoc for %{name}.
 %files ssh-external -f .mfiles-wagon-ssh-external
 %files ssh-common -f .mfiles-wagon-ssh-common
 %files ssh -f .mfiles-wagon-ssh
-%files webdav-jackrabbit -f .mfiles-wagon-webdav-jackrabbit
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Tue May 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.9-2
+- Disable webdav-jackrabbit provides
+
 * Tue Apr 21 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.9-1
 - Update to upstream version 2.9
 
