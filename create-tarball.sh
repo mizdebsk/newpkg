@@ -1,13 +1,13 @@
 #!/bin/sh
 set -e -x
 test $# -eq 1
-test ! -d sisu-guice
-git clone git://github.com/sonatype/sisu-guice.git
-cd ./sisu-guice
-git checkout sisu-guice-${1}
-git branch unbundled-guice-${1}
-git checkout unbundled-guice-${1}
-rm -rf $(ls . | grep -E -v 'core|extensions|pom|bom|jdk8-tests|COPYING')
+test ! -d guice
+git clone git://github.com/google/guice.git
+cd ./guice
+git checkout ${1}
+git branch unbundled-${1}
+git checkout unbundled-${1}
+rm -rf $(ls . | grep -E -v 'core|extensions|pom|bom|jdk8-tests|COPYING|common.xml')
 find . -name "*.jar" -delete
 find . -name "*.class" -delete
 git commit -a -m "Remove unneeded stuff"

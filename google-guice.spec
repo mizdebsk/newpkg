@@ -5,19 +5,26 @@
 %global short_name guice
 
 Name:           google-%{short_name}
-Version:        3.2.6
+Version:        4.0
 Release:        1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 License:        ASL 2.0
-URL:            https://github.com/sonatype/sisu-%{short_name}
+URL:            https://github.com/google/%{short_name}
+BuildArch:      noarch
+
 # ./create-tarball.sh %%{version}
 Source0:        %{name}-%{version}.tar.xz
 Source1:        create-tarball.sh
-BuildArch:      noarch
+
+# Rejected upstream: https://github.com/google/guice/issues/492
+Patch100:       https://raw.githubusercontent.com/sonatype/sisu-guice/master/PATCHES/GUICE_492_slf4j_logger_injection.patch
+# Forwarded upstream: https://github.com/google/guice/issues/618
+Patch101:       https://raw.githubusercontent.com/sonatype/sisu-guice/master/PATCHES/GUICE_618_extensible_filter_pipeline.patch
 
 BuildRequires:  maven-local >= 3.2.4-2
 BuildRequires:  maven-remote-resources-plugin
 BuildRequires:  munge-maven-plugin
+BuildRequires:  maven-gpg-plugin
 BuildRequires:  apache-resource-bundles
 BuildRequires:  aopalliance
 BuildRequires:  atinject
@@ -168,6 +175,8 @@ This package provides %{summary}.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch100 -p1
+%patch101 -p1
 
 # We don't have struts2 in Fedora yet.
 %pom_disable_module struts2 extensions
@@ -191,7 +200,8 @@ This package provides %{summary}.
 %pom_remove_dep :guava-testlib extensions
 %pom_xpath_remove "pom:dependency[pom:classifier[text()='tests']]" extensions
 
-%pom_set_parent org.sonatype.sisu.inject:guice-parent:%{version} jdk8-tests
+%pom_remove_parent
+%pom_set_parent com.google.inject:guice-parent:%{version} jdk8-tests
 
 # Don't try to build extension modules unless they are needed
 %if %{without extensions}
@@ -202,22 +212,21 @@ This package provides %{summary}.
 
 %build
 %if %{with extensions}
-%mvn_alias ":guice-{assistedinject,grapher,jmx,jndi,multibindings,persist,\
-servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
+%mvn_alias "com.google.inject.extensions:" "org.sonatype.sisu.inject:"
 %endif # with extensions
 
-%mvn_package :::no_aop: sisu-guice
+%mvn_package :::no_aop: guice
 
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
-%mvn_file  ":sisu-guice" %{short_name}/%{name} %{name}
-%mvn_alias ":sisu-guice" "com.google.inject:guice"
+%mvn_file  ":guice" %{short_name}/%{name} %{name}
+%mvn_alias ":guice" "org.sonatype.sisu:sisu-guice"
 # Skip tests because of missing dependency guice-testlib
 %mvn_build -f -s
 
 %install
 %mvn_install
 
-%files -f .mfiles-sisu-guice
+%files -f .mfiles-guice
 %dir %{_javadir}/%{short_name}
 
 %files -n %{short_name}-parent -f .mfiles-guice-parent
@@ -243,6 +252,9 @@ servlet,spring,throwingproviders}" "com.google.inject.extensions:guice-@1"
 
 
 %changelog
+* Thu May 14 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.0-1
+- Update to upstream version 4.0
+
 * Mon Apr 27 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.2.6-1
 - Update to upstream version 3.2.6
 
