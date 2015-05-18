@@ -4,8 +4,8 @@
 
 Name:           sisu
 Epoch:          1
-Version:        0.3.0
-Release:        2%{?dist}
+Version:        0.3.1
+Release:        1%{?dist}
 Summary:        Eclipse dependency injection framework
 License:        EPL
 URL:            http://eclipse.org/sisu
@@ -39,11 +39,13 @@ BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
 BuildRequires:  mvn(org.eclipse.tycho:tycho-source-plugin)
 BuildRequires:  mvn(org.jacoco:jacoco-maven-plugin)
 BuildRequires:  mvn(org.osgi:org.osgi.core)
+BuildRequires:  mvn(org.ow2.asm:asm)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
-BuildRequires:  mvn(org.sonatype.sisu:sisu-guice::no_aop:)
 
 BuildRequires:  osgi(aopalliance)
+BuildRequires:  osgi(com.google.inject)
+BuildRequires:  osgi(com.google.inject.servlet)
 BuildRequires:  osgi(com.google.guava)
 BuildRequires:  osgi(javax.el)
 BuildRequires:  osgi(javax.enterprise.cdi-api)
@@ -60,8 +62,6 @@ BuildRequires:  osgi(org.eclipse.osgi)
 BuildRequires:  osgi(org.eclipse.osgi.source)
 BuildRequires:  osgi(org.hamcrest.core)
 BuildRequires:  osgi(org.junit)
-BuildRequires:  osgi(org.sonatype.sisu.guice)
-BuildRequires:  osgi(org.sonatype.sisu.inject.guice-servlet)
 BuildRequires:  osgi(org.testng)
 BuildRequires:  osgi(slf4j.api)
 
@@ -213,6 +213,9 @@ EOF
 
 
 %changelog
+* Mon May 18 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.1-1
+- Update to upstream version 0.3.1
+
 * Thu Apr 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.0-2
 - Install test artifacts
 
