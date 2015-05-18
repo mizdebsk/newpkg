@@ -16,6 +16,8 @@ BuildArch:      noarch
 Source0:        %{name}-%{version}.tar.xz
 Source1:        create-tarball.sh
 
+Patch0:         0001-Revert-Some-work-on-issue-910-ensure-that-anonymous-.patch
+
 # Rejected upstream: https://github.com/google/guice/issues/492
 Patch100:       https://raw.githubusercontent.com/sonatype/sisu-guice/master/PATCHES/GUICE_492_slf4j_logger_injection.patch
 # Forwarded upstream: https://github.com/google/guice/issues/618
@@ -175,6 +177,7 @@ This package provides %{summary}.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch0 -p1
 %patch100 -p1
 %patch101 -p1
 

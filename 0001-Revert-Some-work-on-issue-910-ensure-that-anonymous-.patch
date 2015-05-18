@@ -1,0 +1,456 @@
+From 31b1e22561d5db89abfd09a8ecd9932d20f5eda3 Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Mon, 18 May 2015 12:05:45 +0200
+Subject: [PATCH] Revert "Some work on issue 910 -- ensure that anonymous keys
+ & typeliterals don't"
+
+This reverts commit 825f8c1df885b9d7643a9e18e336984f0138edaf.
+---
+ .../com/google/inject/internal/InjectorImpl.java   |  1 -
+ core/src/com/google/inject/internal/MoreTypes.java | 37 ++-----------------
+ core/src/com/google/inject/spi/Dependency.java     |  3 +-
+ core/src/com/google/inject/spi/Elements.java       | 14 +++----
+ core/test/com/google/inject/Asserts.java           | 42 ---------------------
+ core/test/com/google/inject/KeyTest.java           | 43 ----------------------
+ .../com/google/inject/internal/WeakKeySetTest.java | 11 +++++-
+ .../google/inject/internal/WeakKeySetUtils.java    | 42 +++++++++++++++++++++
+ .../google/inject/multibindings/MapBinderTest.java |  3 +-
+ .../inject/multibindings/OptionalBinderTest.java   |  3 +-
+ 10 files changed, 62 insertions(+), 137 deletions(-)
+
+diff --git a/core/src/com/google/inject/internal/InjectorImpl.java b/core/src/com/google/inject/internal/InjectorImpl.java
+index 54ce8a3..d260046 100644
+--- a/core/src/com/google/inject/internal/InjectorImpl.java
++++ b/core/src/com/google/inject/internal/InjectorImpl.java
+@@ -801,7 +801,6 @@ final class InjectorImpl implements Injector, Lookups {
+       throw errors.childBindingAlreadySet(key, sources).toException();
+     }
+ 
+-    key = MoreTypes.canonicalizeKey(key); // before storing the key long-term, canonicalize it.
+     BindingImpl<T> binding = createJustInTimeBinding(key, errors, jitDisabled, jitType);
+     state.parent().blacklist(key, state, binding.getSource());
+     jitBindings.put(key, binding);
+diff --git a/core/src/com/google/inject/internal/MoreTypes.java b/core/src/com/google/inject/internal/MoreTypes.java
+index bdf6029..12a7625 100644
+--- a/core/src/com/google/inject/internal/MoreTypes.java
++++ b/core/src/com/google/inject/internal/MoreTypes.java
+@@ -23,7 +23,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
+ import com.google.common.base.Objects;
+ import com.google.common.collect.ImmutableMap;
+ import com.google.inject.ConfigurationException;
+-import com.google.inject.Key;
+ import com.google.inject.TypeLiteral;
+ import com.google.inject.util.Types;
+ 
+@@ -65,25 +64,6 @@ public class MoreTypes {
+           .build();
+ 
+   /**
+-   * Returns a key that doesn't hold any references to parent classes.
+-   * This is necessary for anonymous keys, so ensure we don't hold a ref
+-   * to the containing module (or class) forever.
+-   */
+-  public static <T> Key<T> canonicalizeKey(Key<T> key) {
+-    // If we know this isn't a subclass, return as-is.
+-    // Otherwise, recreate the key to avoid the subclass 
+-    if (key.getClass() == Key.class) {
+-      return key;
+-    } else if (key.getAnnotation() != null) {
+-      return Key.get(key.getTypeLiteral(), key.getAnnotation());
+-    } else if (key.getAnnotationType() != null) {
+-      return Key.get(key.getTypeLiteral(), key.getAnnotationType());
+-    } else {
+-      return Key.get(key.getTypeLiteral());
+-    }
+-  }
+-
+-  /**
+    * Returns an type that's appropriate for use in a key.
+    *
+    * <p>If the raw type of {@code typeLiteral} is a {@code javax.inject.Provider}, this returns a
+@@ -113,20 +93,9 @@ public class MoreTypes {
+ 
+     @SuppressWarnings("unchecked")
+     TypeLiteral<T> wrappedPrimitives = (TypeLiteral<T>) PRIMITIVE_TO_WRAPPER.get(typeLiteral);
+-    if (wrappedPrimitives != null) {
+-      return wrappedPrimitives;
+-    }
+-
+-    // If we know this isn't a subclass, return as-is.
+-    if (typeLiteral.getClass() == TypeLiteral.class) {
+-      return typeLiteral;
+-    }
+-
+-    // recreate the TypeLiteral to avoid anonymous TypeLiterals from holding refs to their
+-    // surrounding classes.
+-    @SuppressWarnings("unchecked")
+-    TypeLiteral<T> recreated = (TypeLiteral<T>) TypeLiteral.get(typeLiteral.getType());
+-    return recreated;
++    return wrappedPrimitives != null
++        ? wrappedPrimitives
++        : typeLiteral;
+   }
+ 
+   /**
+diff --git a/core/src/com/google/inject/spi/Dependency.java b/core/src/com/google/inject/spi/Dependency.java
+index f86e255..c51d87c 100644
+--- a/core/src/com/google/inject/spi/Dependency.java
++++ b/core/src/com/google/inject/spi/Dependency.java
+@@ -22,7 +22,6 @@ import com.google.common.base.Objects;
+ import com.google.common.collect.ImmutableSet;
+ import com.google.common.collect.Lists;
+ import com.google.inject.Key;
+-import com.google.inject.internal.MoreTypes;
+ 
+ import java.util.List;
+ import java.util.Set;
+@@ -55,7 +54,7 @@ public final class Dependency<T> {
+    * nullable.
+    */
+   public static <T> Dependency<T> get(Key<T> key) {
+-    return new Dependency<T>(null, MoreTypes.canonicalizeKey(key), true, -1);
++    return new Dependency<T>(null, key, true, -1);
+   }
+ 
+   /**
+diff --git a/core/src/com/google/inject/spi/Elements.java b/core/src/com/google/inject/spi/Elements.java
+index 9348276..f5bbe89 100644
+--- a/core/src/com/google/inject/spi/Elements.java
++++ b/core/src/com/google/inject/spi/Elements.java
+@@ -44,7 +44,6 @@ import com.google.inject.internal.ConstantBindingBuilderImpl;
+ import com.google.inject.internal.Errors;
+ import com.google.inject.internal.ExposureBuilder;
+ import com.google.inject.internal.InternalFlags.IncludeStackTraceOption;
+-import com.google.inject.internal.MoreTypes;
+ import com.google.inject.internal.PrivateElementsImpl;
+ import com.google.inject.internal.ProviderMethodsModule;
+ import com.google.inject.internal.util.SourceProvider;
+@@ -243,14 +242,13 @@ public final class Elements {
+ 
+     @Override
+     public <T> void requestInjection(TypeLiteral<T> type, T instance) {
+-      elements.add(new InjectionRequest<T>(getElementSource(), MoreTypes.canonicalizeForKey(type),
+-          instance));
++      elements.add(new InjectionRequest<T>(getElementSource(), type, instance));
+     }
+ 
+     @Override
+     public <T> MembersInjector<T> getMembersInjector(final TypeLiteral<T> typeLiteral) {
+-      final MembersInjectorLookup<T> element = new MembersInjectorLookup<T>(getElementSource(),
+-          MoreTypes.canonicalizeForKey(typeLiteral));
++      final MembersInjectorLookup<T> element
++          = new MembersInjectorLookup<T>(getElementSource(), typeLiteral);
+       elements.add(element);
+       return element.getMembersInjector();
+     }
+@@ -372,8 +370,7 @@ public final class Elements {
+     }
+ 
+     public <T> AnnotatedBindingBuilder<T> bind(Key<T> key) {
+-      BindingBuilder<T> builder =
+-          new BindingBuilder<T>(this, elements, getElementSource(), MoreTypes.canonicalizeKey(key));
++      BindingBuilder<T> builder = new BindingBuilder<T>(this, elements, getElementSource(), key);
+       return builder;
+     }
+ 
+@@ -483,8 +480,7 @@ public final class Elements {
+         };
+       }
+ 
+-      ExposureBuilder<T> builder =
+-          new ExposureBuilder<T>(this, getElementSource(), MoreTypes.canonicalizeKey(key));
++      ExposureBuilder<T> builder = new ExposureBuilder<T>(this, getElementSource(), key);
+       privateElements.addExposureBuilder(builder);
+       return builder;
+     }
+diff --git a/core/test/com/google/inject/Asserts.java b/core/test/com/google/inject/Asserts.java
+index 6c63158..363e161 100644
+--- a/core/test/com/google/inject/Asserts.java
++++ b/core/test/com/google/inject/Asserts.java
+@@ -21,14 +21,12 @@ import static com.google.inject.internal.InternalFlags.IncludeStackTraceOption;
+ import static com.google.inject.internal.InternalFlags.getIncludeStackTraceOption;
+ import static junit.framework.Assert.assertEquals;
+ import static junit.framework.Assert.assertNotNull;
+-import static junit.framework.Assert.assertSame;
+ import static junit.framework.Assert.assertTrue;
+ 
+ import com.google.common.base.Function;
+ import com.google.common.base.Joiner;
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.Iterables;
+-import com.google.common.testing.GcFinalization;
+ 
+ import junit.framework.Assert;
+ 
+@@ -38,8 +36,6 @@ import java.io.IOException;
+ import java.io.NotSerializableException;
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+-import java.lang.ref.ReferenceQueue;
+-import java.lang.ref.WeakReference;
+ 
+ /**
+  * @author jessewilson@google.com (Jesse Wilson)
+@@ -163,42 +159,4 @@ public class Asserts {
+     } catch (NotSerializableException expected) {
+     }
+   }
+-
+-  public static void awaitFullGc() {
+-    // GcFinalization *should* do it, but doesn't work well in practice...
+-    // so we put a second latch and wait for a ReferenceQueue to tell us.
+-    ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
+-    WeakReference ref = new WeakReference<Object>(new Object(), queue);
+-    GcFinalization.awaitFullGc();
+-    try {
+-      assertSame("queue didn't return ref in time", ref, queue.remove(5000));
+-    } catch (IllegalArgumentException e) {
+-      throw new RuntimeException(e);
+-    } catch (InterruptedException e) {
+-      throw new RuntimeException(e);
+-    }
+-  }
+-
+-  public static void awaitClear(WeakReference<?> ref) {
+-    // GcFinalization *should* do it, but doesn't work well in practice...
+-    // so we put a second latch and wait for a ReferenceQueue to tell us.
+-    Object data = ref.get();
+-    ReferenceQueue<Object> queue = null;
+-    WeakReference extraRef = null;
+-    if (data != null) {
+-      queue = new ReferenceQueue<Object>();
+-      extraRef = new WeakReference<Object>(data, queue);
+-      data = null;
+-    }
+-    GcFinalization.awaitClear(ref);
+-    if (queue != null) {
+-      try {
+-        assertSame("queue didn't return ref in time", extraRef, queue.remove(5000));
+-      } catch (IllegalArgumentException e) {
+-        throw new RuntimeException(e);
+-      } catch (InterruptedException e) {
+-        throw new RuntimeException(e);
+-      }
+-    }
+-  }
+ }
+diff --git a/core/test/com/google/inject/KeyTest.java b/core/test/com/google/inject/KeyTest.java
+index d9dd943..c0401e0 100644
+--- a/core/test/com/google/inject/KeyTest.java
++++ b/core/test/com/google/inject/KeyTest.java
+@@ -19,12 +19,10 @@ package com.google.inject;
+ import static com.google.inject.Asserts.assertContains;
+ import static com.google.inject.Asserts.assertEqualsBothWays;
+ import static com.google.inject.Asserts.assertNotSerializable;
+-import static com.google.inject.Asserts.awaitClear;
+ import static java.lang.annotation.RetentionPolicy.RUNTIME;
+ 
+ import com.google.inject.name.Named;
+ import com.google.inject.name.Names;
+-import com.google.inject.spi.Dependency;
+ import com.google.inject.util.Types;
+ 
+ import junit.framework.TestCase;
+@@ -33,15 +31,12 @@ import java.io.IOException;
+ import java.lang.annotation.ElementType;
+ import java.lang.annotation.Retention;
+ import java.lang.annotation.Target;
+-import java.lang.ref.WeakReference;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.ParameterizedType;
+ import java.lang.reflect.Type;
+ import java.lang.reflect.TypeVariable;
+-import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
+-import java.util.concurrent.atomic.AtomicReference;
+ 
+ /**
+  * @author crazybob@google.com (Bob Lee)
+@@ -280,42 +275,4 @@ public class KeyTest extends TestCase {
+   @Marker
+   class HasAnnotations {}
+ 
+-  public void testAnonymousClassesDontHoldRefs() {
+-    final AtomicReference<Provider<List<String>>> stringProvider =
+-        new AtomicReference<Provider<List<String>>>();
+-    final AtomicReference<Provider<List<Integer>>> intProvider =
+-        new AtomicReference<Provider<List<Integer>>>();
+-    final Object foo = new Object() {
+-      @SuppressWarnings("unused") @Inject List<String> list;
+-    };
+-    Module module = new AbstractModule() {
+-      @Override protected void configure() {
+-        bind(new Key<List<String>>() {}).toInstance(new ArrayList<String>());
+-        bind(new TypeLiteral<List<Integer>>() {}).toInstance(new ArrayList<Integer>());
+-
+-        stringProvider.set(getProvider(new Key<List<String>>() {}));
+-        intProvider.set(binder().getProvider(Dependency.get(new Key<List<Integer>>() {})));
+-
+-        binder().requestInjection(new TypeLiteral<Object>() {}, foo);
+-      }
+-    };
+-    WeakReference<Module> moduleRef = new WeakReference<Module>(module);
+-    final Injector injector = Guice.createInjector(module);
+-    module = null;
+-    awaitClear(moduleRef); // Make sure anonymous keys & typeliterals don't hold the module.
+-
+-    Runnable runner = new Runnable() {
+-      @Override public void run() {
+-        injector.getInstance(new Key<Typed<String>>() {});
+-        injector.getInstance(Key.get(new TypeLiteral<Typed<Integer>>() {}));
+-      }
+-    };
+-    WeakReference<Runnable> runnerRef = new WeakReference<Runnable>(runner);
+-    runner.run();
+-    runner = null;
+-    awaitClear(runnerRef); // also make sure anonymous keys & typeliterals don't hold for JITs
+-  }
+-
+-  static class Typed<T> {}
+-
+ }
+diff --git a/core/test/com/google/inject/internal/WeakKeySetTest.java b/core/test/com/google/inject/internal/WeakKeySetTest.java
+index 4a81ebb..3797d88 100644
+--- a/core/test/com/google/inject/internal/WeakKeySetTest.java
++++ b/core/test/com/google/inject/internal/WeakKeySetTest.java
+@@ -16,13 +16,13 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.Asserts.awaitClear;
+-import static com.google.inject.Asserts.awaitFullGc;
+ import static com.google.inject.internal.WeakKeySetUtils.assertBlacklisted;
+ import static com.google.inject.internal.WeakKeySetUtils.assertInSet;
+ import static com.google.inject.internal.WeakKeySetUtils.assertNotBlacklisted;
+ import static com.google.inject.internal.WeakKeySetUtils.assertNotInSet;
+ import static com.google.inject.internal.WeakKeySetUtils.assertSourceNotInSet;
++import static com.google.inject.internal.WeakKeySetUtils.awaitClear;
++import static com.google.inject.internal.WeakKeySetUtils.awaitFullGc;
+ 
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
+@@ -34,6 +34,13 @@ import com.google.inject.Injector;
+ import com.google.inject.Key;
+ import com.google.inject.Scope;
+ import com.google.inject.TypeLiteral;
++import com.google.inject.internal.BindingImpl;
++import com.google.inject.internal.Errors;
++/*if[AOP]*/
++import com.google.inject.internal.MethodAspect;
++/*end[AOP]*/
++import com.google.inject.internal.State;
++import com.google.inject.internal.WeakKeySet;
+ import com.google.inject.spi.ModuleAnnotatedMethodScannerBinding;
+ import com.google.inject.spi.ProvisionListenerBinding;
+ import com.google.inject.spi.ScopeBinding;
+diff --git a/core/test/com/google/inject/internal/WeakKeySetUtils.java b/core/test/com/google/inject/internal/WeakKeySetUtils.java
+index b023aa1..bab9e92 100644
+--- a/core/test/com/google/inject/internal/WeakKeySetUtils.java
++++ b/core/test/com/google/inject/internal/WeakKeySetUtils.java
+@@ -18,11 +18,15 @@ import static junit.framework.Assert.assertEquals;
+ import static junit.framework.Assert.assertFalse;
+ import static junit.framework.Assert.assertNotNull;
+ import static junit.framework.Assert.assertNull;
++import static junit.framework.Assert.assertSame;
+ import static junit.framework.Assert.assertTrue;
+ 
++import com.google.common.testing.GcFinalization;
+ import com.google.inject.Injector;
+ import com.google.inject.Key;
+ 
++import java.lang.ref.ReferenceQueue;
++import java.lang.ref.WeakReference;
+ import java.util.Set;
+ 
+ /**
+@@ -34,6 +38,44 @@ public final class WeakKeySetUtils {
+ 
+   private WeakKeySetUtils() {}
+ 
++  public static void awaitFullGc() {
++    // GcFinalization *should* do it, but doesn't work well in practice...
++    // so we put a second latch and wait for a ReferenceQueue to tell us.
++    ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
++    WeakReference ref = new WeakReference<Object>(new Object(), queue);
++    GcFinalization.awaitFullGc();
++    try {
++      assertSame("queue didn't return ref in time", ref, queue.remove(5000));
++    } catch (IllegalArgumentException e) {
++      throw new RuntimeException(e);
++    } catch (InterruptedException e) {
++      throw new RuntimeException(e);
++    }
++  }
++
++  public static void awaitClear(WeakReference<?> ref) {
++    // GcFinalization *should* do it, but doesn't work well in practice...
++    // so we put a second latch and wait for a ReferenceQueue to tell us.
++    Object data = ref.get();
++    ReferenceQueue<Object> queue = null;
++    WeakReference extraRef = null;
++    if (data != null) {
++      queue = new ReferenceQueue<Object>();
++      extraRef = new WeakReference<Object>(data, queue);
++      data = null;
++    }
++    GcFinalization.awaitClear(ref);
++    if (queue != null) {
++      try {
++        assertSame("queue didn't return ref in time", extraRef, queue.remove(5000));
++      } catch (IllegalArgumentException e) {
++        throw new RuntimeException(e);
++      } catch (InterruptedException e) {
++        throw new RuntimeException(e);
++      }
++    }
++  }
++
+   public static void assertBlacklisted(Injector injector, Key<?> key) {
+     assertBlacklistState(injector, key, true);
+   }
+diff --git a/extensions/multibindings/test/com/google/inject/multibindings/MapBinderTest.java b/extensions/multibindings/test/com/google/inject/multibindings/MapBinderTest.java
+index 4206521..849993f 100644
+--- a/extensions/multibindings/test/com/google/inject/multibindings/MapBinderTest.java
++++ b/extensions/multibindings/test/com/google/inject/multibindings/MapBinderTest.java
+@@ -32,7 +32,6 @@ import com.google.common.collect.Iterables;
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
+ import com.google.inject.AbstractModule;
+-import com.google.inject.Asserts;
+ import com.google.inject.Binding;
+ import com.google.inject.BindingAnnotation;
+ import com.google.inject.ConfigurationException;
+@@ -1026,7 +1025,7 @@ public class MapBinderTest extends TestCase {
+     // Clear the ref, GC, and ensure that we are no longer blacklisting.
+     childInjector = null;
+     
+-    Asserts.awaitClear(weakRef);
++    WeakKeySetUtils.awaitClear(weakRef);
+     WeakKeySetUtils.assertNotBlacklisted(parentInjector, mapKey);
+   }
+ }
+diff --git a/extensions/multibindings/test/com/google/inject/multibindings/OptionalBinderTest.java b/extensions/multibindings/test/com/google/inject/multibindings/OptionalBinderTest.java
+index f3c9f63..d0a239a 100644
+--- a/extensions/multibindings/test/com/google/inject/multibindings/OptionalBinderTest.java
++++ b/extensions/multibindings/test/com/google/inject/multibindings/OptionalBinderTest.java
+@@ -30,7 +30,6 @@ import com.google.common.collect.Iterables;
+ import com.google.common.collect.Lists;
+ import com.google.common.collect.Sets;
+ import com.google.inject.AbstractModule;
+-import com.google.inject.Asserts;
+ import com.google.inject.Binding;
+ import com.google.inject.BindingAnnotation;
+ import com.google.inject.CreationException;
+@@ -1204,7 +1203,7 @@ public class OptionalBinderTest extends TestCase {
+    // Clear the ref, GC, and ensure that we are no longer blacklisting.
+    childInjector = null;
+    
+-   Asserts.awaitClear(weakRef);
++   WeakKeySetUtils.awaitClear(weakRef);
+    WeakKeySetUtils.assertNotBlacklisted(parentInjector, Key.get(Integer.class));
+  }
+ 
+-- 
+2.1.0
+
