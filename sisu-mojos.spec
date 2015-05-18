@@ -1,6 +1,6 @@
 Name:           sisu-mojos
-Version:        0.1.0
-Release:        4%{?dist}
+Version:        0.3.1
+Release:        1%{?dist}
 Summary:        Sisu plugin for Apache Maven
 License:        EPL
 URL:            http://www.eclipse.org/sisu
@@ -53,6 +53,9 @@ mv releases/%{version}/* .
 %doc LICENSE.txt
 
 %changelog
+* Mon May 18 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.3.1-1
+- Update to upstream version 0.3.1
+
 * Mon Mar 30 2015 Michael Simacek <msimacek@redhat.com> - 0.1.0-4
 - Fix parent POM BR
 
