@@ -1,6 +1,6 @@
 Name:	SimplyHTML		
 Version:	0.16.7
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Application and a java component for rich text processing
 
 License:	GPLv2 and BSD
@@ -76,6 +76,9 @@ cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}
 
 
 %changelog
+* Tue Jun 16 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.16.7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Mar 25 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.7-5
 - Remove workarunds for RPM bug #646523
 
