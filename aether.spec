@@ -3,7 +3,7 @@
 Name:           aether
 Epoch:          1
 Version:        1.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
@@ -182,6 +182,9 @@ rm -rf aether-transport-http/src/test
 %doc epl-v10.html notice.html
 
 %changelog
+* Tue Jun 16 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.0.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Feb  4 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.2-1
 - Update to upstream version 1.0.2
 
