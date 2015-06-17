@@ -1,6 +1,6 @@
 Name:           maven-plugin-build-helper
 Version:        1.9.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Build Helper Maven Plugin
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
@@ -57,6 +57,9 @@ cp %{SOURCE1} LICENSE-2.0.txt
 %doc header.txt LICENSE-2.0.txt
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Thu Sep 04 2014 Michal Srb <msrb@redhat.com> - 1.9.1-1
 - Update to upstream version 1.9.1
 
