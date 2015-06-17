@@ -3,7 +3,7 @@
 
 Name:           maven-%{bname}
 Version:        2.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -201,6 +201,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.9-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Tue May 12 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.9-2
 - Disable webdav-jackrabbit provides
 
