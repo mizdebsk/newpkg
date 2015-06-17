@@ -1,6 +1,6 @@
 Name:          hppc
 Version:       0.6.1
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
@@ -114,6 +114,9 @@ sed -i 's/\r//' CHANGES
 %license LICENSE
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.6.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Thu Feb 05 2015 gil cattaneo <puntogil@libero.it> 0.6.1-2
 - introduce license macro
 
