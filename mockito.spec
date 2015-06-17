@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.10.19
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -91,6 +91,9 @@ cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %doc NOTICE
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.19-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Apr 29 2015 Michal Srb <msrb@redhat.com> - 1.10.19-1
 - Update to 1.10.19
 
