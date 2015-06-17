@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.3.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -268,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Thu Apr 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.3-1
 - Update to upstream version 3.3.3
 
