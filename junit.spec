@@ -1,7 +1,7 @@
 Name:           junit
 Epoch:          1
 Version:        4.12
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java regression test package
 License:        EPL
 URL:            http://www.junit.org/
@@ -85,6 +85,9 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
 %doc doc/*
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.12-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Jan 21 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.12-2
 - Export internal OSGi packages and mark them with x-internal
 - Resolves: rhbz#1184144
