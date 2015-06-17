@@ -1,6 +1,6 @@
 Name:           logback
 Version:        1.1.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A Java logging library
 License:        LGPLv2 or EPL
 URL:            http://logback.qos.ch/
@@ -222,6 +222,9 @@ cp -r %{name}-examples/pom.xml %{name}-examples/src %{buildroot}%{_datadir}/%{na
 %{_datadir}/%{name}-%{version}
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Fri Mar 27 2015 gil cattaneo <puntogil@libero.it> 1.1.2-4
 - add support for jetty 9.3.0
 
