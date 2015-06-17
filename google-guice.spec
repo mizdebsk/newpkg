@@ -6,7 +6,7 @@
 
 Name:           google-%{short_name}
 Version:        4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 License:        ASL 2.0
 URL:            https://github.com/google/%{short_name}
@@ -255,6 +255,9 @@ This package provides %{summary}.
 
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Thu May 14 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.0-1
 - Update to upstream version 4.0
 
