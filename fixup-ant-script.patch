@@ -1,21 +1,6 @@
-diff --git a/build.xml b/build.xml
-index b24eaf0..956cd72 100644
---- a/build.xml
-+++ b/build.xml
-@@ -44,6 +44,12 @@
-   <property name="maven.repository.dir" value="${basedir}/maven/repository" />
-   
-   <path id="compile.classpath">
-+    <fileset dir="/usr/share/java">
-+      <include name="hamcrest/core.jar" />
-+      <include name="junit.jar" />
-+      <include name="objenesis.jar" />
-+      <include name="cglib.jar" />
-+    </fileset>
-     <fileset dir="${lib.dir.run}" includes="*.jar" />
-     <fileset dir="${lib.dir.compile}" includes="*.jar" />
-     <fileset dir="${lib.dir.repackaged}" includes="*.jar" />
-@@ -81,6 +87,7 @@
+--- build.xml.orig	2014-12-31 16:43:56.000000000 +0000
++++ build.xml	2015-06-22 09:20:12.859059775 +0100
+@@ -81,6 +81,7 @@
    <target name="compile" depends="clean, prepare">
      <javac srcdir="src" destdir="${src.classes.dir}" source="1.5" target="1.5" debug="true" deprecation="true" nowarn="true">
        <classpath refid="compile.classpath" />
@@ -23,7 +8,7 @@ index b24eaf0..956cd72 100644
      </javac>
    </target>
  
-@@ -207,18 +214,14 @@
+@@ -207,18 +208,14 @@
      	<delete file="${target.dir}/${jar.core.osgified}" />
    </target>
  	
@@ -45,7 +30,7 @@ index b24eaf0..956cd72 100644
    </target>
  	
    <target name="sources" >
-@@ -319,53 +322,10 @@
+@@ -319,53 +316,10 @@
            <h1><a href="org/mockito/Mockito.html">Click to see examples</a>. Mockito ${version} API.</h1>
          ]]>
        </doctitle>

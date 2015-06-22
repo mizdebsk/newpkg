@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.10.19
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -9,14 +9,14 @@ Source0:        mockito-%{version}.tar.xz
 Source1:        make-mockito-sourcetarball.sh
 Patch0:         fixup-ant-script.patch
 Patch1:         fix-bnd-config.patch
-Patch2:         %{name}-matcher.patch
+Patch2:         mockito-matcher.patch
 # Workaround for NPE in setting NamingPolicy in cglib
 Patch3:         setting-naming-policy.patch
 # because we have old objenesis
 Patch4:         fix-incompatible-types.patch
 
 BuildArch:      noarch
-BuildRequires:  jpackage-utils
+BuildRequires:  javapackages-local
 BuildRequires:  java-devel
 BuildRequires:  ant
 BuildRequires:  objenesis
@@ -25,7 +25,6 @@ BuildRequires:  junit
 BuildRequires:  hamcrest
 BuildRequires:  aqute-bnd
 
-Requires:       jpackage-utils
 Requires:       objenesis
 Requires:       cglib
 Requires:       junit
@@ -39,14 +38,13 @@ errors.
 
 %package javadoc
 Summary:        Javadocs for %{name}
-Requires:       jpackage-utils
 
 %description javadoc
 This package contains the API documentation for %{name}.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch0
 %patch1 -p1
 # Set Bundle-Version properly
 sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
@@ -59,38 +57,33 @@ find . -name "*.java" -exec sed -i "s|org\.mockito\.cglib|net\.sf\.cglib|g" {} +
 mkdir -p lib/compile
 
 %build
-build-jar-repository lib/compile objenesis
+build-jar-repository lib/compile objenesis cglib junit hamcrest/core
 ant jar javadoc
 # Convert to OSGi bundle
 pushd target
 java -jar $(build-classpath aqute-bnd) wrap -output mockito-core-%{version}.bar -properties ../conf/mockito-core.bnd mockito-core-%{version}.jar
+mv mockito-core-%{version}.bar mockito-core-%{version}.jar
 popd
 
-%install
-mkdir -p $RPM_BUILD_ROOT%{_javadir}
 sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
-cp -p target/mockito-core-%{version}.bar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+%mvn_artifact maven/mockito-core.pom target/mockito-core-%{version}.jar
+%mvn_alias org.mockito:mockito-core org.mockito:mockito-all
 
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pm 644 maven/mockito-core.pom  \
-        $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
-
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -rp target/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-
-%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.mockito:mockito-all"
+%install
+%mvn_install -J target/javadoc
 
 %files -f .mfiles
-%{_javadir}/%{name}.jar
 %doc NOTICE
 %doc LICENSE
 
-%files javadoc
-%{_javadocdir}/%{name}
+%files javadoc -f .mfiles-javadoc
 %doc LICENSE
 %doc NOTICE
 
 %changelog
+* Mon Jun 22 2015 Mat Booth <mat.booth@redhat.com> - 1.10.19-3
+- Switch to mvn_install
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.19-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
