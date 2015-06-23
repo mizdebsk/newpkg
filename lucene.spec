@@ -33,17 +33,14 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           %{?scl_prefix}lucene
-Version:        4.10.4
-Release:        2%{?dist}
+Version:        5.2.1
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Source0:        http://www.apache.org/dist/lucene/java/%{version}/lucene-%{version}-src.tgz
-Source1:        lucene-%{version}-core-OSGi-MANIFEST.MF
-Source2:        lucene-%{version}-analysis-OSGi-MANIFEST.MF
-Source3:        lucene-%{version}-queryparser-OSGi-MANIFEST.MF
-#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_4_10_4/dev-tools/
-#tar caf dev-tools-4.10.4.tar.xz dev-tools/
+#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_5_2_1/dev-tools/
+#tar caf dev-tools-5.2.1.tar.xz dev-tools/
 Source4:        dev-tools-%{version}.tar.xz
 
 Patch0:         0001-disable-ivy-settings.patch
@@ -71,6 +68,7 @@ BuildRequires:  mvn(javax.servlet:servlet-api)
 BuildRequires:  mvn(org.antlr:antlr-runtime)
 BuildRequires:  maven-local
 BuildRequires:  apache-parent
+BuildRequires:  forbidden-apis
 
 # test-framework deps
 BuildRequires:  junit
@@ -106,6 +104,12 @@ Summary:      Lucene Solr grandparent POM
 
 %description solr-grandparent
 Lucene Solr grandparent POM.
+
+%package backward-codecs
+Summary:      Lucene Backward Codecs Module
+
+%description backward-codecs
+Codecs for older versions of Lucene.
 
 %package benchmark
 Summary:      Lucene Benchmarking Module
@@ -292,6 +296,8 @@ pushd %{pkg_name}
 find . -name "*.jar" -exec rm -f {} \;
 
 rm sandbox/src/test/org/apache/lucene/sandbox/queries/regex/TestJakartaRegexpCapabilities.java
+rm -r queryparser/src/java/org/apache/lucene/queryparser/xml/
+rm demo/src/java/org/apache/lucene/demo/xmlparser/FormBasedXmlQueryDemo.java
 
 # old API
 rm -r replicator/src/test/*
@@ -305,7 +311,6 @@ popd
 %mvn_package ":%{pkg_name}-analyzers-common" %{pkg_name}-analysis
 %mvn_package ":{*}-aggregator" @1
 
-
 %build
 pushd %{pkg_name}
 # generate dependencies
@@ -315,10 +320,8 @@ ant filter-pom-templates -Divy.mode=local -Dversion=%{version}
 for pom in `find build/poms/%{pkg_name} -name pom.xml`; do
     sed 's/\${module-path}/${basedir}/g' "$pom" > "${pom##build/poms/%{pkg_name}/}"
 done
-
-for module in benchmark misc test-framework demo core/src/java facet \
-        analysis/stempel codecs/src/java codecs/src/test queryparser \
-        core/src/test memory .; do
+%pom_remove_plugin :forbiddenapis
+for module in test-framework; do
     %pom_remove_plugin :forbiddenapis ${module}
 done
 
@@ -337,32 +340,12 @@ mv lucene/build/poms/pom.xml .
 %pom_disable_module solr
 %pom_remove_plugin :gmaven-plugin
 %pom_remove_plugin :forbiddenapis
+%pom_remove_plugin :maven-enforcer-plugin
 
 %{?scl:scl enable %{scl} - <<"EOF"}
 # For some reason TestHtmlParser.testTurkish fails when building inside SCLs
 %mvn_build -s -f
 %{?scl:EOF}
-
-pushd %{pkg_name}
-
-# add missing OSGi metadata to manifests
-mkdir META-INF
-unzip -o core/src/java/target/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-cat %{SOURCE1} >> META-INF/MANIFEST.MF
-sed -i '/^\r$/d' META-INF/MANIFEST.MF
-zip -u core/src/java/target/lucene-core-%{version}.jar META-INF/MANIFEST.MF
-
-unzip -o analysis/common/target/lucene-analyzers-common-%{version}.jar META-INF/MANIFEST.MF
-cat %{SOURCE2} >> META-INF/MANIFEST.MF
-sed -i '/^\r$/d' META-INF/MANIFEST.MF
-zip -u analysis/common/target/lucene-analyzers-common-%{version}.jar META-INF/MANIFEST.MF
-
-unzip -o queryparser/target/lucene-queryparser-%{version}.jar META-INF/MANIFEST.MF
-cat %{SOURCE3} >> META-INF/MANIFEST.MF
-sed -i '/^\r$/d' META-INF/MANIFEST.MF
-zip -u queryparser/target/lucene-queryparser-%{version}.jar META-INF/MANIFEST.MF
-
-popd
 
 %install
 %{?scl:scl enable %{scl} - <<"EOF"}
@@ -383,6 +366,7 @@ popd
 %files parent -f .mfiles-%{pkg_name}-parent
 %files solr-grandparent -f .mfiles-%{pkg_name}-solr-grandparent
 %files benchmark -f .mfiles-%{pkg_name}-benchmark
+%files backward-codecs -f .mfiles-%{pkg_name}-backward-codecs
 %files replicator -f .mfiles-%{pkg_name}-replicator
 %files grouping -f .mfiles-%{pkg_name}-grouping
 %files highlighter -f .mfiles-%{pkg_name}-highlighter
@@ -413,6 +397,9 @@ popd
 %doc LICENSE.txt
 
 %changelog
+* Tue Jun 23 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-1
+- Update to upstream 5.2.1.
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:4.10.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
