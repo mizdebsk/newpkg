@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           %{?scl_prefix}lucene
 Version:        5.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -290,22 +290,8 @@ find -maxdepth 1 ! -name CHANGES.txt ! -name LICENSE.txt ! -name README.txt \
 
 tar xf %{SOURCE4}
 
-pushd %{pkg_name}
-
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
-
-rm sandbox/src/test/org/apache/lucene/sandbox/queries/regex/TestJakartaRegexpCapabilities.java
-rm -r queryparser/src/java/org/apache/lucene/queryparser/xml/
-rm demo/src/java/org/apache/lucene/demo/xmlparser/FormBasedXmlQueryDemo.java
-
-# old API
-rm -r replicator/src/test/*
-
-# Because ivy-local is not available before F21
-%{?scl:ln -s %{_sysconfdir}/ivy/ivysettings.xml}
-
-popd
 
 %mvn_package ":%{pkg_name}-analysis-modules-aggregator" %{pkg_name}-analysis
 %mvn_package ":%{pkg_name}-analyzers-common" %{pkg_name}-analysis
@@ -397,6 +383,9 @@ mv lucene/build/poms/pom.xml .
 %doc LICENSE.txt
 
 %changelog
+* Wed Jun 24 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-2
+- Drop old workarounds.
+
 * Tue Jun 23 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-1
 - Update to upstream 5.2.1.
 
