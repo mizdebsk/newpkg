@@ -34,7 +34,7 @@
 Summary:        High-performance, full-featured text search engine
 Name:           %{?scl_prefix}lucene
 Version:        5.2.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
@@ -289,6 +289,9 @@ find -maxdepth 1 ! -name CHANGES.txt ! -name LICENSE.txt ! -name README.txt \
     ! -path %{pkg_name} -exec mv \{} %{pkg_name}/ \;
 
 tar xf %{SOURCE4}
+pushd dev-tools/maven
+sed -i -e "s|/Export-Package>|/Export-Package><_nouses>true</_nouses>|g" pom.xml.template
+popd
 
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
@@ -383,6 +386,9 @@ mv lucene/build/poms/pom.xml .
 %doc LICENSE.txt
 
 %changelog
+* Wed Jun 24 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-3
+- Disable generation of uses clauses in OSGi manifests.
+
 * Wed Jun 24 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-2
 - Drop old workarounds.
 
