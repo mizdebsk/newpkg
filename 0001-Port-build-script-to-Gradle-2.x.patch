@@ -1,0 +1,29 @@
+From c01371e9337f39be3b56c69fb0116a696795adb9 Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Tue, 7 Jul 2015 01:20:23 +0200
+Subject: [PATCH 1/2] Port build script to Gradle 2.x
+
+---
+ build.gradle | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/build.gradle b/build.gradle
+index 612902c..acfbfe4 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -2667,11 +2667,7 @@ allprojects {
+     // compiler with the right settings.
+     //
+     // Also, we need to remove jfxrt.jar from the ext classpath (if it is there)
+-    tasks.withType(Compile) { compile ->
+-        // It looks like we have to use ant to compile instead of the built-in gradle
+-        // compiler stuff because otherwise it won't compile on CYGWIN
+-        // TODO need to file issue with Gradle
+-        compile.options.useAnt = true
++    tasks.withType(JavaCompile) { compile ->
+         compile.options.debug = true // we always generate debugging info in the class files
+         compile.options.debugOptions.debugLevel = IS_DEBUG_JAVA ? "source,lines,vars" : "source,lines"
+         compile.options.fork = true
+-- 
+2.1.0
+
