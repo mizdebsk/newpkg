@@ -17,7 +17,6 @@ License:        GPL v2 with exceptions and BSD and LGPL v2+ and (LGPL v2+ or BSD
 URL:            http://openjdk.java.net/projects/openjfx/
 
 Source0:        http://ftp.icm.edu.pl/pub/Linux/debian/pool/main/o/openjfx/openjfx_8u40-b25.orig.tar.xz
-Source1:        openjfx-swt-metadata.xml
 
 Patch0:         0001-Port-build-script-to-Gradle-2.x.patch
 Patch1:         0002-Bulid-in-Gradle-local-mode.patch
@@ -28,7 +27,7 @@ BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(org.antlr:antlr:3.1.3)
 BuildRequires:  mvn(org.antlr:stringtemplate)
 BuildRequires:  mvn(org.apache.ant:ant)
-BuildRequires:  eclipse-swt
+BuildRequires:  mvn(org.eclipse.swt:swt)
 
 BuildRequires:  pkgconfig(gtk+-2.0)
 BuildRequires:  pkgconfig(gthread-2.0)
@@ -44,7 +43,6 @@ applications that operate consistently across diverse platforms.
 %setup -q -n rt-8u40-b25
 %patch0 -p1
 %patch1 -p1
-%mvn_config resolverSettings/metadataRepositories/repository %{SOURCE1}
 
 %build
 gradle-local -s --offline -P GRADLE_VERSION_CHECK=false
