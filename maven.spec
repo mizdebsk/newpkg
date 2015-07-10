@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.3.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -74,8 +74,8 @@ BuildRequires:  mvn(org.mockito:mockito-core)
 BuildRequires:  mvn(org.codehaus.modello:modello-maven-plugin)
 
 # Theoretically Maven might be usable with just JRE, but typical Maven
-# workflow requires full JDK, wso we require it here.
-Requires:       java-devel
+# workflow requires full JDK, so we recommend it here.
+Recommends:     java-devel
 
 # XMvn does generate auto-requires, but explicit requires are still
 # needed because some symlinked JARs are not present in Maven POMs or
@@ -268,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Fri Jul 10 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.3-3
+- Recommend java-devel instead of requiring it
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
