@@ -1,6 +1,6 @@
-Name:           tesla-tycho-support
+Name:           takari-tycho-support
 Version:        0.16.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Takari Tycho Base
 License:        EPL
 URL:            https://github.com/takari/tycho-support/
@@ -15,6 +15,8 @@ BuildRequires:  maven-local
 BuildRequires:  mvn(io.takari:takari:pom:)
 BuildRequires:  mvn(org.eclipse.tycho:target-platform-configuration)
 BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
+
+Obsoletes:      tesla-tycho-support < 0.16.0-2
 
 %description
 Takari is a next generation development infrastructure framework.
@@ -42,6 +44,9 @@ cp -p %{SOURCE1} .
 %doc epl-v10.html
 
 %changelog
+* Mon Jul 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.0-2
+- Rename to takari-tycho-support
+
 * Mon Jul 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.0-1
 - Update to upstream version 0.16.0
 
