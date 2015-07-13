@@ -1,24 +1,24 @@
 Name:           tesla-tycho-support
-Version:        0.0.7
-Release:        5%{?dist}
-Summary:        Tesla Tycho Base
+Version:        0.16.0
+Release:        1%{?dist}
+Summary:        Takari Tycho Base
 License:        EPL
-URL:            https://github.com/tesla/tycho-support/
+URL:            https://github.com/takari/tycho-support/
 BuildArch:      noarch
 
-Source0:        https://github.com/tesla/tycho-support/archive/tycho-support-%{version}.tar.gz
+Source0:        https://github.com/takari/tycho-support/archive/tycho-support-%{version}.tar.gz
 # Requested upstream to include license text:
-# https://github.com/tesla/tycho-support/pull/1
+# https://github.com/takari/tycho-support/pull/1
 Source1:        http://www.eclipse.org/legal/epl-v10.html
 
 BuildRequires:  maven-local
-BuildRequires:  mvn(io.tesla:tesla:pom:)
+BuildRequires:  mvn(io.takari:takari:pom:)
 BuildRequires:  mvn(org.eclipse.tycho:target-platform-configuration)
 BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
 
 %description
-Tesla is a next generation development infrastructure framework.  This
-package provides Maven POM file which serves as the base of Tycho
+Takari is a next generation development infrastructure framework.
+This package provides Maven POM file which serves as the base of Tycho
 projects which have plugins, tests, and deployable features.
 Everything that is required is provided and parameterized by
 specifying properties in the host POM.
@@ -29,9 +29,8 @@ cp -p %{SOURCE1} .
 
 # Remove plugins which are not useful in Fedora.
 %pom_remove_plugin :maven-upload-plugin
-%pom_remove_plugin :feature-zip-plugin
 
-%mvn_alias : io.takari.tycho:
+%mvn_alias : io.tesla.tycho:
 
 %build
 %mvn_build
@@ -43,6 +42,9 @@ cp -p %{SOURCE1} .
 %doc epl-v10.html
 
 %changelog
+* Mon Jul 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.0-1
+- Update to upstream version 0.16.0
+
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.0.7-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
