@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.10.19
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -46,8 +46,6 @@ This package contains the API documentation for %{name}.
 %setup -q
 %patch0
 %patch1 -p1
-# Set Bundle-Version properly
-sed -i 's/Bundle-Version= ${version}/Bundle-Version= %{version}/' conf/mockito-core.bnd
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -61,7 +59,8 @@ build-jar-repository lib/compile objenesis cglib junit hamcrest/core
 ant jar javadoc
 # Convert to OSGi bundle
 pushd target
-java -jar $(build-classpath aqute-bnd) wrap -output mockito-core-%{version}.bar -properties ../conf/mockito-core.bnd mockito-core-%{version}.jar
+bnd wrap --output mockito-core-%{version}.bar --properties ../conf/mockito-core.bnd \
+    --version %{version} mockito-core-%{version}.jar
 mv mockito-core-%{version}.bar mockito-core-%{version}.jar
 popd
 
@@ -81,6 +80,9 @@ sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
 %doc NOTICE
 
 %changelog
+* Thu Jul 16 2015 Michael Simacek <msimacek@redhat.com> - 1.10.19-4
+- Use aqute-bnd-2.4.1
+
 * Mon Jun 22 2015 Mat Booth <mat.booth@redhat.com> - 1.10.19-3
 - Switch to mvn_install
 
