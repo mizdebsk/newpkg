@@ -348,9 +348,13 @@ mv lucene/build/poms/pom.xml .
 %mvn_install
 %{?scl:EOF}
 
+# Use the same directory of the main package for subpackage licence and docs
+%global _docdir_fmt %{name}
+
 %files -f .mfiles-%{pkg_name}-core
 %dir %{_javadir}/%{pkg_name}
-%doc CHANGES.txt LICENSE.txt README.txt NOTICE.txt MIGRATE.txt
+%doc CHANGES.txt README.txt NOTICE.txt MIGRATE.txt
+%license LICENSE.txt
 
 %files parent -f .mfiles-%{pkg_name}-parent
 %files solr-grandparent -f .mfiles-%{pkg_name}-solr-grandparent
@@ -383,7 +387,7 @@ mv lucene/build/poms/pom.xml .
 %files analyzers-stempel -f .mfiles-%{pkg_name}-analyzers-stempel
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %changelog
 * Wed Jun 24 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-3
