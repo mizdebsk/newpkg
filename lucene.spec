@@ -353,8 +353,8 @@ mv lucene/build/poms/pom.xml .
 
 %files -f .mfiles-%{pkg_name}-core
 %dir %{_javadir}/%{pkg_name}
-%doc CHANGES.txt README.txt NOTICE.txt MIGRATE.txt
-%license LICENSE.txt
+%doc CHANGES.txt README.txt MIGRATE.txt
+%license LICENSE.txt NOTICE.txt
 
 %files parent -f .mfiles-%{pkg_name}-parent
 %files solr-grandparent -f .mfiles-%{pkg_name}-solr-grandparent
@@ -387,7 +387,7 @@ mv lucene/build/poms/pom.xml .
 %files analyzers-stempel -f .mfiles-%{pkg_name}-analyzers-stempel
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE.txt
+%license LICENSE.txt NOTICE.txt
 
 %changelog
 * Wed Jun 24 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.2.1-3
