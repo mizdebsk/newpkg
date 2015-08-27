@@ -14,15 +14,15 @@ diff --git a/build.xml b/build.xml
 index 3237141..28fffe3 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -497,7 +497,7 @@
+@@ -418,7 +418,7 @@
+ 
    <target name="generate-maven-artifacts" depends="-unpack-lucene-tgz">
-     <sequential>
-       <ant dir=".." target="resolve" inheritall="false"/>
--      <antcall target="-filter-pom-templates" inheritall="false"/>
-+      <antcall target="filter-pom-templates" inheritall="false"/>
-       <antcall target="-dist-maven" inheritall="false"/>
-     </sequential>
-   </target>
+     <ant dir=".." target="resolve" inheritall="false"/>
+-    <antcall target="-filter-pom-templates" inheritall="false"/>
++    <antcall target="filter-pom-templates" inheritall="false"/>
+     <antcall target="-dist-maven" inheritall="false">
+       <propertyset refid="uptodate.and.compiled.properties"/>
+     </antcall>
 diff --git a/common-build.xml b/common-build.xml
 index 7068fe6..b6d4b9f 100644
 --- a/common-build.xml

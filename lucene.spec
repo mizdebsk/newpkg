@@ -30,14 +30,14 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        5.2.1
-Release:        4%{?dist}
+Version:        5.3.0
+Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Source0:        http://www.apache.org/dist/lucene/java/%{version}/lucene-%{version}-src.tgz
-#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_5_2_1/dev-tools/
-#tar caf dev-tools-5.2.1.tar.xz dev-tools/
+#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_5_3_0/dev-tools/
+#tar caf dev-tools-5.3.0.tar.xz dev-tools/
 Source4:        dev-tools-%{version}.tar.xz
 
 Patch0:         0001-disable-ivy-settings.patch
@@ -208,6 +208,12 @@ Summary:      Spatial Strategies for Apache Lucene
 %description spatial
 Spatial Strategies for Apache Lucene.
 
+%package spatial3d
+Summary:      Lucene Spatial 3D
+
+%description spatial3d
+Spatial shapes implemented using 3D planar geometry
+
 %package codecs
 Summary:      Codecs and postings formats for Apache Lucene
 
@@ -365,6 +371,7 @@ mv lucene/build/poms/pom.xml .
 %files sandbox -f .mfiles-%{name}-sandbox
 %files queries -f .mfiles-%{name}-queries
 %files spatial -f .mfiles-%{name}-spatial
+%files spatial3d -f .mfiles-%{name}-spatial3d
 %files codecs -f .mfiles-%{name}-codecs
 %files queryparser -f .mfiles-%{name}-queryparser
 %files analyzers-smartcn -f .mfiles-%{name}-analyzers-smartcn
@@ -379,6 +386,9 @@ mv lucene/build/poms/pom.xml .
 %license LICENSE.txt NOTICE.txt
 
 %changelog
+* Thu Aug 27 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.3.0-1
+- Update to upstream 5.3.0 release.
+
 * Wed Aug 26 2015 Mat Booth <mat.booth@redhat.com> - 0:5.2.1-4
 - Remove forbidden SCL macros
 
