@@ -2,8 +2,8 @@
 %global split_verrel 2.6-4
 
 Name:           maven-%{bname}
-Version:        2.9
-Release:        4%{?dist}
+Version:        2.10
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Tools to manage artifacts and deployment
 License:        ASL 2.0
@@ -191,6 +191,9 @@ Javadoc for %{name}.
 %doc LICENSE NOTICE DEPENDENCIES
 
 %changelog
+* Mon Sep 14 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.10-1
+- Update to upstream version 2.10
+
 * Wed Jul 08 2015 Michael Simacek <msimacek@redhat.com> - 0:2.9-4
 - Remove unnecessary BuildRequires
 
