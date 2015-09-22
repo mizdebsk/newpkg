@@ -2,6 +2,7 @@
 # FIXME: build and install javadocs
 # FIXME: add runtime requires
 # FIXME: correct directory layout
+# FIXME: use distro-specific cflags
 
 # TODO: licensing
 # TODO: generate-tarball script
