@@ -34,6 +34,10 @@ BuildRequires:  pkgconfig(gthread-2.0)
 BuildRequires:  pkgconfig(xtst)
 BuildRequires:  libjpeg-turbo-devel
 
+BuildRequires:  bison
+BuildRequires:  flex
+BuildRequires:  gperf
+
 %description
 JavaFX/OpenJFX is a set of graphics and media APIs that enables Java
 developers to design, create, test, debug, and deploy rich client
