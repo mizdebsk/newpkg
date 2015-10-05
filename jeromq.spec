@@ -2,7 +2,9 @@ Name:           jeromq
 Version:        0.3.5
 Release:        2%{?dist}
 Summary:        Pure Java implementation of libzmq
-# License is specified in pom.xml
+# License headers in source files seem to indicate LGPLv3+, but pom.xml as well
+# as upstream licensing page (http://zeromq.org/area:licensing) specify license
+# as LGPLv3 only - lets use stricter variant as safer choice.
 License:        LGPLv3
 URL:            https://github.com/zeromq/jeromq
 BuildArch:      noarch
@@ -40,6 +42,7 @@ This package contains the API documentation for %{name}.
 %changelog
 * Mon Oct  5 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.3.5-2
 - Skip running tests
+- Add comment clarify licensing
 
 * Wed Aug 26 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.3.5-1
 - Initial packaging
