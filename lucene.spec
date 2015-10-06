@@ -30,14 +30,14 @@
 
 Summary:        High-performance, full-featured text search engine
 Name:           lucene
-Version:        5.3.0
+Version:        5.3.1
 Release:        1%{?dist}
 Epoch:          0
 License:        ASL 2.0
 URL:            http://lucene.apache.org/
 Source0:        http://www.apache.org/dist/lucene/java/%{version}/lucene-%{version}-src.tgz
-#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_5_3_0/dev-tools/
-#tar caf dev-tools-5.3.0.tar.xz dev-tools/
+#svn export http://svn.apache.org/repos/asf/lucene/dev/tags/lucene_solr_5_3_1/dev-tools/
+#tar caf dev-tools-5.3.1.tar.xz dev-tools/
 Source4:        dev-tools-%{version}.tar.xz
 
 Patch0:         0001-disable-ivy-settings.patch
@@ -386,6 +386,9 @@ mv lucene/build/poms/pom.xml .
 %license LICENSE.txt NOTICE.txt
 
 %changelog
+* Tue Oct 6 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.3.1-1
+- Update to upstream 5.3.1 release.
+
 * Thu Aug 27 2015 Alexander Kurtakov <akurtako@redhat.com> 0:5.3.0-1
 - Update to upstream 5.3.0 release.
 
