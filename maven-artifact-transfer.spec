@@ -49,7 +49,7 @@ This package provides %{summary}.
 find -name Maven30\*.java -delete
 
 %build
-%mvn_build -f
+%mvn_build
 
 %install
 %mvn_install
