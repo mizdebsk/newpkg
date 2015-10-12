@@ -10,7 +10,21 @@ BuildArch:      noarch
 # tar caf maven-artifact-transfer-3.0-SNAPSHOT-svn1708080.tar.xz maven-artifact-transfer-3.0/
 Source0:        %{name}-%{version}-SNAPSHOT-svn1708080.tar.xz
 
+Patch0:         0001-Compatibility-with-Maven-3.0.3-and-later.patch
+
 BuildRequires:  maven-local
+BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(org.apache.maven:maven-artifact)
+BuildRequires:  mvn(org.apache.maven:maven-core)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-enforcer-plugin)
+BuildRequires:  mvn(org.apache.maven.shared:maven-common-artifact-filters) >= 3.0
+BuildRequires:  mvn(org.apache.maven.shared:maven-shared-components:pom:)
+BuildRequires:  mvn(org.apache.rat:apache-rat-plugin)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
+BuildRequires:  mvn(org.eclipse.aether:aether-api)
+BuildRequires:  mvn(org.eclipse.aether:aether-impl)
+BuildRequires:  mvn(org.eclipse.aether:aether-util)
 
 %description
 An API to either install or deploy artifacts with Maven 3.
@@ -23,8 +37,11 @@ This package provides %{summary}.
 
 %prep
 %setup -q
+%patch0 -p1
 %pom_remove_dep org.sonatype.aether:
 %pom_remove_plugin :maven-shade-plugin
+%pom_remove_plugin :animal-sniffer-maven-plugin
+find -name Maven30\*.java -delete
 
 %build
 %mvn_build -f
