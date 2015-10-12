@@ -3,7 +3,8 @@ Version:        3.0
 Release:        0.1.20151012svn1708080%{?dist}
 Summary:        Apache Maven Artifact Transfer
 License:        ASL 2.0
-URL:            http://maven.apache.org/shared/maven-artifact-transfer
+URL:            http://svn.apache.org/repos/asf/maven/shared/trunk/maven-artifact-transfer
+#URL:            http://maven.apache.org/shared/maven-artifact-transfer
 BuildArch:      noarch
 
 # svn export -r 1708080 http://svn.apache.org/repos/asf/maven/shared/trunk/maven-artifact-transfer
