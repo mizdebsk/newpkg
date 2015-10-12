@@ -1,14 +1,14 @@
 Name:           maven-artifact-transfer
 Version:        3.0
-Release:        1%{?dist}
+Release:        0.1.20151012svn1708080%{?dist}
 Summary:        Apache Maven Artifact Transfer
 License:        ASL 2.0
 URL:            http://maven.apache.org/shared/maven-artifact-transfer
 BuildArch:      noarch
 
-# svn export -r 1684329 http://svn.apache.org/repos/asf/maven/shared/trunk/maven-artifact-transfer maven-artifact-transfer-3.0
-# tar caf maven-artifact-transfer-3.0.tar.xz maven-artifact-transfer-3.0/
-Source0:        %{name}-%{version}.tar.xz
+# svn export -r 1708080 http://svn.apache.org/repos/asf/maven/shared/trunk/maven-artifact-transfer maven-artifact-transfer-3.0
+# tar caf maven-artifact-transfer-3.0-SNAPSHOT-svn1708080.tar.xz maven-artifact-transfer-3.0/
+Source0:        %{name}-%{version}-SNAPSHOT-svn1708080.tar.xz
 
 BuildRequires:  maven-local
 
@@ -39,5 +39,5 @@ This package provides %{summary}.
 #doc LICENSE.txt NOTICE.txt
 
 %changelog
-* Tue Jun  9 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0-1
+* Tue Jun  9 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.0-0.1.20151012svn1708080
 - Initial packaging
