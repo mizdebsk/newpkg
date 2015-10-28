@@ -1,5 +1,5 @@
 Name:           aws-sdk-java
-Version:        1.10.17
+Version:        1.10.30
 Release:        1%{?dist}
 Summary:        AWS SDK for Java
 License:        ASL 2.0
@@ -53,6 +53,9 @@ This package provides %{summary}.
 %license LICENSE.txt NOTICE.txt
 
 %changelog
+* Wed Oct 28 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.10.30-1
+- Update to upstream version 1.10.30
+
 * Fri Sep 11 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.10.17-1
 - Update to upstream version 1.10.17
 
