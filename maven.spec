@@ -1,6 +1,6 @@
 Name:           maven
-Version:        3.3.3
-Release:        3%{?dist}
+Version:        3.3.8
+Release:        1%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -268,6 +268,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Nov  2 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.8-1
+- Update to upstream version 3.3.8
+
 * Fri Jul 10 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.3-3
 - Recommend java-devel instead of requiring it
 
