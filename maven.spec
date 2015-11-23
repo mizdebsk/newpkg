@@ -1,6 +1,6 @@
 Name:           maven
 Version:        3.3.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java project management and project comprehension tool
 License:        ASL 2.0
 URL:            http://maven.apache.org/
@@ -27,6 +27,7 @@ BuildRequires:  aopalliance
 BuildRequires:  apache-commons-cli
 BuildRequires:  apache-commons-io
 BuildRequires:  apache-commons-lang
+BuildRequires:  apache-commons-lang3
 BuildRequires:  apache-commons-codec
 BuildRequires:  apache-commons-jxpath
 BuildRequires:  apache-commons-logging
@@ -93,10 +94,10 @@ Requires:       aopalliance
 Requires:       apache-commons-cli
 Requires:       apache-commons-io
 Requires:       apache-commons-lang
+Requires:       apache-commons-lang3
 Requires:       apache-commons-codec
 Requires:       apache-commons-logging
 Requires:       atinject
-Requires:       geronimo-annotation
 Requires:       google-guice
 Requires:       guava
 Requires:       httpcomponents-client
@@ -222,10 +223,10 @@ ln -sf $(build-classpath plexus/classworlds) \
         commons-cli \
         commons-io \
         commons-lang \
+        commons-lang3 \
         guava \
         atinject \
         jsoup/jsoup \
-        geronimo-annotation \
         jsr-305 \
         org.eclipse.sisu.inject \
         org.eclipse.sisu.plexus \
@@ -268,6 +269,9 @@ ln -sf $(build-classpath plexus/classworlds) \
 
 
 %changelog
+* Mon Nov 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.9-2
+- Fix symlinks: add commons-lang3 and remove geronimo-annotation
+
 * Fri Nov 13 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 3.3.9-1
 - Update to upstream version 3.3.9
 
