@@ -11,6 +11,8 @@ Source1:        http://repo1.maven.org/maven2/com/typesafe/zinc/zinc/%{version}/
 # ASL mandates that the licence file be included in redistributed source
 Source2:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
+# Patch fixes compilation failure, which is probably caused by
+# incompatible Scala version
 Patch0:         0001-Fix-file-filtering.patch
 
 BuildRequires:  javapackages-local
