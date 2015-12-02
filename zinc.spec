@@ -25,6 +25,8 @@ Zinc is a stand-alone version of sbt's incremental compiler.
 
 %prep
 %setup -q
+rm -rf src/scriptit dist nailgun project
+
 %patch0 -p1
 
 cp %{SOURCE1} pom.xml
