@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.10.19
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -49,6 +49,8 @@ This package contains the API documentation for %{name}.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+# workaround rhbz#1292777 Files not found for javadoc generation
+touch javadoc/stylesheet.css
 
 %pom_add_dep net.sf.cglib:cglib maven/mockito-core.pom
 find . -name "*.java" -exec sed -i "s|org\.mockito\.cglib|net\.sf\.cglib|g" {} +
@@ -59,9 +61,12 @@ build-jar-repository lib/compile objenesis cglib junit hamcrest/core
 ant jar javadoc
 # Convert to OSGi bundle
 pushd target
-bnd wrap --output mockito-core-%{version}.bar --properties ../conf/mockito-core.bnd \
-    --version %{version} mockito-core-%{version}.jar
+%if 0%{?fedora} >= 23
+ bnd wrap \
+  --output mockito-core-%{version}.bar --properties ../conf/mockito-core.bnd \
+  --version %{version} mockito-core-%{version}.jar
 mv mockito-core-%{version}.bar mockito-core-%{version}.jar
+%endif
 popd
 
 sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
@@ -80,6 +85,9 @@ sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
 %doc NOTICE
 
 %changelog
+* Fri Dec 18 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-5
+- workaround rhbz#1292777 stylesheet.css not found
+
 * Thu Jul 16 2015 Michael Simacek <msimacek@redhat.com> - 1.10.19-4
 - Use aqute-bnd-2.4.1
 
