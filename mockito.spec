@@ -1,15 +1,15 @@
 Name:           mockito
 Version:        1.10.19
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
-URL:            http://mockito.org
-Source0:        mockito-%{version}.tar.xz
-Source1:        make-mockito-sourcetarball.sh
+URL:            http://%{name}.org
+Source0:        %{name}-%{version}.tar.xz
+Source1:        make-%{name}-sourcetarball.sh
 Patch0:         fixup-ant-script.patch
 Patch1:         fix-bnd-config.patch
-Patch2:         mockito-matcher.patch
+Patch2:         %{name}-matcher.patch
 # Workaround for NPE in setting NamingPolicy in cglib
 Patch3:         setting-naming-policy.patch
 # because we have old objenesis
@@ -52,8 +52,8 @@ This package contains the API documentation for %{name}.
 # workaround rhbz#1292777 Files not found for javadoc generation
 touch javadoc/stylesheet.css
 
-%pom_add_dep net.sf.cglib:cglib maven/mockito-core.pom
-find . -name "*.java" -exec sed -i "s|org\.mockito\.cglib|net\.sf\.cglib|g" {} +
+%pom_add_dep net.sf.cglib:cglib maven/%{name}-core.pom
+find . -name "*.java" -exec sed -i "s|org\.%{name}\.cglib|net\.sf\.cglib|g" {} +
 mkdir -p lib/compile
 
 %build
@@ -62,16 +62,22 @@ ant jar javadoc
 # Convert to OSGi bundle
 pushd target
 %if 0%{?fedora} >= 23
- bnd wrap \
-  --output mockito-core-%{version}.bar --properties ../conf/mockito-core.bnd \
-  --version %{version} mockito-core-%{version}.jar
-mv mockito-core-%{version}.bar mockito-core-%{version}.jar
+bnd wrap \
+ --version %{version} \
+ --output %{name}-core-%{version}.bar \
+ --properties ../conf/%{name}-core.bnd \
+%else
+java -jar $(build-classpath aqute-bnd) wrap \
+ -output %{name}-core-%{version}.bar \
+ -properties ../conf/%{name}-core.bnd \
 %endif
+ %{name}-core-%{version}.jar
+mv %{name}-core-%{version}.bar %{name}-core-%{version}.jar
 popd
 
-sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
-%mvn_artifact maven/mockito-core.pom target/mockito-core-%{version}.jar
-%mvn_alias org.mockito:mockito-core org.mockito:mockito-all
+sed -i -e "s|@version@|%{version}|g" maven/%{name}-core.pom
+%mvn_artifact maven/%{name}-core.pom target/%{name}-core-%{version}.jar
+%mvn_alias org.%{name}:%{name}-core org.%{name}:%{name}-all
 
 %install
 %mvn_install -J target/javadoc
@@ -85,6 +91,9 @@ sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
 %doc NOTICE
 
 %changelog
+* Fri Dec 25 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-6
+- reenable osgi
+
 * Fri Dec 18 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-5
 - workaround rhbz#1292777 stylesheet.css not found
 
@@ -132,8 +141,7 @@ sed -i -e "s|@version@|%{version}|g" maven/mockito-core.pom
 
 * Thu Sep 6 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-10
 - More Import-Package fixes. Note that fix-cglib-refs.patch is
-  not suitable for upstream:
-  http://code.google.com/p/mockito/issues/detail?id=373
+  not suitable for upstream: issue id=373
 
 * Tue Sep 4 2012 Severin Gehwolf <sgehwolf@redhat.com> 1.9.0-9
 - Fix missing Import-Package in manifest.
