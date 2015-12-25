@@ -1,6 +1,6 @@
 Name:           mockito
 Version:        1.10.19
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
@@ -83,14 +83,17 @@ sed -i -e "s|@version@|%{version}|g" maven/%{name}-core.pom
 %mvn_install -J target/javadoc
 
 %files -f .mfiles
+%license LICENSE
 %doc NOTICE
-%doc LICENSE
 
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE
+%license LICENSE
 %doc NOTICE
 
 %changelog
+* Fri Dec 25 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-7
+- introduce License tag
+
 * Fri Dec 25 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-6
 - reenable osgi
 
