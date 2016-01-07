@@ -5,7 +5,7 @@
 Name:           sisu
 Epoch:          1
 Version:        0.3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Eclipse dependency injection framework
 License:        EPL
 URL:            http://eclipse.org/sisu
@@ -15,7 +15,6 @@ Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/
 
 Patch0:         %{name}-OSGi-import-guava.patch
 Patch2:         %{name}-ignored-tests.patch
-Patch3:         %{name}-plexus-utils-3.0.18.patch
 
 BuildArch:      noarch
 
@@ -125,7 +124,6 @@ tar xf %{SOURCE1} && mv %{reltype}s/* sisu-plexus && rmdir %{reltype}s
 
 %patch0
 %patch2
-%patch3
 
 # Unbundle ASM
 rm -rf sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/space/asm/
@@ -213,6 +211,9 @@ EOF
 
 
 %changelog
+* Thu Jan  7 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.2-2
+- Remove unneeded patch
+
 * Wed Sep 16 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.2-1
 - Update to upstream version 0.3.2
 
