@@ -1,42 +1,57 @@
-Name:          glassfish-legal
+%global pkg_name glassfish-legal
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
+Name:          %{?scl_prefix}%{pkg_name}
 Version:       1.1
-Release:       7%{?dist}
+Release:       7.1%{?dist}
 Summary:       Legal License for glassfish code
 License:       CDDL or GPLv2 with exceptions
 URL:           http://glassfish.java.net/
 # svn export https://svn.java.net/svn/glassfish~svn/tags/legal-1.1/ glassfish-legal-1.1
 # tar czf glassfish-legal-1.1-src-svn.tar.gz glassfish-legal-1.1
-Source0:       %{name}-%{version}-src-svn.tar.gz
+Source0:       %{pkg_name}-%{version}-src-svn.tar.gz
 
-BuildRequires: glassfish-master-pom
-BuildRequires: maven-local
-BuildRequires: maven-remote-resources-plugin
+BuildRequires: %{?scl_prefix}glassfish-master-pom
+BuildRequires: %{?scl_prefix_java_common}maven-local
+BuildRequires: %{?scl_prefix}maven-remote-resources-plugin
 
-Requires:      glassfish-master-pom
+Requires:      %{?scl_prefix}glassfish-master-pom
 BuildArch:     noarch
 
 %description
 An archive which contains license files for glassfish code.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{pkg_name}-%{version}
 
 sed -i 's/\r//' src/main/resources/META-INF/LICENSE.txt
 cp -p src/main/resources/META-INF/LICENSE.txt .
 
-%mvn_file :legal %{name}
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
+%mvn_file :legal %{pkg_name}
+%{?scl:EOF}
 
 %build
-
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_build -- -Dproject.build.sourceEncoding=UTF-8
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles
-%license LICENSE.txt
+%doc LICENSE.txt
 
 %changelog
+* Mon Jan 11 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.1-7.1
+- SCL-ize package
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
