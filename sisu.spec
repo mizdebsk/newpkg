@@ -1,68 +1,45 @@
+%global pkg_name sisu
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
 # Release type, either "milestone" or "release"
 %global reltype release
 #global reltag .M1
 
-Name:           sisu
+Name:           %{?scl_prefix}%{pkg_name}
 Epoch:          1
 Version:        0.3.2
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Eclipse dependency injection framework
 License:        EPL
 URL:            http://eclipse.org/sisu
 
-Source0:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.inject.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{name}.inject-%{version}%{?reltag}.tar.bz2
-Source1:        http://git.eclipse.org/c/%{name}/org.eclipse.%{name}.plexus.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{name}.plexus-%{version}%{?reltag}.tar.bz2
+Source0:        http://git.eclipse.org/c/%{pkg_name}/org.eclipse.%{pkg_name}.inject.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{pkg_name}.inject-%{version}%{?reltag}.tar.bz2
+Source1:        http://git.eclipse.org/c/%{pkg_name}/org.eclipse.%{pkg_name}.plexus.git/snapshot/%{reltype}s/%{version}%{?reltag}.tar.bz2#/org.eclipse.%{pkg_name}.plexus-%{version}%{?reltag}.tar.bz2
 
-Patch0:         %{name}-OSGi-import-guava.patch
-Patch2:         %{name}-ignored-tests.patch
+Source100:      %{pkg_name}-parent.pom
+Source101:      %{pkg_name}-inject.pom
+Source102:      %{pkg_name}-plexus.pom
+
+Patch0:         %{pkg_name}-OSGi-import-guava.patch
+Patch2:         %{pkg_name}-ignored-tests.patch
 
 BuildArch:      noarch
 
-BuildRequires:  maven-local >= 4.2
-BuildRequires:  mvn(ch.qos.logback:logback-classic)
-BuildRequires:  mvn(com.google.inject.extensions:guice-assistedinject)
-BuildRequires:  mvn(com.google.inject:guice)
-BuildRequires:  mvn(javax.annotation:javax.annotation-api)
-BuildRequires:  mvn(javax.enterprise:cdi-api)
-BuildRequires:  mvn(junit:junit)
-BuildRequires:  mvn(net.sf.cglib:cglib)
-BuildRequires:  mvn(org.apache.felix:org.apache.felix.framework)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-clean-plugin)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-dependency-plugin)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-deploy-plugin)
-BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
-BuildRequires:  mvn(org.eclipse.tycho:tycho-maven-plugin)
-BuildRequires:  mvn(org.eclipse.tycho:tycho-source-plugin)
-BuildRequires:  mvn(org.jacoco:jacoco-maven-plugin)
-BuildRequires:  mvn(org.osgi:org.osgi.core)
-BuildRequires:  mvn(org.ow2.asm:asm)
-BuildRequires:  mvn(org.slf4j:slf4j-api)
-BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
-
-BuildRequires:  osgi(aopalliance)
-BuildRequires:  osgi(com.google.inject)
-BuildRequires:  osgi(com.google.inject.servlet)
-BuildRequires:  osgi(com.google.guava)
-BuildRequires:  osgi(javax.el)
-BuildRequires:  osgi(javax.enterprise.cdi-api)
-BuildRequires:  osgi(javax.inject)
-BuildRequires:  osgi(javax.servlet)
-BuildRequires:  osgi(javax.xml.rpc)
-BuildRequires:  osgi(org.apache.geronimo.specs.geronimo-annotation_1.1_spec)
-BuildRequires:  osgi(org.apache.geronimo.specs.geronimo-ejb_3.1_spec)
-BuildRequires:  osgi(org.codehaus.plexus.classworlds)
-BuildRequires:  osgi(org.codehaus.plexus.component-annotations)
-BuildRequires:  osgi(org.codehaus.plexus.utils)
-BuildRequires:  osgi(org.eclipse.jdt.apt.core)
-BuildRequires:  osgi(org.eclipse.osgi)
-BuildRequires:  osgi(org.eclipse.osgi.source)
-BuildRequires:  osgi(org.hamcrest.core)
-BuildRequires:  osgi(org.junit)
-BuildRequires:  osgi(org.testng)
-BuildRequires:  osgi(slf4j.api)
+BuildRequires:  %{?scl_prefix_java_common}maven-local
+BuildRequires:  %{?scl_prefix}mvn(com.google.inject.extensions:guice-servlet)
+BuildRequires:  %{?scl_prefix}mvn(com.google.inject:guice::no_aop:)
+BuildRequires:  %{?scl_prefix}mvn(javax.annotation:javax.annotation-api)
+BuildRequires:  %{?scl_prefix}mvn(javax.enterprise:cdi-api)
+BuildRequires:  %{?scl_prefix_java_common}mvn(javax.inject:javax.inject)
+BuildRequires:  %{?scl_prefix_java_common}mvn(javax.servlet:servlet-api)
+BuildRequires:  %{?scl_prefix_java_common}mvn(junit:junit)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-classworlds)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  %{?scl_prefix}mvn(org.osgi:org.osgi.core)
+BuildRequires:  %{?scl_prefix_java_common}mvn(org.slf4j:slf4j-api)
+BuildRequires:  %{?scl_prefix}mvn(org.testng:testng)
 
 
 %description
@@ -72,30 +49,6 @@ style dependency injection.
 %package        inject
 Summary:        Sisu inject
 
-Obsoletes:      %{name}                   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean              < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-binders      < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-containers   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-converters   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-inject       < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-locators     < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-reflect      < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-bean-scanners     < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-containers        < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-inject-bean       < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-inject-plexus     < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-osgi-registry     < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-parent            < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-binders    < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-converters < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-lifecycles < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-locators   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-metadata   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-scanners   < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-plexus-shim       < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-registries        < %{epoch}:%{version}-%{release}
-Obsoletes:      %{name}-spi-registry      < %{epoch}:%{version}-%{release}
-
 %description    inject
 This package contains %{summary}.
 
@@ -103,12 +56,6 @@ This package contains %{summary}.
 Summary:        Sisu Plexus
 
 %description    plexus
-This package contains %{summary}.
-
-%package        tests
-Summary:        Sisu tests
-
-%description    tests
 This package contains %{summary}.
 
 %package        javadoc
@@ -122,95 +69,45 @@ This package contains %{summary}.
 tar xf %{SOURCE0} && mv %{reltype}s/* sisu-inject && rmdir %{reltype}s
 tar xf %{SOURCE1} && mv %{reltype}s/* sisu-plexus && rmdir %{reltype}s
 
+cp %{SOURCE100} pom.xml
+cp %{SOURCE101} sisu-inject/pom.xml
+cp %{SOURCE102} sisu-plexus/pom.xml
+
 %patch0
 %patch2
 
-# Unbundle ASM
-rm -rf sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/space/asm/
-sed -i 's/org.eclipse.sisu.space.asm/org.objectweb.asm/' $(find -name *.java)
-sed -i 's/Import-Package: /&org.objectweb.asm;version="5",/' sisu-inject/org.eclipse.sisu.inject/META-INF/MANIFEST.MF
-%pom_add_dep org.ow2.asm:asm sisu-inject/org.eclipse.sisu.inject
-%pom_add_dep org.ow2.asm:asm sisu-plexus/org.eclipse.sisu.plexus.tests
-
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_file ":{*}" @1
-%mvn_package ":*{inject,plexus,tests}" @1
-
-%pom_disable_module org.eclipse.sisu.inject.site sisu-inject
-%pom_disable_module org.eclipse.sisu.plexus.site sisu-plexus
-
-%pom_add_dep net.sf.cglib:cglib::test sisu-inject/org.eclipse.sisu.inject.tests
-%pom_add_dep net.sf.cglib:cglib::test sisu-plexus/org.eclipse.sisu.plexus.tests
-
-for pom in \
-    sisu-inject \
-    sisu-inject/org.eclipse.sisu.inject \
-    sisu-inject/org.eclipse.sisu.inject.extender \
-    sisu-plexus \
-    sisu-plexus/org.eclipse.sisu.plexus \
-    sisu-plexus/org.eclipse.sisu.plexus.extender
-do
-    %pom_remove_plugin :target-platform-configuration $pom
-done
-
-for pom in \
-    sisu-inject/org.eclipse.sisu.inject \
-    sisu-inject/org.eclipse.sisu.inject.extender \
-    sisu-plexus/org.eclipse.sisu.plexus \
-    sisu-plexus/org.eclipse.sisu.plexus.extender
-do
-    %pom_remove_plugin :animal-sniffer-maven-plugin $pom
-done
-
-for pom in sisu-inject/org.eclipse.sisu.inject.tests/pom.xml sisu-plexus/org.eclipse.sisu.plexus/pom.xml; do
-    %pom_xpath_inject "pom:dependency[pom:artifactId='cdi-api']" '<scope>provided</scope>' $pom
-done
-
-# missing dep org.eclipse.tycho.extras:tycho-sourceref-jgit
-%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:dependencies" sisu-inject
-%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:configuration/pom:sourceReferences" sisu-inject
-%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:dependencies" sisu-plexus
-%pom_xpath_remove "pom:plugin[pom:artifactId[text()='tycho-packaging-plugin']]/pom:configuration/pom:sourceReferences" sisu-plexus
-
-
-cat <<EOF >pom.xml
-<project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.fedoraproject.maven</groupId>
-  <artifactId>aggregator-project</artifactId>
-  <version>dummy</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>sisu-inject</module>
-    <module>sisu-plexus</module>
-  </modules>
-</project>
-EOF
+%mvn_package ":*{inject,plexus}" @1
+%{?scl:EOF}
 
 %build
-%mvn_build -i
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
+%mvn_build
+%{?scl:EOF}
 
 %install
-%mvn_artifact sisu-inject/pom.xml
-%mvn_artifact sisu-inject/org.eclipse.sisu.inject/pom.xml sisu-inject/org.eclipse.sisu.inject/target/org.eclipse.sisu.inject-%{version}%{?reltag}.jar
-%mvn_artifact sisu-inject/org.eclipse.sisu.inject.tests/pom.xml sisu-inject/org.eclipse.sisu.inject.tests/target/org.eclipse.sisu.inject.tests-%{version}%{?reltag}.jar
-%mvn_artifact sisu-plexus/pom.xml
-%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus/pom.xml sisu-plexus/org.eclipse.sisu.plexus/target/org.eclipse.sisu.plexus-%{version}%{?reltag}.jar
-%mvn_artifact sisu-plexus/org.eclipse.sisu.plexus.tests/pom.xml sisu-plexus/org.eclipse.sisu.plexus.tests/target/org.eclipse.sisu.plexus.tests-%{version}%{?reltag}.jar
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
-
+%{?scl:EOF}
 
 %files inject -f .mfiles-inject
 %doc sisu-inject/LICENSE.txt
 
 %files plexus -f .mfiles-plexus
 
-%files tests -f .mfiles-tests
-
 %files javadoc -f .mfiles-javadoc
 %doc sisu-inject/LICENSE.txt
 
 
 %changelog
+* Mon Jan 11 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.2-2.1
+- SCL-ize package
+- Build without Tycho
+
 * Thu Jan  7 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:0.3.2-2
 - Remove unneeded patch
 
