@@ -1,25 +1,30 @@
+%global pkg_name glassfish-annotation-api
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
 %global namedreltag %{nil}
 %global namedversion %{version}%{?namedreltag}
 %global oname javax.annotation-api
-Name:          glassfish-annotation-api
+
+Name:          %{?scl_prefix}%{pkg_name}
 Version:       1.2
-Release:       9%{?dist}
+Release:       9.1%{?dist}
 Summary:       Common Annotations API Specification (JSR 250)
 License:       CDDL or GPLv2 with exceptions
 # http://jcp.org/en/jsr/detail?id=250
 URL:           http://glassfish.java.net/
 # svn export https://svn.java.net/svn/glassfish~svn/tags/javax.annotation-api-1.2/ glassfish-annotation-api-1.2
 # tar czf glassfish-annotation-api-1.2-src-svn.tar.gz glassfish-annotation-api-1.2
-Source0:       %{name}-%{namedversion}-src-svn.tar.gz
+Source0:       %{pkg_name}-%{namedversion}-src-svn.tar.gz
 
-BuildRequires: jvnet-parent
-BuildRequires: glassfish-legal
+BuildRequires: %{?scl_prefix}jvnet-parent
+BuildRequires: %{?scl_prefix}glassfish-legal
 
-BuildRequires: maven-local
-BuildRequires: maven-plugin-bundle
-BuildRequires: maven-remote-resources-plugin
-BuildRequires: maven-source-plugin
-BuildRequires: spec-version-maven-plugin
+BuildRequires: %{?scl_prefix_java_common}maven-local
+BuildRequires: %{?scl_prefix}maven-plugin-bundle
+BuildRequires: %{?scl_prefix}maven-remote-resources-plugin
+BuildRequires: %{?scl_prefix}maven-source-plugin
+BuildRequires: %{?scl_prefix}spec-version-maven-plugin
 
 BuildArch:     noarch
 
@@ -27,34 +32,45 @@ BuildArch:     noarch
 Common Annotations APIs for the Java Platform (JSR 250).
 
 %package javadoc
-Summary:       Javadoc for %{name}
+Summary:       Javadoc for %{pkg_name}
 
 %description javadoc
-This package contains javadoc for %{name}.
+This package contains javadoc for %{pkg_name}.
 
 %prep
-%setup -q -n %{name}-%{namedversion}
+%setup -q -n %{pkg_name}-%{namedversion}
 
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %pom_remove_plugin org.codehaus.mojo:findbugs-maven-plugin
-%mvn_file :%{oname} %{name}
+%mvn_file :%{oname} %{pkg_name}
+%{?scl:EOF}
 
 %build
-
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_build
+%{?scl:EOF}
 
 sed -i 's/\r//' target/classes/META-INF/LICENSE.txt
 cp -p target/classes/META-INF/LICENSE.txt .
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles
-%license LICENSE.txt
+%doc LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE.txt
+%doc LICENSE.txt
 
 %changelog
+* Mon Jan 11 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.2-9.1
+- SCL-ize package
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
