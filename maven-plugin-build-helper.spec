@@ -1,6 +1,10 @@
-Name:           maven-plugin-build-helper
+%global pkg_name maven-plugin-build-helper
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
+Name:           %{?scl_prefix}%{pkg_name}
 Version:        1.9.1
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Build Helper Maven Plugin
 Group:          Development/Libraries
 License:        MIT and ASL 2.0
@@ -8,24 +12,24 @@ URL:            http://mojo.codehaus.org/build-helper-maven-plugin/
 BuildArch: noarch
 
 # The source tarball has been generated from upstream VCS:
-# svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} %{name}-%{version}
-# tar caf %{name}-%{version}.tar.xz %{name}-%{version}
-Source0:        %{name}-%{version}.tar.xz
+# svn export https://svn.codehaus.org/mojo/tags/build-helper-maven-plugin-%{version} %{pkg_name}-%{version}
+# tar caf %{pkg_name}-%{version}.tar.xz %{pkg_name}-%{version}
+Source0:        %{pkg_name}-%{version}.tar.xz
 Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
-BuildRequires:  maven-local
-BuildRequires:  mvn(org.apache.maven:maven-artifact)
-BuildRequires:  mvn(org.apache.maven:maven-compat)
-BuildRequires:  mvn(org.apache.maven:maven-core)
-BuildRequires:  mvn(org.apache.maven:maven-model)
-BuildRequires:  mvn(org.apache.maven:maven-plugin-api)
-BuildRequires:  mvn(org.apache.maven:maven-project)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-plugin-plugin)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-invoker-plugin)
-BuildRequires:  mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
-BuildRequires:  mvn(org.beanshell:bsh)
-BuildRequires:  mvn(org.codehaus.mojo:mojo-parent:pom:)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  %{?scl_prefix_java_common}maven-local
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-artifact)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-compat)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-core)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-model)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-plugin-api)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven:maven-project)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven.plugins:maven-plugin-plugin)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven.plugins:maven-invoker-plugin)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven.plugin-tools:maven-plugin-annotations)
+BuildRequires:  %{?scl_prefix}mvn(org.beanshell:bsh)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.mojo:mojo-parent:pom:)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-utils)
 
 
 %description
@@ -33,30 +37,42 @@ This plugin contains various small independent goals to assist with
 Maven build lifecycle.
 
 %package javadoc
-Summary:        API documentation for %{name}
+Summary:        API documentation for %{pkg_name}
 
 %description javadoc
 This package provides %{summary}.
 
 %prep
-%setup -q 
+%setup -q -n %{pkg_name}-%{version}
 cp %{SOURCE1} LICENSE-2.0.txt
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %pom_add_dep org.apache.maven:maven-compat
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_build -f
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles
 %doc header.txt LICENSE-2.0.txt
-%dir %{_javadir}/%{name}
+%dir %{_javadir}/%{pkg_name}
 
 %files javadoc -f .mfiles-javadoc
 %doc header.txt LICENSE-2.0.txt
 
 %changelog
+* Tue Jan 12 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.9.1-2.1
+- SCL-ize package
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
