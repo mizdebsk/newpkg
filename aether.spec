@@ -1,32 +1,36 @@
+%global pkg_name aether
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
 %global vertag v20150114
 
-Name:           aether
+Name:           %{?scl_prefix}%{pkg_name}
 Epoch:          1
 Version:        1.0.2
-Release:        3%{?dist}
+Release:        3.1%{?dist}
 Summary:        Library to resolve, install and deploy artifacts the Maven way
 License:        EPL
 URL:            http://eclipse.org/aether
 BuildArch:      noarch
 
-Source0:        http://git.eclipse.org/c/%{name}/%{name}-core.git/snapshot/%{name}-%{version}.%{vertag}.tar.bz2
+Source0:        http://git.eclipse.org/c/%{pkg_name}/%{pkg_name}-core.git/snapshot/%{pkg_name}-%{version}.%{vertag}.tar.bz2
 
-BuildRequires:  maven-local
-BuildRequires:  mvn(com.google.inject:guice::no_aop:)
-BuildRequires:  mvn(javax.inject:javax.inject)
-BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
-BuildRequires:  mvn(org.apache.httpcomponents:httpclient)
-BuildRequires:  mvn(org.apache.maven.wagon:wagon-provider-api)
-BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
-BuildRequires:  mvn(org.codehaus.plexus:plexus-classworlds)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-component-annotations)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-component-metadata)
-BuildRequires:  mvn(org.codehaus.plexus:plexus-utils)
-BuildRequires:  mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
-BuildRequires:  mvn(org.eclipse.sisu:sisu-maven-plugin)
-BuildRequires:  mvn(org.hamcrest:hamcrest-library)
-BuildRequires:  mvn(org.slf4j:jcl-over-slf4j)
-BuildRequires:  mvn(org.slf4j:slf4j-api)
+BuildRequires:  %{?scl_prefix_java_common}maven-local
+BuildRequires:  %{?scl_prefix}mvn(com.google.inject:guice::no_aop:)
+BuildRequires:  %{?scl_prefix_java_common}mvn(javax.inject:javax.inject)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.felix:maven-bundle-plugin)
+BuildRequires:  %{?scl_prefix_java_common}mvn(org.apache.httpcomponents:httpclient)
+BuildRequires:  %{?scl_prefix}mvn(org.apache.maven.wagon:wagon-provider-api)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.mojo:build-helper-maven-plugin) >= 1.7
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-classworlds)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-component-annotations)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-component-metadata)
+BuildRequires:  %{?scl_prefix}mvn(org.codehaus.plexus:plexus-utils)
+BuildRequires:  %{?scl_prefix}mvn(org.eclipse.sisu:org.eclipse.sisu.plexus)
+BuildRequires:  %{?scl_prefix}mvn(org.eclipse.sisu:sisu-maven-plugin)
+BuildRequires:  %{?scl_prefix_java_common}mvn(org.hamcrest:hamcrest-library)
+BuildRequires:  %{?scl_prefix_java_common}mvn(org.slf4j:jcl-over-slf4j)
+BuildRequires:  %{?scl_prefix_java_common}mvn(org.slf4j:slf4j-api)
 
 %description
 Aether is a standalone library to resolve, install and deploy artifacts
@@ -83,7 +87,6 @@ implementation for repositories using classpath:// URLs.
 
 %package transport-file
 Summary: Aether Transport File
-Obsoletes: %{name}-connector-file < %{epoch}:%{version}-%{release}
 
 %description transport-file
 Aether is a standalone library to resolve, install and deploy
@@ -92,7 +95,6 @@ implementation for repositories using file:// URLs.
 
 %package transport-http
 Summary: Aether Transport HTTP
-Obsoletes: %{name}-connector-asynchttpclient < %{epoch}:%{version}-%{release}
 
 %description transport-http
 Aether is a standalone library to resolve, install and deploy
@@ -101,7 +103,6 @@ implementation for repositories using http:// and https:// URLs.
 
 %package transport-wagon
 Summary: Aether Transport Wagon
-Obsoletes: %{name}-connector-wagon < %{epoch}:%{version}-%{release}
 
 %description transport-wagon
 Aether is a standalone library to resolve, install and deploy
@@ -125,8 +126,10 @@ artifacts the Maven way.  This package provides Java API documentation
 for Aether.
 
 %prep
-%setup -q -n %{name}-%{version}.%{vertag}
+%setup -q -n %{pkg_name}-%{version}.%{vertag}
 
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 # Remove clirr plugin
 %pom_remove_plugin :clirr-maven-plugin
 %pom_remove_plugin :clirr-maven-plugin aether-api
@@ -150,35 +153,45 @@ rm -rf aether-transport-http/src/test
 # Upstream uses Sisu 0.0.0.M4, but Fedora has 0.0.0.M5.  In M5 scope
 # of Guice dependency was changed from "compile" to "provided".
 %pom_add_dep com.google.inject:guice::provided . "<classifier>no_aop</classifier>"
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_build -s
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
-%files -f .mfiles-%{name}
+%files -f .mfiles-%{pkg_name}
 %doc README.md
 %doc epl-v10.html notice.html
 
-%files api -f .mfiles-%{name}-api
+%files api -f .mfiles-%{pkg_name}-api
 %doc README.md
 %doc epl-v10.html notice.html
-%dir %{_javadir}/%{name}
+%dir %{_javadir}/%{pkg_name}
 
-%files connector-basic -f .mfiles-%{name}-connector-basic
-%files impl -f .mfiles-%{name}-impl
-%files spi -f .mfiles-%{name}-spi
-%files test-util -f .mfiles-%{name}-test-util
-%files transport-classpath -f .mfiles-%{name}-transport-classpath
-%files transport-file -f .mfiles-%{name}-transport-file
-%files transport-http -f .mfiles-%{name}-transport-http
-%files transport-wagon -f .mfiles-%{name}-transport-wagon
-%files util -f .mfiles-%{name}-util
+%files connector-basic -f .mfiles-%{pkg_name}-connector-basic
+%files impl -f .mfiles-%{pkg_name}-impl
+%files spi -f .mfiles-%{pkg_name}-spi
+%files test-util -f .mfiles-%{pkg_name}-test-util
+%files transport-classpath -f .mfiles-%{pkg_name}-transport-classpath
+%files transport-file -f .mfiles-%{pkg_name}-transport-file
+%files transport-http -f .mfiles-%{pkg_name}-transport-http
+%files transport-wagon -f .mfiles-%{pkg_name}-transport-wagon
+%files util -f .mfiles-%{pkg_name}-util
 %files javadoc -f .mfiles-javadoc
 %doc epl-v10.html notice.html
 
 %changelog
+* Tue Jan 12 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.2-3.1
+- SCL-ize package
+
 * Thu Jul 23 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:1.0.2-3
 - Remove Plexus support
 
