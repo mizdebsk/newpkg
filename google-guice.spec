@@ -73,98 +73,98 @@ with at least three use cases. When in doubt, we leave it out. We
 build general functionality which enables you to extend Guice rather
 than adding every feature to the core framework.
 
-%package -n %{short_name}-parent
+%package -n %{?scl_prefix}%{short_name}-parent
 Summary:        Guice parent POM
 
-%description -n %{short_name}-parent
+%description -n %{?scl_prefix}%{short_name}-parent
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides parent POM for Guice modules.
 
-%package -n %{short_name}-servlet
+%package -n %{?scl_prefix}%{short_name}-servlet
 Summary:        Servlet extension module for Guice
 
-%description -n %{short_name}-servlet
+%description -n %{?scl_prefix}%{short_name}-servlet
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Servlet module for Guice.
 
 %if %{with extensions}
 
-%package -n %{short_name}-assistedinject
+%package -n %{?scl_prefix}%{short_name}-assistedinject
 Summary:        AssistedInject extension module for Guice
 
-%description -n %{short_name}-assistedinject
+%description -n %{?scl_prefix}%{short_name}-assistedinject
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides AssistedInject module for Guice.
 
-%package -n %{short_name}-extensions
+%package -n %{?scl_prefix}%{short_name}-extensions
 Summary:        Extensions for Guice
 
-%description -n %{short_name}-extensions
+%description -n %{?scl_prefix}%{short_name}-extensions
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides extensions POM for Guice.
 
-%package -n %{short_name}-grapher
+%package -n %{?scl_prefix}%{short_name}-grapher
 Summary:        Grapher extension module for Guice
 
-%description -n %{short_name}-grapher
+%description -n %{?scl_prefix}%{short_name}-grapher
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Grapher module for Guice.
 
-%package -n %{short_name}-jmx
+%package -n %{?scl_prefix}%{short_name}-jmx
 Summary:        JMX extension module for Guice
 
-%description -n %{short_name}-jmx
+%description -n %{?scl_prefix}%{short_name}-jmx
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides JMX module for Guice.
 
-%package -n %{short_name}-jndi
+%package -n %{?scl_prefix}%{short_name}-jndi
 Summary:        JNDI extension module for Guice
 
-%description -n %{short_name}-jndi
+%description -n %{?scl_prefix}%{short_name}-jndi
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides JNDI module for Guice.
 
-%package -n %{short_name}-multibindings
+%package -n %{?scl_prefix}%{short_name}-multibindings
 Summary:        MultiBindings extension module for Guice
 
-%description -n %{short_name}-multibindings
+%description -n %{?scl_prefix}%{short_name}-multibindings
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides MultiBindings module for Guice.
 
-%package -n %{short_name}-persist
+%package -n %{?scl_prefix}%{short_name}-persist
 Summary:        Persist extension module for Guice
 
-%description -n %{short_name}-persist
+%description -n %{?scl_prefix}%{short_name}-persist
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Persist module for Guice.
 
-%package -n %{short_name}-spring
+%package -n %{?scl_prefix}%{short_name}-spring
 Summary:        Spring extension module for Guice
 
-%description -n %{short_name}-spring
+%description -n %{?scl_prefix}%{short_name}-spring
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Spring module for Guice.
 
-%package -n %{short_name}-testlib
+%package -n %{?scl_prefix}%{short_name}-testlib
 Summary:        TestLib extension module for Guice
 
-%description -n %{short_name}-testlib
+%description -n %{?scl_prefix}%{short_name}-testlib
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides TestLib module for Guice.
 
-%package -n %{short_name}-throwingproviders
+%package -n %{?scl_prefix}%{short_name}-throwingproviders
 Summary:        ThrowingProviders extension module for Guice
 
-%description -n %{short_name}-throwingproviders
+%description -n %{?scl_prefix}%{short_name}-throwingproviders
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides ThrowingProviders module for Guice.
 
 %endif # with extensions
 
-%package -n %{short_name}-bom
+%package -n %{?scl_prefix}%{short_name}-bom
 Summary:        Bill of Materials for Guice
 
-%description -n %{short_name}-bom
+%description -n %{?scl_prefix}%{short_name}-bom
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Bill of Materials module for Guice.
 
@@ -239,25 +239,25 @@ set -e -x
 %files -f .mfiles-guice
 %dir %{_javadir}/%{short_name}
 
-%files -n %{short_name}-parent -f .mfiles-guice-parent
+%files -n %{?scl_prefix}%{short_name}-parent -f .mfiles-guice-parent
 %doc COPYING
 
-%files -n %{short_name}-servlet -f .mfiles-guice-servlet
+%files -n %{?scl_prefix}%{short_name}-servlet -f .mfiles-guice-servlet
 
 %if %{with extensions}
-%files -n %{short_name}-assistedinject -f .mfiles-guice-assistedinject
-%files -n %{short_name}-extensions -f .mfiles-extensions-parent
-%files -n %{short_name}-grapher -f .mfiles-guice-grapher
-%files -n %{short_name}-jmx -f .mfiles-guice-jmx
-%files -n %{short_name}-jndi -f .mfiles-guice-jndi
-%files -n %{short_name}-multibindings -f .mfiles-guice-multibindings
-%files -n %{short_name}-persist -f .mfiles-guice-persist
-%files -n %{short_name}-spring -f .mfiles-guice-spring
-%files -n %{short_name}-testlib -f .mfiles-guice-testlib
-%files -n %{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
+%files -n %{?scl_prefix}%{short_name}-assistedinject -f .mfiles-guice-assistedinject
+%files -n %{?scl_prefix}%{short_name}-extensions -f .mfiles-extensions-parent
+%files -n %{?scl_prefix}%{short_name}-grapher -f .mfiles-guice-grapher
+%files -n %{?scl_prefix}%{short_name}-jmx -f .mfiles-guice-jmx
+%files -n %{?scl_prefix}%{short_name}-jndi -f .mfiles-guice-jndi
+%files -n %{?scl_prefix}%{short_name}-multibindings -f .mfiles-guice-multibindings
+%files -n %{?scl_prefix}%{short_name}-persist -f .mfiles-guice-persist
+%files -n %{?scl_prefix}%{short_name}-spring -f .mfiles-guice-spring
+%files -n %{?scl_prefix}%{short_name}-testlib -f .mfiles-guice-testlib
+%files -n %{?scl_prefix}%{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
 %endif # with extensions
 
-%files -n %{short_name}-bom -f .mfiles-guice-bom
+%files -n %{?scl_prefix}%{short_name}-bom -f .mfiles-guice-bom
 
 %files javadoc -f .mfiles-javadoc
 %doc COPYING
