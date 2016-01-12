@@ -80,6 +80,7 @@ cp %{SOURCE102} sisu-plexus/pom.xml
 set -e -x
 %mvn_file ":{*}" @1
 %mvn_package ":*{inject,plexus}" @1
+%mvn_package : __noinstall
 %{?scl:EOF}
 
 %build
