@@ -1,19 +1,22 @@
+%global short_name guice
+%global pkg_name google-%{short_name}
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
 %if 0%{?fedora}
 %bcond_without extensions
 %endif
 
-%global short_name guice
-
-Name:           google-%{short_name}
+Name:           %{?scl_prefix}%{pkg_name}
 Version:        4.0
-Release:        2%{?dist}
+Release:        2.1%{?dist}
 Summary:        Lightweight dependency injection framework for Java 5 and above
 License:        ASL 2.0
 URL:            https://github.com/google/%{short_name}
 BuildArch:      noarch
 
 # ./create-tarball.sh %%{version}
-Source0:        %{name}-%{version}.tar.xz
+Source0:        %{pkg_name}-%{version}.tar.xz
 Source1:        create-tarball.sh
 
 Patch0:         0001-Revert-Some-work-on-issue-910-ensure-that-anonymous-.patch
@@ -23,35 +26,33 @@ Patch100:       https://raw.githubusercontent.com/sonatype/sisu-guice/master/PAT
 # Forwarded upstream: https://github.com/google/guice/issues/618
 Patch101:       https://raw.githubusercontent.com/sonatype/sisu-guice/master/PATCHES/GUICE_618_extensible_filter_pipeline.patch
 
-BuildRequires:  maven-local >= 3.2.4-2
-BuildRequires:  maven-remote-resources-plugin
-BuildRequires:  munge-maven-plugin
-BuildRequires:  maven-gpg-plugin
-BuildRequires:  apache-resource-bundles
-BuildRequires:  aopalliance
-BuildRequires:  atinject
-BuildRequires:  cglib
-BuildRequires:  guava
-BuildRequires:  slf4j
+BuildRequires:  %{?scl_prefix_java_common}maven-local >= 3.2.4-2
+BuildRequires:  %{?scl_prefix}maven-remote-resources-plugin
+BuildRequires:  %{?scl_prefix}munge-maven-plugin
+BuildRequires:  %{?scl_prefix}maven-gpg-plugin
+BuildRequires:  %{?scl_prefix}apache-resource-bundles
+BuildRequires:  %{?scl_prefix}aopalliance
+BuildRequires:  %{?scl_prefix_java_common}atinject
+BuildRequires:  %{?scl_prefix_java_common}cglib
+BuildRequires:  %{?scl_prefix_java_common}guava
+BuildRequires:  %{?scl_prefix_java_common}slf4j
 
 %if %{with extensions}
-BuildRequires:  hibernate-jpa-2.0-api
-BuildRequires:  springframework-beans
+BuildRequires:  %{?scl_prefix}hibernate-jpa-2.0-api
+BuildRequires:  %{?scl_prefix}springframework-beans
 %endif
 
 # Test dependencies:
 %if 0
-BuildRequires:  maven-surefire-provider-testng
-BuildRequires:  aqute-bnd
-BuildRequires:  atinject-tck
-BuildRequires:  easymock2
-BuildRequires:  felix-framework
-BuildRequires:  hibernate3-entitymanager
-BuildRequires:  mvn(org.hsqldb:hsqldb-j5)
-BuildRequires:  testng
+BuildRequires:  %{?scl_prefix}maven-surefire-provider-testng
+BuildRequires:  %{?scl_prefix}aqute-bnd
+BuildRequires:  %{?scl_prefix_java_common}atinject-tck
+BuildRequires:  %{?scl_prefix_java_common}easymock2
+BuildRequires:  %{?scl_prefix_java_common}felix-framework
+BuildRequires:  %{?scl_prefix}hibernate3-entitymanager
+BuildRequires:  %{?scl_prefix}mvn(org.hsqldb:hsqldb-j5)
+BuildRequires:  %{?scl_prefix}testng
 %endif
-
-Provides:       %{short_name} = %{version}-%{release}
 
 %description
 Put simply, Guice alleviates the need for factories and the use of new
@@ -169,17 +170,18 @@ and above. This package provides Bill of Materials module for Guice.
 
 %package javadoc
 Summary:        API documentation for Guice
-Provides:       %{short_name}-javadoc = %{version}-%{release}
 
 %description javadoc
 This package provides %{summary}.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{pkg_name}-%{version}
 %patch0 -p1
 %patch100 -p1
 %patch101 -p1
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 
 # We don't have struts2 in Fedora yet.
 %pom_disable_module struts2 extensions
@@ -212,8 +214,11 @@ This package provides %{summary}.
 %endif
 
 %mvn_package :jdk8-tests __noinstall
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %if %{with extensions}
 %mvn_alias "com.google.inject.extensions:" "org.sonatype.sisu.inject:"
 %endif # with extensions
@@ -221,13 +226,17 @@ This package provides %{summary}.
 %mvn_package :::no_aop: guice
 
 %mvn_file  ":guice-{*}"  %{short_name}/guice-@1
-%mvn_file  ":guice" %{short_name}/%{name} %{name}
+%mvn_file  ":guice" %{short_name}/%{pkg_name} %{pkg_name}
 %mvn_alias ":guice" "org.sonatype.sisu:sisu-guice"
 # Skip tests because of missing dependency guice-testlib
 %mvn_build -f -s
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles-guice
 %dir %{_javadir}/%{short_name}
@@ -255,6 +264,9 @@ This package provides %{summary}.
 
 
 %changelog
+* Tue Jan 12 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.0-2.1
+- SCL-ize package
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
