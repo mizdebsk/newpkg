@@ -76,6 +76,17 @@ cp %{SOURCE102} sisu-plexus/pom.xml
 %patch0
 %patch2
 
+# XXX remove OSGi-specific code until Felix is updated
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/launch/BundleModule.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/launch/SisuBundlePlan.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/launch/SisuExtender.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/launch/SisuTracker.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/osgi/BindingTracker.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/osgi/ServiceBinding.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/osgi/ServiceBindings.java
+rm -f sisu-inject/org.eclipse.sisu.inject/src/org/eclipse/sisu/space/BundleClassSpace.java
+rm -f sisu-plexus/org.eclipse.sisu.plexus/src/org/eclipse/sisu/plexus/PlexusBundlePlan.java
+
 %{?scl:scl enable %{scl} - <<"EOF"}
 set -e -x
 %mvn_file ":{*}" @1
