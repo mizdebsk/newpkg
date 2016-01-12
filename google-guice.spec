@@ -80,6 +80,13 @@ Summary:        Guice parent POM
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides parent POM for Guice modules.
 
+%package -n %{short_name}-servlet
+Summary:        Servlet extension module for Guice
+
+%description -n %{short_name}-servlet
+Guice is a lightweight dependency injection framework for Java 5
+and above. This package provides Servlet module for Guice.
+
 %if %{with extensions}
 
 %package -n %{short_name}-assistedinject
@@ -130,13 +137,6 @@ Summary:        Persist extension module for Guice
 %description -n %{short_name}-persist
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Persist module for Guice.
-
-%package -n %{short_name}-servlet
-Summary:        Servlet extension module for Guice
-
-%description -n %{short_name}-servlet
-Guice is a lightweight dependency injection framework for Java 5
-and above. This package provides Servlet module for Guice.
 
 %package -n %{short_name}-spring
 Summary:        Spring extension module for Guice
@@ -210,7 +210,7 @@ set -e -x
 
 # Don't try to build extension modules unless they are needed
 %if %{without extensions}
-%pom_disable_module extensions
+sed -i '/<module>/s|extensions|&/servlet|' pom.xml
 %endif
 
 %mvn_package :jdk8-tests __noinstall
@@ -219,9 +219,7 @@ set -e -x
 %build
 %{?scl:scl enable %{scl} - <<"EOF"}
 set -e -x
-%if %{with extensions}
 %mvn_alias "com.google.inject.extensions:" "org.sonatype.sisu.inject:"
-%endif # with extensions
 
 %mvn_package :::no_aop: guice
 
@@ -244,6 +242,8 @@ set -e -x
 %files -n %{short_name}-parent -f .mfiles-guice-parent
 %doc COPYING
 
+%files -n %{short_name}-servlet -f .mfiles-guice-servlet
+
 %if %{with extensions}
 %files -n %{short_name}-assistedinject -f .mfiles-guice-assistedinject
 %files -n %{short_name}-extensions -f .mfiles-extensions-parent
@@ -252,7 +252,6 @@ set -e -x
 %files -n %{short_name}-jndi -f .mfiles-guice-jndi
 %files -n %{short_name}-multibindings -f .mfiles-guice-multibindings
 %files -n %{short_name}-persist -f .mfiles-guice-persist
-%files -n %{short_name}-servlet -f .mfiles-guice-servlet
 %files -n %{short_name}-spring -f .mfiles-guice-spring
 %files -n %{short_name}-testlib -f .mfiles-guice-testlib
 %files -n %{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
@@ -267,6 +266,7 @@ set -e -x
 %changelog
 * Tue Jan 12 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.0-2.1
 - SCL-ize package
+- Unconditionally enable servlet extension
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
