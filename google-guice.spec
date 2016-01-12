@@ -159,14 +159,14 @@ Summary:        ThrowingProviders extension module for Guice
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides ThrowingProviders module for Guice.
 
+%endif # with extensions
+
 %package -n %{short_name}-bom
 Summary:        Bill of Materials for Guice
 
 %description -n %{short_name}-bom
 Guice is a lightweight dependency injection framework for Java 5
 and above. This package provides Bill of Materials module for Guice.
-
-%endif # with extensions
 
 %package javadoc
 Summary:        API documentation for Guice
@@ -256,8 +256,9 @@ set -e -x
 %files -n %{short_name}-spring -f .mfiles-guice-spring
 %files -n %{short_name}-testlib -f .mfiles-guice-testlib
 %files -n %{short_name}-throwingproviders -f .mfiles-guice-throwingproviders
-%files -n %{short_name}-bom -f .mfiles-guice-bom
 %endif # with extensions
+
+%files -n %{short_name}-bom -f .mfiles-guice-bom
 
 %files javadoc -f .mfiles-javadoc
 %doc COPYING
