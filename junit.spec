@@ -1,21 +1,24 @@
-Name:           junit
+%global pkg_name junit
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
+Name:           %{?scl_prefix}%{pkg_name}
 Epoch:          1
 Version:        4.12
-Release:        3%{?dist}
+Release:        3.1%{?dist}
 Summary:        Java regression test package
 License:        EPL
 URL:            http://www.junit.org/
 BuildArch:      noarch
 
-# ./clean-tarball.sh %{version}
-Source0:        %{name}-%{version}-clean.tar.gz
+# ./clean-tarball.sh %%{version}
+Source0:        %{pkg_name}-%{version}-clean.tar.gz
 Source3:        create-tarball.sh
 
-BuildRequires:  maven-local
-BuildRequires:  hamcrest
-BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
+BuildRequires:  %{?scl_prefix_java_common}maven-local
+BuildRequires:  %{?scl_prefix_java_common}hamcrest
+BuildRequires:  %{?scl_prefix}mvn(org.apache.felix:maven-bundle-plugin)
 
-Obsoletes:      %{name}-demo < 4.12
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
@@ -24,19 +27,21 @@ Source Software, released under the Common Public License Version 1.0 and
 hosted on GitHub.
 
 %package manual
-Summary:        Manual for %{name}
+Summary:        Manual for %{pkg_name}
 
 %description manual
-Documentation for %{name}.
+Documentation for %{pkg_name}.
 
 %package javadoc
-Summary:        Javadoc for %{name}
+Summary:        Javadoc for %{pkg_name}
 
 %description javadoc
-Javadoc for %{name}.
+Javadoc for %{pkg_name}.
 
 %prep
-%setup -q -n %{name}-r%{version}
+%setup -q -n %{pkg_name}-r%{version}
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 
 # InaccessibleBaseClassTest fails with Java 8
 sed -i /InaccessibleBaseClassTest/d src/test/java/org/junit/tests/AllTests.java
@@ -66,13 +71,20 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
       </configuration>
     </plugin>"
 
-%mvn_file : %{name}
+%mvn_file : %{pkg_name}
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_build
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install
+%{?scl:EOF}
 
 %files -f .mfiles
 %doc LICENSE-junit.txt README.md
@@ -85,6 +97,9 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
 %doc doc/*
 
 %changelog
+* Thu Jan 14 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.12-3.1
+- SCL-ize package
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.12-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
@@ -269,7 +284,7 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
 - truncated description to 72 columns in spec
 - spec cleanup
 - used versioned jar
-- moved demo files to %%{_datadir}/%%{name}
+- moved demo files to %%{_datadir}/%%{pkg_name}
 
 * Sat Feb 17 2001 Guillaume Rousse <g.rousse@linux-mandrake.com> 3.5-1mdk
 - first Mandrake release
