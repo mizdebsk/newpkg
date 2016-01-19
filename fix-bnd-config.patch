@@ -1,5 +1,5 @@
 diff --git a/conf/mockito-core.bnd b/conf/mockito-core.bnd
-index bd0ba61..47d07a8 100644
+index bd0ba61..8a8328a 100644
 --- a/conf/mockito-core.bnd
 +++ b/conf/mockito-core.bnd
 @@ -1,13 +1,11 @@
@@ -8,7 +8,8 @@ index bd0ba61..47d07a8 100644
 -Bundle-Name= Mockito Mock Library for Java. Core bundle requires Hamcrest-core and Objenesis. 
 +Bundle-Name= Mockito Mock Library for Java. Core bundle requires Hamcrest-core and Objenesis.
  Bundle-SymbolicName= org.mockito.mockito-core
- Bundle-Version= ${version}
+-Bundle-Version= ${version}
++Bundle-Version= 1.10.19
  
  Export-Package= !org.mockito.asm.*, \
                  !org.mockito.cglib.*, \

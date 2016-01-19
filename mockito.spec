@@ -1,34 +1,37 @@
-Name:           mockito
+%global pkg_name mockito
+%{?scl:%scl_package %{pkg_name}}
+%{?maven_find_provides_and_requires}
+
+Name:           %{?scl_prefix}%{pkg_name}
 Version:        1.10.19
-Release:        7%{?dist}
+Release:        7.1%{?dist}
 Summary:        A Java mocking framework
 
 License:        MIT
-URL:            http://%{name}.org
-Source0:        %{name}-%{version}.tar.xz
-Source1:        make-%{name}-sourcetarball.sh
+URL:            http://%{pkg_name}.org
+Source0:        %{pkg_name}-%{version}.tar.xz
+Source1:        make-%{pkg_name}-sourcetarball.sh
 Patch0:         fixup-ant-script.patch
 Patch1:         fix-bnd-config.patch
-Patch2:         %{name}-matcher.patch
+Patch2:         %{pkg_name}-matcher.patch
 # Workaround for NPE in setting NamingPolicy in cglib
 Patch3:         setting-naming-policy.patch
 # because we have old objenesis
 Patch4:         fix-incompatible-types.patch
 
 BuildArch:      noarch
-BuildRequires:  javapackages-local
-BuildRequires:  java-devel
-BuildRequires:  ant
-BuildRequires:  objenesis
-BuildRequires:  cglib
-BuildRequires:  junit
-BuildRequires:  hamcrest
-BuildRequires:  aqute-bnd
+BuildRequires:  %{?scl_prefix_java_common}javapackages-local
+BuildRequires:  %{?scl_prefix_java_common}ant
+BuildRequires:  %{?scl_prefix_java_common}objenesis
+BuildRequires:  %{?scl_prefix_java_common}cglib
+BuildRequires:  %{?scl_prefix_java_common}junit
+BuildRequires:  %{?scl_prefix_java_common}hamcrest
+BuildRequires:  %{?scl_prefix}aqute-bnd
 
-Requires:       objenesis
-Requires:       cglib
-Requires:       junit
-Requires:       hamcrest
+Requires:       %{?scl_prefix_java_common}objenesis
+Requires:       %{?scl_prefix_java_common}cglib
+Requires:       %{?scl_prefix_java_common}junit
+Requires:       %{?scl_prefix_java_common}hamcrest
 
 %description
 Mockito is a mocking framework that tastes really good. It lets you write
@@ -37,13 +40,15 @@ because the tests are very readable and they produce clean verification
 errors.
 
 %package javadoc
-Summary:        Javadocs for %{name}
+Summary:        Javadocs for %{pkg_name}
 
 %description javadoc
-This package contains the API documentation for %{name}.
+This package contains the API documentation for %{pkg_name}.
 
 %prep
-%setup -q
+%setup -q -n %{pkg_name}-%{version}
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %patch0
 %patch1 -p1
 %patch2 -p1
@@ -52,11 +57,14 @@ This package contains the API documentation for %{name}.
 # workaround rhbz#1292777 Files not found for javadoc generation
 touch javadoc/stylesheet.css
 
-%pom_add_dep net.sf.cglib:cglib maven/%{name}-core.pom
-find . -name "*.java" -exec sed -i "s|org\.%{name}\.cglib|net\.sf\.cglib|g" {} +
+%pom_add_dep net.sf.cglib:cglib maven/%{pkg_name}-core.pom
+find . -name "*.java" -exec sed -i "s|org\.%{pkg_name}\.cglib|net\.sf\.cglib|g" {} +
 mkdir -p lib/compile
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 build-jar-repository lib/compile objenesis cglib junit hamcrest/core
 ant jar javadoc
 # Convert to OSGi bundle
@@ -64,33 +72,40 @@ pushd target
 %if 0%{?fedora} >= 23
 bnd wrap \
  --version %{version} \
- --output %{name}-core-%{version}.bar \
- --properties ../conf/%{name}-core.bnd \
+ --output %{pkg_name}-core-%{version}.bar \
+ --properties ../conf/%{pkg_name}-core.bnd \
 %else
 java -jar $(build-classpath aqute-bnd) wrap \
- -output %{name}-core-%{version}.bar \
- -properties ../conf/%{name}-core.bnd \
+ -output %{pkg_name}-core-%{version}.bar \
+ -properties ../conf/%{pkg_name}-core.bnd \
 %endif
- %{name}-core-%{version}.jar
-mv %{name}-core-%{version}.bar %{name}-core-%{version}.jar
+ %{pkg_name}-core-%{version}.jar
+mv %{pkg_name}-core-%{version}.bar %{pkg_name}-core-%{version}.jar
 popd
 
-sed -i -e "s|@version@|%{version}|g" maven/%{name}-core.pom
-%mvn_artifact maven/%{name}-core.pom target/%{name}-core-%{version}.jar
-%mvn_alias org.%{name}:%{name}-core org.%{name}:%{name}-all
+sed -i -e "s|@version@|%{version}|g" maven/%{pkg_name}-core.pom
+%mvn_artifact maven/%{pkg_name}-core.pom target/%{pkg_name}-core-%{version}.jar
+%mvn_alias org.%{pkg_name}:%{pkg_name}-core org.%{pkg_name}:%{pkg_name}-all
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
+set -e -x
 %mvn_install -J target/javadoc
+%{?scl:EOF}
 
 %files -f .mfiles
-%license LICENSE
+%doc LICENSE
 %doc NOTICE
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE
+%doc LICENSE
 %doc NOTICE
 
 %changelog
+* Tue Jan 19 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.10.19-7.1
+- SCL-ize package
+
 * Fri Dec 25 2015 Raphael Groner <projects.rg@smart.ms> - 1.10.19-7
 - introduce License tag
 
@@ -156,8 +171,8 @@ sed -i -e "s|@version@|%{version}|g" maven/%{name}-core.pom
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
 * Mon Apr 30 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-6
-- Place JavaDoc in directly under %{_javadocdir}/%{name} instead
-  of %{_javadocdir}/%{name}/javadoc
+- Place JavaDoc in directly under /usr/share/javadoc/%{pkg_name} instead
+  of /usr/share/javadoc/%{pkg_name}/javadoc
 
 * Wed Apr 25 2012 Roman Kennke <rkennke@redhat.com> 1.9.0-5
 - Removed post/postun hook for update_maven_depmap
