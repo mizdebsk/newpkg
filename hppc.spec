@@ -1,6 +1,6 @@
 Name:          hppc
-Version:       0.6.1
-Release:       3%{?dist}
+Version:       0.7.1
+Release:       1%{?dist}
 Summary:       High Performance Primitive Collections for Java
 License:       ASL 2.0
 URL:           http://labs.carrotsearch.com/hppc.html
@@ -12,6 +12,7 @@ BuildRequires: mvn(org.apache.ant:ant)
 BuildRequires: mvn(org.apache.ant:ant-junit)
 BuildRequires: mvn(org.apache.velocity:velocity)
 BuildRequires: mvn(org.sonatype.oss:oss-parent:pom:)
+BuildRequires: mvn(org.antlr:antlr4-maven-plugin)
 
 %if 0
 # hppc-benchmarks deps
@@ -62,38 +63,17 @@ This package contains javadoc for HPPC.
 find . -name "*.class" -print -delete
 find . -name "*.jar" -print -delete
 
-# remove ant-trax and ant-nodeps, fix jdk tools JAR location
-%pom_xpath_remove "pom:project/pom:build/pom:pluginManagement/pom:plugins/pom:plugin[pom:artifactId = 'maven-antrun-plugin']/pom:dependencies/pom:dependency[pom:groupId = 'org.apache.ant']"
-%pom_xpath_inject "pom:project/pom:build/pom:pluginManagement/pom:plugins/pom:plugin[pom:artifactId = 'maven-antrun-plugin']/pom:dependencies" "
-<dependency>
-  <groupId>org.apache.ant</groupId>
-  <artifactId>ant</artifactId>
-  <version>1.8.0</version>
-</dependency>
-<dependency>
-  <groupId>org.apache.ant</groupId>
-  <artifactId>ant-junit</artifactId>
-  <version>1.8.0</version>
-</dependency>
-<dependency>
-  <groupId>com.sun</groupId>
-  <artifactId>tools</artifactId>
-  <version>1.7.0</version>
-</dependency>"
-
 # Unavailable deps
 %pom_disable_module %{name}-benchmarks
-%pom_disable_module %{name}-examples
+%pom_remove_plugin :junit4-maven-plugin
+%pom_remove_plugin :forbiddenapis
+%pom_remove_plugin :junit4-maven-plugin hppc
 
-%pom_remove_plugin :findbugs-maven-plugin
-
-%pom_remove_plugin :junit4-maven-plugin %{name}-core
-
-sed -i 's/\r//' CHANGES
+sed -i 's/\r//' CHANGES.txt
 
 %mvn_file :%{name} %{name}
-%mvn_file :%{name}-templateprocessor %{name}-templateprocessor
-%mvn_package :%{name}-templateprocessor %{name}-templateprocessor
+%mvn_file :%{name}-template-processor %{name}-templateprocessor
+%mvn_package :%{name}-template-processor %{name}-templateprocessor
 
 %build
 
@@ -104,16 +84,19 @@ sed -i 's/\r//' CHANGES
 %mvn_install
 
 %files -f .mfiles
-%doc CHANGES README
-%license LICENSE
+%doc CHANGES.txt README.txt
+%license LICENSE.txt
 
 %files templateprocessor -f .mfiles-%{name}-templateprocessor
-%license LICENSE
+%license LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
-%license LICENSE
+%license LICENSE.txt
 
 %changelog
+* Wed Jan 20 2016 Alexander Kurtakov <akurtako@redhat.com> 0.7.1-1
+- Update to upstream 0.7.1 release.
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.6.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
