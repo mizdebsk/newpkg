@@ -48,6 +48,8 @@ sed -i 's/\r//' CHANGES.txt CONTRIBUTING.txt README.txt LICENSE.txt
 %pom_remove_plugin de.thetaphi:forbiddenapis
 %pom_remove_plugin :maven-javadoc-plugin
 
+sed -i 's/2.0.0/${project.version}/g' morfologik-speller/pom.xml
+
 %build
 # Test skipped for unavailable test deps
 %mvn_build -f -- -Dfile.encoding=UTF-8 
