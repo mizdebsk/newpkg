@@ -1,6 +1,6 @@
 Name:          morfologik-stemming
-Version:       1.8.3
-Release:       4%{?dist}
+Version:       2.0.1
+Release:       1%{?dist}
 Summary:       Morfologik stemming library
 License:       BSD
 URL:           http://morfologik.blogspot.com/
@@ -11,6 +11,7 @@ BuildRequires: mvn(com.google.guava:guava)
 BuildRequires: mvn(commons-cli:commons-cli)
 BuildRequires: mvn(commons-lang:commons-lang)
 BuildRequires: mvn(org.sonatype.oss:oss-parent:pom:)
+BuildRequires: mvn(com.carrotsearch:hppc)
 
 %if 0
 # test deps
@@ -39,39 +40,33 @@ This package contains javadoc for %{name}.
 find . -name "*.class" -print -delete
 find . -name "*.jar" -print -delete
 
-# remove classpath from manifest files
-for m in morfologik-polish morfologik-speller %{name} morfologik-tools ;do
-%pom_xpath_set "pom:project/pom:build/pom:plugins/pom:plugin[pom:artifactId = 'maven-jar-plugin']/pom:configuration/pom:archive/pom:manifest/pom:addClasspath" false ${m}
-done
-
-%pom_remove_dep org.easytesting:fest-assert-core %{name}
-
-%pom_disable_module morfologik-distribution
-%pom_remove_plugin com.pyx4me:proguard-maven-plugin morfologik-tools
-
-chmod 644 README
-sed -i 's/\r//' CHANGES CONTRIBUTOR README morfologik.LICENSE
+chmod 644 README.txt
+sed -i 's/\r//' CHANGES.txt CONTRIBUTING.txt README.txt LICENSE.txt
 
 %pom_add_dep org.hamcrest:hamcrest-core::test morfologik-tools
-sed -i "s|org.junit.internal.matchers.StringContains|org.hamcrest.core.StringContains|" \
- morfologik-tools/src/test/java/morfologik/tools/FSABuildToolTest.java
+%pom_remove_plugin com.carrotsearch.randomizedtesting:junit4-maven-plugin
+%pom_remove_plugin de.thetaphi:forbiddenapis
+%pom_remove_plugin :maven-javadoc-plugin
 
 %build
 # Test skipped for unavailable test deps
-%mvn_build -f
+%mvn_build -f -- -Dfile.encoding=UTF-8 
 
 %install
 %mvn_install
 
 %files -f .mfiles
 %dir %{_javadir}/%{name}
-%doc CHANGES CONTRIBUTOR README
-%license morfologik.LICENSE
+%doc CHANGES.txt CONTRIBUTING.txt README.txt
+%license LICENSE.txt
 
 %files javadoc -f .mfiles-javadoc
-%license morfologik.LICENSE
+%license LICENSE.txt
 
 %changelog
+* Thu Jan 21 2016 Alexander Kurtakov <akurtako@redhat.com> 2.0.1-1
+- Update to 2.0.1
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
