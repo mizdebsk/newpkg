@@ -88,6 +88,8 @@ pwd
 %patch2 -p1
 %pom_disable_module ubenchmark
 
+mkdir -p pgjdbc/target/generated-sources/annotations
+
 %build
 # Ideally we would run "sh update-translations.sh" here, but that results
 # in inserting the build timestamp into the generated messages_*.class
