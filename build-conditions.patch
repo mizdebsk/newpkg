@@ -1,0 +1,89 @@
+commit 0ec6ab3575e455c2e3e9c5c7fec68ad7d1951334 (HEAD, praiskup/pgjdbc-linux-fixes, pgjdbc-linux-fixes, fix-rel-1.0.5)
+Author:     Pavel Raiskup <praiskup@redhat.com>
+AuthorDate: Tue Mar 15 12:12:41 2016 +0100
+Commit:     Pavel Raiskup <praiskup@redhat.com>
+CommitDate: Tue Mar 22 09:31:44 2016 +0100
+
+    Try to add conditions for waffle and osgi.
+
+diff --git a/pgjdbc-core-parent/pom.xml b/pgjdbc-core-parent/pom.xml
+index 714e7e4..65e3c76 100644
+--- a/pgjdbc-core-parent/pom.xml
++++ b/pgjdbc-core-parent/pom.xml
+@@ -29,28 +29,58 @@
+             <artifactId>junit</artifactId>
+             <scope>test</scope>
+         </dependency>
+-        <dependency>
+-            <groupId>org.osgi</groupId>
+-            <artifactId>org.osgi.enterprise</artifactId>
+-            <scope>provided</scope>
+-            <optional>true</optional>
+-        </dependency>
+-        <dependency>
+-            <groupId>org.osgi</groupId>
+-            <artifactId>org.osgi.core</artifactId>
+-            <scope>provided</scope>
+-            <optional>true</optional>
+-        </dependency>
+-        <dependency>
+-            <groupId>com.github.dblock.waffle</groupId>
+-            <artifactId>waffle-jna</artifactId>
+-            <scope>compile</scope>
+-            <optional>true</optional>
+-        </dependency>
+     </dependencies>
+ 
+     <profiles>
+         <profile>
++            <id>waffle-deps</id>
++            <activation>
++                <property>
++                    <name>waffleEnabled</name>
++                    <value>!false</value>
++                </property>
++            </activation>
++            <properties>
++                <waffleEnabled>true</waffleEnabled>
++            </properties>
++            <dependencies>
++                <dependency>
++                    <groupId>com.github.dblock.waffle</groupId>
++                    <artifactId>waffle-jna</artifactId>
++                    <scope>compile</scope>
++                    <optional>true</optional>
++                </dependency>
++            </dependencies>
++        </profile>
++
++        <profile>
++            <id>osgi-deps</id>
++            <activation>
++                <property>
++                    <name>osgiEnabled</name>
++                    <value>!false</value>
++                </property>
++            </activation>
++            <properties>
++                <osgiEnabled>true</osgiEnabled>
++            </properties>
++            <dependencies>
++                <dependency>
++                    <groupId>org.osgi</groupId>
++                    <artifactId>org.osgi.enterprise</artifactId>
++                    <scope>provided</scope>
++                    <optional>true</optional>
++                </dependency>
++                <dependency>
++                    <groupId>org.osgi</groupId>
++                    <artifactId>org.osgi.core</artifactId>
++                    <scope>provided</scope>
++                    <optional>true</optional>
++                </dependency>
++            </dependencies>
++        </profile>
++
++        <profile>
+             <id>release-artifacts</id>
+             <build>
+                 <plugins>

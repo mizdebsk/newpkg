@@ -1,0 +1,25 @@
+From aa5069cd1c2008758d0a1b5db7cd4dcc2b586d24 Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Tue, 12 Jan 2016 10:23:15 +0100
+Subject: [PATCH] Use standard directory for generated sources
+
+---
+ pgjdbc-versions/pom.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pgjdbc-versions/pom.xml b/pgjdbc-versions/pom.xml
+index 6a311f4..9995e07 100644
+--- a/pgjdbc-versions/pom.xml
++++ b/pgjdbc-versions/pom.xml
+@@ -71,7 +71,7 @@
+         <waffle-jna.version>1.7</waffle-jna.version>
+         <postgresql.jdbc.spec>JDBC${jdbc.specification.version}</postgresql.jdbc.spec>
+         <postgresql.driver.fullversion>PostgreSQL ${postgresql.jdbc.spec}</postgresql.driver.fullversion>
+-        <postgresql.preprocessed.sources.directory>${project.build.directory}/gen-src</postgresql.preprocessed.sources.directory>
++        <postgresql.preprocessed.sources.directory>${project.build.directory}/generated-sources/annotations</postgresql.preprocessed.sources.directory>
+         <unzip.jdk.ant.build.xml>${project.build.directory}/unzip-jdk-ant.xml</unzip.jdk.ant.build.xml>
+         <skip.unzip-jdk-src>true</skip.unzip-jdk-src>
+         <!-- Configuration for maven-surefire-plugin. Needs to be here for compatibility with jacoco -->
+-- 
+2.5.5
+
