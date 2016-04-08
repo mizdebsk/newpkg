@@ -39,7 +39,6 @@ Group:		Applications/Databases
 URL:		https://github.com/pgjdbc/pgjdbc-parent-poms/
 
 Source0:	https://github.com/pgjdbc/pgjdbc-parent-poms/archive/REL%{version}.tar.gz
-Patch1:		standard_directory.patch
 Patch2:		build-conditions.patch
 
 BuildArch:	noarch
@@ -56,7 +55,6 @@ This package includes maven parent poms that are used by PostgreSQL JDBC driver.
 %prep
 %setup -c -q
 mv -f %{archive_name}-REL%{version}/* .
-%patch1 -p1
 %patch2 -p1
 
 # remove any binary libs
