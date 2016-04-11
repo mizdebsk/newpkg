@@ -1,26 +1,20 @@
-Name:	SimplyHTML		
-Version:	0.16.7
-Release:	7%{?dist}
-Summary:	Application and a java component for rich text processing
+Name:           SimplyHTML
+Version:        0.16.15
+Release:        1%{?dist}
+Summary:        Application and a java component for rich text processing
+License:        GPLv2 and BSD
+URL:            http://simplyhtml.sourceforge.net/
+BuildArch:      noarch
 
-License:	GPLv2 and BSD
-URL:		http://simplyhtml.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/simplyhtml/%{name}_src_0_16_07.tar.gz
-Patch0:	simplyhtml-build.xml-classpath.patch
-Patch1:	simplyhtml-manifest-classpath.patch
+Source0:        http://heanet.dl.sourceforge.net/project/simplyhtml/stable/simplyhtml_src-%{version}.tar.gz
 
-BuildRequires:	ant
-BuildRequires:	gnu-regexp
-BuildRequires:	java-devel
-BuildRequires:	javahelp2
-BuildRequires:	jpackage-utils
+# Remove Gradle bintray plugin (not available in Fedora)
+Patch0:         %{name}-remove-bintray-plugin.patch
 
-Requires:	gnu-regexp
-Requires:	java
-Requires:	javahelp2
-Requires:	jpackage-utils
-
-BuildArch: noarch
+BuildRequires:  gradle-local
+BuildRequires:  mvn(gnu-regexp:gnu-regexp)
+BuildRequires:  mvn(javax.help:javahelp)
+BuildRequires:  mvn(org.dpolivaev.mnemonicsetter:mnemonicsetter)
 
 %description
 SimplyHTML is an application for text processing. 
@@ -33,49 +27,31 @@ storing textual information and styles.
 
 %package javadoc
 Summary: API documentation for %{name}
-Requires:	jpackage-utils
 
 %description javadoc
 This package contains the API documentation for %{name}.
 
 %prep
-%setup -q -n simplyhtml-0_16_07
-%patch0 -p1
-%patch1 -p1
-find -name '*.class' -exec rm -f '{}' \;
-find -name '*.jar' -exec rm -f '{}' \;
+%setup -q -n simplyhtml-%{version}
+%patch0
+echo 'rootProject.name="%{name}"' >settings.gradle
 
 %build
-export CLASSPATH=
-CLASSPATH=
-cd src
-ant full-dist dist
-cd ..
+%gradle_build
 
 %install
-mkdir -p %{buildroot}%{_javadir}/%{name}
+%mvn_install -J build/docs/javadoc
 
-
-cp -a dist/lib/SimplyHTML.jar %{buildroot}%{_javadir}/%{name}/%{name}.jar
-
-cp -a dist/lib/SimplyHTMLHelp.jar %{buildroot}%{_javadir}/%{name}/%{name}-help.jar
-
-%jpackage_script com.lightdev.app.shtm.App "" "" gnu-regexp:javahelp2:SimplyHTML simplyhtml true
-
-mkdir -p %{buildroot}%{_javadocdir}/%{name}
-cp -a dist/help/* %{buildroot}%{_javadocdir}/%{name}
-
-%files
-%{_javadir}/%{name}
-%{_bindir}/simplyhtml*
-%doc gpl.txt 
-
-%files javadoc
-%{_javadocdir}/%{name}
+%files -f .mfiles
 %doc readme.txt
+%license gpl.txt 
 
+%files javadoc -f .mfiles-javadoc
 
 %changelog
+* Mon Apr 11 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.16.15-1
+- Update to upstream version 0.16.15
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.16.7-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
