@@ -1,7 +1,7 @@
 Name:           mnemonicsetter
 Version:        0.3
 Release:        1%{?dist}
-Summary:        XXX
+Summary:        Menu and toolbar mnemonic library
 License:        ASL 2.0
 URL:            https://github.com/dpolivaev/%{name}
 BuildArch:      noarch
@@ -15,7 +15,8 @@ BuildRequires:  gradle-local
 BuildRequires:  mvn(org.mockito:mockito-all)
 
 %description
-XXX
+Java library, which automatically assigns mnemonics to menu items and
+toolbar elements.
 
 %prep
 %setup -q -n %{name}-%{name}_%{version}
