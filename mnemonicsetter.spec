@@ -1,5 +1,5 @@
 Name:           mnemonicsetter
-Version:        0.3
+Version:        0.4
 Release:        1%{?dist}
 Summary:        Menu and toolbar mnemonic library
 License:        ASL 2.0
@@ -34,5 +34,8 @@ echo 'rootProject.name="%{name}"' >settings.gradle
 %license LICENSE
 
 %changelog
+* Tue Apr 19 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.4-1
+- Update to upstream version 0.4
+
 * Mon Apr 11 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 0.3-1
 - Initial packaging
