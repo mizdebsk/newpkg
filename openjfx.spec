@@ -9,7 +9,7 @@
 # TODO: enable optional features (webkit, media)
 
 Name:           openjfx
-Version:        8.0.40
+Version:        8.0.60
 Release:        1%{?dist}
 Summary:        Rich client application platform for Java
 # Licensing according to Debian (not verified)
@@ -17,9 +17,9 @@ Summary:        Rich client application platform for Java
 License:        GPL v2 with exceptions and BSD and LGPL v2+ and (LGPL v2+ or BSD)
 URL:            http://openjdk.java.net/projects/openjfx/
 
-Source0:        http://ftp.icm.edu.pl/pub/Linux/debian/pool/main/o/openjfx/openjfx_8u40-b25.orig.tar.xz
+Source0:        http://ftp.icm.edu.pl/pub/Linux/debian/pool/main/o/openjfx/openjfx_8u60-b27.orig.tar.xz
 
-Patch0:         0001-Port-build-script-to-Gradle-2.x.patch
+Patch0:         0001-Fix-wait-call-in-PosixPlatform.patch
 Patch1:         0002-Bulid-in-Gradle-local-mode.patch
 
 BuildRequires:  gradle-local
@@ -45,7 +45,7 @@ developers to design, create, test, debug, and deploy rich client
 applications that operate consistently across diverse platforms.
 
 %prep
-%setup -q -n rt-8u40-b25
+%setup -q -n rt-8u60-b27
 %patch0 -p1
 %patch1 -p1
 
@@ -60,5 +60,8 @@ cp -a build/sdk %{buildroot}%{_jvmdir}/%{name}
 %{_jvmdir}/%{name}
 
 %changelog
+* Tue Apr 26 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 8.0.60-1
+- Update to upstream version 8.0.60
+
 * Mon Jul  6 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 8.0.40-1
 - Initial packaging

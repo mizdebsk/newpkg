@@ -1,0 +1,36 @@
+From e4405a2f23a1f33cf21278b7f862ede59e6e747b Mon Sep 17 00:00:00 2001
+From: Mikolaj Izdebski <mizdebsk@redhat.com>
+Date: Tue, 26 Apr 2016 12:44:07 +0200
+Subject: [PATCH 1/2] Fix wait() call in PosixPlatform
+
+---
+ modules/fxpackager/src/main/native/library/common/PosixPlatform.cpp | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/modules/fxpackager/src/main/native/library/common/PosixPlatform.cpp b/modules/fxpackager/src/main/native/library/common/PosixPlatform.cpp
+index 5c8f4b9..608b0e1 100644
+--- a/modules/fxpackager/src/main/native/library/common/PosixPlatform.cpp
++++ b/modules/fxpackager/src/main/native/library/common/PosixPlatform.cpp
+@@ -41,6 +41,7 @@
+ #include <assert.h>
+ #include <stdbool.h>
+ #include <sys/types.h>
++#include <sys/wait.h>
+ #include <unistd.h>
+ #include <sys/sysctl.h>
+ #include <iostream>
+@@ -231,10 +232,7 @@ bool PosixProcess::Wait() {
+     pid_t wpid;
+ 
+     //TODO Use waitpid instead of wait
+-#ifdef LINUX
+-    wait();
+-#endif
+-#ifdef MAC
++#if defined(LINUX) || defined(MAC)
+     wpid = wait(&status);
+ #endif
+ 
+-- 
+2.5.5
+
