@@ -84,6 +84,7 @@ JUnit 5 User Guide.
 
 %prep
 %setup -q -n %{name}-r%{version}
+find -name \*.jar -delete
 
 cp -p junit-jupiter-api/LICENSE.md LICENSE-Eclipse.md
 cp -p junit-platform-surefire-provider/LICENSE.md LICENSE-Apache.md
