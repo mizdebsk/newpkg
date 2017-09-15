@@ -34,19 +34,27 @@ cp -p %{SOURCE100} pom.xml
   <build>
     <pluginManagement>
       <plugins>
-	<plugin>
+        <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <configuration>
             <archive>
-            <manifestEntries>
-              <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-              <Bundle-SymbolicName>org.apiguardian</Bundle-SymbolicName>
-              <Bundle-Version>%{version}</Bundle-Version>
-              <Export-Package>org.apiguardian.api;version=\"%{version}\"</Export-Package>
-            </manifestEntries>
+              <manifestEntries>
+                <Automatic-Module-Name>org.apiguardian.api</Automatic-Module-Name>
+                <Implementation-Title>apiguardian-api</Implementation-Title>
+                <Implementation-Vendor>apiguardian.org</Implementation-Vendor>
+                <Implementation-Version>%{version}</Implementation-Version>
+                <Specification-Title>apiguardian-api</Specification-Title>
+                <Specification-Vendor>apiguardian.org</Specification-Vendor>
+                <Specification-Version>%{version}</Specification-Version>
+                <!-- OSGi metadata required by Eclipse -->
+               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+               <Bundle-SymbolicName>org.apiguardian</Bundle-SymbolicName>
+               <Bundle-Version>%{version}</Bundle-Version>
+               <Export-Package>org.apiguardian.api;version=\"%{version}\"</Export-Package>
+              </manifestEntries>
             </archive>
           </configuration>
-	</plugin>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>"
