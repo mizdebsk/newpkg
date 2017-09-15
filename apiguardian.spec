@@ -27,6 +27,7 @@ API documentation for %{name}.
 
 %prep
 %setup -q -n apiguardian-r%{version}
+find -name \*.jar -delete
 cp -p %{SOURCE100} pom.xml
 
 # Inject OSGi manifest required by Eclipse
@@ -47,10 +48,10 @@ cp -p %{SOURCE100} pom.xml
                 <Specification-Vendor>apiguardian.org</Specification-Vendor>
                 <Specification-Version>%{version}</Specification-Version>
                 <!-- OSGi metadata required by Eclipse -->
-               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-               <Bundle-SymbolicName>org.apiguardian</Bundle-SymbolicName>
-               <Bundle-Version>%{version}</Bundle-Version>
-               <Export-Package>org.apiguardian.api;version=\"%{version}\"</Export-Package>
+                <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                <Bundle-SymbolicName>org.apiguardian</Bundle-SymbolicName>
+                <Bundle-Version>%{version}</Bundle-Version>
+                <Export-Package>org.apiguardian.api;version=\"%{version}\"</Export-Package>
               </manifestEntries>
             </archive>
           </configuration>
