@@ -42,6 +42,7 @@ BuildRequires:  maven-local
 BuildRequires:  mvn(com.univocity:univocity-parsers)
 BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(net.sf.jopt-simple:jopt-simple)
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.surefire:common-java5)
 BuildRequires:  mvn(org.apache.maven.surefire:surefire-api)
 BuildRequires:  mvn(org.apiguardian:apiguardian-api)
